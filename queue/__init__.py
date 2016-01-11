@@ -1,3 +1,9 @@
+"""
+Main Queue Launch
+
+@author: Alvin Wan, Ben Kha
+"""
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -11,7 +17,8 @@ try:
         config['database'])
     secret_key = config['secret_key']
 except FileNotFoundError:
-    raise UserWarning('Configuration file not found. Rerun `make install`.')
+    raise UserWarning('Configuration file not found. Rerun `make install` and \
+    update the new queue.cfg accordingly.')
 except KeyError:
     raise UserWarning('queue.cfg is missing critical information. All of the \
 following must be present: username, password, server, database, secret_key')

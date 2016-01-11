@@ -17,7 +17,8 @@ pip3 install -r requirements.txt
 # add configuration file if does not exist
 [ ! -f "queue.cfg" ] && cp default-queue.cfg queue.cfg
 
-echo "[OK] Installation complete.
-You are now in the virtualenv. Note the (env) prefix before your command prompt:
-- To exit, CTRL+C or 'deactivate'.
-- To re-enter the virtual environment, 'source activate.sh'."
+echo "---
+
+[OK] Installation complete.
+Use 'make db' to migrate the database.
+"

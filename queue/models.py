@@ -39,6 +39,11 @@ class User(db.Model):
 class Request(db.Model):
     """request placed in queue"""
 
+    CATEGORIES = (
+        ('question', 'question'),
+        ('tutoring', 'tutoring')
+    )
+
     STATUSES = (
         ('unresolved', 'has not yet been addressed'),
         ('resolving', 'being addressed by staff'),
@@ -49,3 +54,4 @@ class Request(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     resolvers = db.relationship('User', secondary=resolutions,
         backref=db.backref('resolutions', lazy='dynamic'))
+    category = db.Column(ChoiceType(CATEGORIES))
