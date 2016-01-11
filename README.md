@@ -3,14 +3,19 @@ CS70 tutoring queue
 
 ## Installation
 
+> These instructions assume the mySQL server has been started. See MySQL below.
+
 **Dependencies**
 
 Check that Python3 and MySQL are installed using `make check`.
 
 **Getting Started**
 
-Run the installation using `make install`. Then, add valid mysql user
-credentials to `queue.cfg`.
+1. Run the installation using `make install`.
+2. Add valid mysql user credentials to `queue.cfg`.
+3. Migrate the database using `make db`.
+
+**Details**
 
 In case the installation script fails, you may execute the contents of the bash script line by line:
 
@@ -22,7 +27,12 @@ In case the installation script fails, you may execute the contents of the bash 
 
 ## Launch
 
-To launch the app, start your mysql server. Then, use `make run`.
+> These instructions assume the mySQL server has been started. See MySQL below.
 
-> For Mac OSX installations of MySQL, via Brew, start the server using
-`mysql.server start`.
+Use `make run`.
+
+## MySQL
+
+For Mac OSX installations of MySQL, via Brew, start the server using
+`mysql.server start`. For other Linux-based operating systems, use
+`sudo service mysql start`.
