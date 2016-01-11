@@ -1,5 +1,15 @@
-from . import db
+"""
+Models for Queue
+
+IMPORTANT: Changes made here need to be followed by `make db`, so that the
+database schema is updated.
+
+@author: Alvin Wan, Ben Kha
+"""
+
+from . import db, secret_key
 from sqlalchemy import types
+from sqlalchemy_utils import EncryptedType
 from sqlalchemy_utils.types.choice import ChoiceType
 
 
@@ -20,6 +30,10 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     role = db.Column(ChoiceType(ROLES))
     requests = db.relationship('Request', backref='user', lazy='dynamic')
+
+    # login credentials
+    username = db.Column(db.String(50), unique=True)
+    password = db.Column(EncryptedType(db.Text, secret_key))
 
 
 class Request(db.Model):

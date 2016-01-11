@@ -1,6 +1,6 @@
 check:
 	bash check.sh
-	
+
 install:
 	bash install.sh
 
@@ -9,4 +9,5 @@ run:
 		python3 run.py
 
 db:
-	python3 db.py
+	source activate.sh && \
+		python3 db.py

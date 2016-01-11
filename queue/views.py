@@ -1,3 +1,9 @@
+"""
+Views for Queue
+
+@author: Alvin Wan, Ben Kha
+"""
+
 from . import app
 from .models import User, Request
 
