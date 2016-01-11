@@ -1,2 +1,4 @@
 flask
 sqlalchemy
+flask-sqlalchemy
+pymysql
