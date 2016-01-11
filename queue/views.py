@@ -1,4 +1,5 @@
 from . import app
+from .models import User, Request
 
 
 #########
@@ -8,7 +9,7 @@ from . import app
 @app.route('/')
 def queue():
     """list of all requests"""
-    requests = []
+    requests = Request.query.filter_by(status='unresolved').all()
     return render_template('queue.html', requests=requests)
 
 
@@ -20,8 +21,8 @@ def request():
     return render_template('request.html')
 
 
-@app.route('/help', methods=['POST', 'GET'])
-def help():
+@app.route('/help/<string:id>', methods=['POST', 'GET'])
+def help(id):
     """automatically selects next request"""
     if request.method == 'POST':
         pass  # mark request as resolved
