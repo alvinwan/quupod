@@ -23,21 +23,26 @@ resolutions = db.Table('resolutions',
 class User(db.Model):
     """queue system user"""
 
+    __tablename__ = 'user'
+
     ROLES = (
         ('student', 'student'),
-        ('staff', 'reader, tutor, GSI, or professor'))
+        ('staff', 'reader, tutor, GSI, or professor')
+    )
 
     id = db.Column(db.Integer, primary_key=True)
     role = db.Column(ChoiceType(ROLES))
     requests = db.relationship('Request', backref='owner', lazy='dynamic')
-
-    # login credentials
+    name = db.Column(db.String(100))
+    email = db.Column(db.String(100))
     username = db.Column(db.String(50), unique=True)
     password = db.Column(EncryptedType(db.Text, secret_key))
 
 
 class Request(db.Model):
     """request placed in queue"""
+
+    __tablename__ = 'request'
 
     CATEGORIES = (
         ('question', 'question'),
@@ -48,6 +53,7 @@ class Request(db.Model):
         ('unresolved', 'has not yet been addressed'),
         ('resolving', 'being addressed by staff'),
         ('resolved', 'addressed and closed')
+    )
 
     id = db.Column(db.Integer, primary_key=True)
     status = db.Column(ChoiceType(STATUSES))
@@ -63,6 +69,8 @@ class Request(db.Model):
 class Assignment(db.Model):
     """Assignments"""
 
+    __tablename__ = 'assignment'
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     requests = db.relationship('Request', backref='assignment', lazy='dynamic')
@@ -71,6 +79,8 @@ class Assignment(db.Model):
 
 class Problem(db.Model):
     """Problems in assignment"""
+
+    __tablename__ = 'problem'
 
     id = db.Column(db.Integer, primary_key=True)
     tag = db.Column(db.String(10))

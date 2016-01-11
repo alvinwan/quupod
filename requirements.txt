@@ -4,3 +4,5 @@ flask-sqlalchemy
 pymysql
 sqlalchemy-utils
 cryptography
+WTForms==2.1
+WTForms-SQLAlchemy==0.1

@@ -27,3 +27,12 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://%s:%s@%s/%s' % settings
 db = SQLAlchemy(app)
+
+from public.views import public
+from admin.views import admin
+
+blueprints = (public, admin)
+
+for blueprint in blueprints:
+    print(' * Registering blueprint "%s"' % blueprint.name)
+    app.register_blueprint(blueprint)
