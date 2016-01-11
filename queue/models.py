@@ -29,7 +29,7 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     role = db.Column(ChoiceType(ROLES))
-    requests = db.relationship('Request', backref='user', lazy='dynamic')
+    requests = db.relationship('Request', backref='owner', lazy='dynamic')
 
     # login credentials
     username = db.Column(db.String(50), unique=True)
@@ -51,7 +51,28 @@ class Request(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     status = db.Column(ChoiceType(STATUSES))
+    question = db.Column(db.Text)
+    assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'))
+    problem_id = db.Column(db.Integer, db.ForeignKey('problem.id'))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     resolvers = db.relationship('User', secondary=resolutions,
         backref=db.backref('resolutions', lazy='dynamic'))
     category = db.Column(ChoiceType(CATEGORIES))
+
+
+class Assignment(db.Model):
+    """Assignments"""
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    requests = db.relationship('Request', backref='assignment', lazy='dynamic')
+    problems = db.relationship('Problem', backref='assignment', lazy='dynamic')
+
+
+class Problem(db.Model):
+    """Problems in assignment"""
+
+    id = db.Column(db.Integer, primary_key=True)
+    tag = db.Column(db.String(10))
+    description = db.Column(db.Text)
+    assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'))

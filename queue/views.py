@@ -23,6 +23,7 @@ def queue():
 def request():
     """place a request"""
     if request.method == 'POST':
+        
         pass  # save request in db
     return render_template('request.html')
 
