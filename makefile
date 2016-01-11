@@ -1,9 +1,6 @@
 check:
 	bash check.sh
-
-activate:
-	bash activate.sh
-
+	
 install:
 	bash install.sh
 
