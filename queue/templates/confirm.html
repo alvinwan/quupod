@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 {% block main %}
 <h1>Confirmation</h1>
-<p>Object created!</p>
-<code>
-  {{ data }}
-</code>
-<a href="{{ url_for('public.queue') }}">back to queue</a>
+<p>{{ message | safe }}</p>
+<a href="{{ url }}">{{ action }}</a>
 {% endblock %}

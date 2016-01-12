@@ -12,9 +12,10 @@ public = Blueprint('public', __name__)
 
 @public.route('/')
 def queue():
-    """List of all 'unresolved' inquiries for the homepage"""
+    """List of all 'unresolved' and 'resolving' inquiries for the homepage"""
     return render_template('queue.html',
-        inquiries=queued_inquiries(request.form))
+        unresolved=unresolved_inquiries(),
+        resolving=resolving_inquiries())
 
 @public.route('/inquiry', methods=['POST', 'GET'])
 def inquiry():

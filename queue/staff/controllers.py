@@ -1,5 +1,22 @@
+from flask import url_for
+from queue import db
 from .models import Inquiry, add_obj
 from sqlalchemy import desc
+
+
+def clear_unfinished():
+    """
+    Clear all unfinished inquiries, which includes unresolved and inquiries
+    current being resolved.
+    """
+    Inquiry.query.filter_by(status='unresolved').update({'status': 'closed'})
+    Inquiry.query.filter_by(status='resolving').update({'status': 'closed'})
+    db.session.commit()
+    return {
+        'message': 'All cleared',
+        'action': 'staff home',
+        'url': url_for('staff.home')
+    }
 
 def get_inquiry(id):
     """

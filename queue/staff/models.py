@@ -65,7 +65,8 @@ class Inquiry(db.Model):
     STATUSES = (
         ('unresolved', 'has not yet been addressed'),
         ('resolving', 'being addressed by staff'),
-        ('resolved', 'addressed and closed')
+        ('resolved', 'addressed and closed'),
+        ('closed', 'closed without resolution - end of session, MIA etc.')
     )
 
     id = db.Column(db.Integer, primary_key=True)

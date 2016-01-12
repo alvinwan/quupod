@@ -14,16 +14,29 @@ def add_inquiry(data):
     :return: information for confirmation page
     """
     add_obj(Inquiry(**data))
-    return {'data': data}
+    return {
+        'message': 'Inquiry created! <code>%s</code>' % str(data),
+        'action': 'Back to queue',
+        'url': url_for('public.queue')
+    }
 
-def queued_inquiries(request):
+def unresolved_inquiries():
     """
-    All queued inquiries
+    All unresolved inquiries
 
     :param Request request: Flask request object
     :return: list of all inquiries
     """
     return Inquiry.query.filter_by(status='unresolved').all()
+
+def resolving_inquiries():
+    """
+    All inquiries currently being resolved
+
+    :param Request request: Flask request object
+    :return: list of all inquiries
+    """
+    return Inquiry.query.filter_by(status='resolving').all()
 
 def add_user(data):
     """
@@ -33,4 +46,8 @@ def add_user(data):
     :return: information for confirmation page
     """
     add_obj(User(**data))
-    return {'data': data}
+    return {
+        'message': 'Signed up! <code>%s</code>' % str(data),
+        'action': 'Sign in',
+        'url': url_for('public.signin')
+    }
