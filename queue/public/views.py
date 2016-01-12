@@ -10,13 +10,13 @@ public = Blueprint('public', __name__)
 # QUEUE #
 #########
 
-@app.route('/')
+@public.route('/')
 def queue():
     """List of all 'unresolved' inquiries for the homepage"""
     return render_template('queue.html',
         inquiries=queued_inquiries(request.form))
 
-@app.route('/inquiry', methods=['POST', 'GET'])
+@public.route('/inquiry', methods=['POST', 'GET'])
 def inquiry():
     """
     Place a new inquiry, which may be authored by either a system user or an
@@ -31,7 +31,7 @@ def inquiry():
 # SIGN IN/SIGN UP #
 ###################
 
-@app.route('/signin', methods=['POST', 'GET'])
+@public.route('/signin', methods=['POST', 'GET'])
 def signin():
     """Sign in"""
     form = SigninForm(request.form)
@@ -39,7 +39,7 @@ def signin():
         pass  # sign in user
     return render_template('signin.html')
 
-@app.route('/signup')
+@public.route('/signup')
 def signup():
     """Sign up"""
     form = UserForm(request.form)

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block main %}
+{% if not inquiry %}
+No inquiries to process!
+{% else %}
+Student: {{ inquiry.name or inquiry.owner.name }}
+Question: {{ inquiry.question }}
+{% endif %}
+{% endblock %}

@@ -1,7 +1,7 @@
 check:
 	bash check.sh
 
-install:
+install: requirements.txt install.sh
 	bash install.sh
 
 run:
@@ -12,6 +12,6 @@ db:
 	source activate.sh && \
 		python3 dbcreate.py
 
-refresh:
+refresh: queue/*/models.py
 	source activate.sh && \
 		python3 dbrefresh.py

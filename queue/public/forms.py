@@ -23,5 +23,5 @@ class InquiryForm(ModelForm):
         model = Inquiry
         only = ('name', 'question')
 
-    assignment_id = ModelFieldList(FormField(AssignmentForm))
-    problem_id = ModelFieldList(FormField(ProblemForm))
+    assignment = ModelFieldList(FormField(AssignmentForm))
+    problem = ModelFieldList(FormField(ProblemForm))

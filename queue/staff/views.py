@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request
 from queue import app
 from .models import User, Inquiry
+from .controllers import *
+
 
 staff = Blueprint('staff', __name__, url_prefix='/staff')
 
@@ -8,25 +10,26 @@ staff = Blueprint('staff', __name__, url_prefix='/staff')
 # ADMIN #
 #########
 
-@app.route('/')
+@staff.route('/')
 def home():
-    """admin homepage"""
+    """staff homepage"""
     # option to see analytics or to start helping
-    return render_template('admin.html')
+    return render_template('staff.html')
 
-@app.route('/help/<string:id>', methods=['POST', 'GET'])
-def help(id):
+@staff.route('/help/<string:id>', methods=['POST', 'GET'])
+@staff.route('/help')
+def help(id=None):
     """automatically selects next inquiry"""
-    inquiry = Inquiry.query.filter_by(id=id).first()
+    inquiry = lock_inquiry(get_latest_inquiry(id))
     if request.method == 'POST':
         pass  # mark request as resolved
-    return render_template('help.html',inquiry=help_inquiry(inquiry), form=form)
+    return render_template('help.html', inquiry=inquiry)
 
 #############
 # ANALYTICS #
 #############
 
-@app.route('/analytics')
+@staff.route('/analytics')
 def analytics():
     """analytics for requests"""
     return render_template('analytics.html')

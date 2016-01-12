@@ -13,7 +13,12 @@ Check that Python3 and MySQL are installed using `make check`.
 
 1. Run the installation using `make install`.
 2. Add valid mysql user credentials to `queue.cfg`.
-3. Migrate the database using `make db`.
+3. Create the database using `make db`.
+
+> All model modifications need to be followed by some form of database
+migration. In the development environment, the simplest approach is to
+`make refresh`, which will **delete** the old database and replace it with
+a new one.
 
 **Details**
 

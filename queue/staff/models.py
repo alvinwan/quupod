@@ -1,7 +1,25 @@
+"""
+Important: Changes here need to be followed by `make refresh`.
+"""
+
 from queue import db
 from sqlalchemy import types
 from sqlalchemy_utils import EncryptedType, PasswordType
 from sqlalchemy_utils.types.choice import ChoiceType
+
+#############
+# UTILITIES #
+#############
+
+def add_obj(obj):
+    """
+    Add object to database
+
+    :param obj: any instance of a Model
+    :return: information regarding database add
+    """
+    db.session.add(obj)
+    db.session.commit()
 
 ##########
 # MODELS #
@@ -31,6 +49,7 @@ class User(db.Model):
     email = db.Column(db.String(100))
     username = db.Column(db.String(50), unique=True)
     password = db.Column(PasswordType(schemes=['pbkdf2_sha512']))
+    created_at = db.Column(db.DateTime)
 
 
 class Inquiry(db.Model):
@@ -59,6 +78,7 @@ class Inquiry(db.Model):
     resolvers = db.relationship('User', secondary=resolutions,
         backref=db.backref('resolutions', lazy='dynamic'))
     category = db.Column(ChoiceType(CATEGORIES))
+    created_at = db.Column(db.DateTime)
 
     @property
     def assignment(self):
@@ -82,6 +102,7 @@ class Assignment(db.Model):
     name = db.Column(db.String(50))
     inquiries = db.relationship('Inquiry', backref='assignment', lazy='dynamic')
     problems = db.relationship('Problem', backref='assignment', lazy='dynamic')
+    created_at = db.Column(db.DateTime)
 
 
 class Problem(db.Model):
@@ -93,3 +114,4 @@ class Problem(db.Model):
     tag = db.Column(db.String(10))
     description = db.Column(db.Text)
     assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'))
+    created_at = db.Column(db.DateTime)

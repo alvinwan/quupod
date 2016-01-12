@@ -20,5 +20,6 @@ pip3 install -r requirements.txt
 echo "---
 
 [OK] Installation complete.
-Use 'make db' to migrate the database.
+Use 'make db' to create the database. Use 'make refresh' to DELETE the old
+database and recreate one using the new schema.
 "

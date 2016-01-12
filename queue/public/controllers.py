@@ -1,20 +1,6 @@
 from queue import db
 from flask import redirect, url_for
-from queue.staff.models import User, Inquiry
-
-#############
-# UTILITIES #
-#############
-
-def add_obj(obj):
-    """
-    Add object to database
-
-    :param obj: any instance of a Model
-    :return: information regarding database add
-    """
-    db.session.add(obj)
-    db.session.commit()
+from queue.staff.models import User, Inquiry, add_obj
 
 ###############
 # CONTROLLERS #
