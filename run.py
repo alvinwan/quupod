@@ -1,4 +1,4 @@
-from queue import app
+from queue import app, debug
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=debug)

@@ -1,7 +1,0 @@
-{% extends "base.html" %}
-{% set title="Queue" %}
-{% block main %}
-{% for request in requests %}
-<li>{{ request.user.name }} requests {{ request.problem.tag }} from {{ request.assignment.name }}</li>
-{% endfor %}
-{% endblock %}

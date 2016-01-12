@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% set title="Inquiry" %}
+{% block main %}
+<form>
+{% for field in form %}
+  <div>
+    <p>{{ field.label }}</p>
+    {{ field }}
+  </div>
+{% endfor %}
+<input type="submit">
+</form>
+{% endblock %}

@@ -1,12 +1,6 @@
-"""
-Admin Views for Queue
-
-@author: Alvin Wan, Ben Kha
-"""
-
 from flask import Blueprint, render_template, request
 from queue import app
-from .models import User, Request
+from .models import User, Inquiry
 
 staff = Blueprint('staff', __name__, url_prefix='/staff')
 
@@ -22,12 +16,11 @@ def home():
 
 @app.route('/help/<string:id>', methods=['POST', 'GET'])
 def help(id):
-    """automatically selects next request"""
+    """automatically selects next inquiry"""
+    inquiry = Inquiry.query.filter_by(id=id).first()
     if request.method == 'POST':
         pass  # mark request as resolved
-    # mark request as currently-being-resolved
-    request = None
-    return render_template('help.html', request=request)
+    return render_template('help.html',inquiry=help_inquiry(inquiry), form=form)
 
 #############
 # ANALYTICS #

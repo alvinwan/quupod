@@ -1,21 +1,23 @@
-"""
-Models for Queue
-
-IMPORTANT: Changes made here need to be followed by `make db`, so that the
-database schema is updated.
-
-@author: Alvin Wan, Ben Kha
-"""
-
-from . import db, secret_key
+from queue import db
 from sqlalchemy import types
-from sqlalchemy_utils import EncryptedType
+from sqlalchemy_utils import EncryptedType, PasswordType
 from sqlalchemy_utils.types.choice import ChoiceType
 
+#############
+# UTILITIES #
+#############
+
+def save(self):
+    db.session.add(self)
+    db.session.commit()
+
+##########
+# MODELS #
+##########
 
 resolutions = db.Table('resolutions',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('request_id', db.Integer, db.ForeignKey('request.id')),
+    db.Column('inquiry_id', db.Integer, db.ForeignKey('inquiry.id')),
     db.Column('comment', db.Text)
 )
 
@@ -32,17 +34,17 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     role = db.Column(ChoiceType(ROLES))
-    requests = db.relationship('Request', backref='owner', lazy='dynamic')
+    inquiries = db.relationship('Inquiry', backref='owner', lazy='dynamic')
     name = db.Column(db.String(100))
     email = db.Column(db.String(100))
     username = db.Column(db.String(50), unique=True)
-    password = db.Column(EncryptedType(db.Text, secret_key))
+    password = db.Column(PasswordType(schemes=['pbkdf2_sha512']))
 
 
-class Request(db.Model):
-    """request placed in queue"""
+class Inquiry(db.Model):
+    """inquiry placed in queue"""
 
-    __tablename__ = 'request'
+    __tablename__ = 'inquiry'
 
     CATEGORIES = (
         ('question', 'question'),
@@ -57,6 +59,7 @@ class Request(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     status = db.Column(ChoiceType(STATUSES))
+    name = db.Column(db.String(50))
     question = db.Column(db.Text)
     assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'))
     problem_id = db.Column(db.Integer, db.ForeignKey('problem.id'))
@@ -73,7 +76,7 @@ class Assignment(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
-    requests = db.relationship('Request', backref='assignment', lazy='dynamic')
+    inquiries = db.relationship('Inquiry', backref='assignment', lazy='dynamic')
     problems = db.relationship('Problem', backref='assignment', lazy='dynamic')
 
 

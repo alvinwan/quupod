@@ -1,12 +1,8 @@
-"""
-Public Views for Queue
-
-@author: Alvin Wan, Ben Kha
-"""
-
 from flask import Blueprint, render_template, request
+from .forms import *
+from .controllers import *
 from queue import app
-from queue.staff.models import User, Request
+from queue.staff.models import User, Inquiry
 
 public = Blueprint('public', __name__)
 
@@ -16,17 +12,20 @@ public = Blueprint('public', __name__)
 
 @app.route('/')
 def queue():
-    """list of all requests"""
-    requests = Request.query.filter_by(status='unresolved').all()
-    return render_template('queue.html', requests=requests)
+    """List of all 'unresolved' inquiries for the homepage"""
+    return render_template('queue.html',
+        inquiries=queued_inquiries(request.form))
 
-@app.route('/request', methods=['POST', 'GET'])
-def request():
-    """place a request"""
-    if request.method == 'POST':
-
-        pass  # save request in db
-    return render_template('request.html')
+@app.route('/inquiry', methods=['POST', 'GET'])
+def inquiry():
+    """
+    Place a new inquiry, which may be authored by either a system user or an
+    anonymous user.
+    """
+    form = InquiryForm(request.form)
+    if request.method == 'POST' and form.validate():
+        return render_template('confirm.html', **add_inquiry(request.form))
+    return render_template('inquiry.html', form=form)
 
 ###################
 # SIGN IN/SIGN UP #
@@ -34,14 +33,20 @@ def request():
 
 @app.route('/signin', methods=['POST', 'GET'])
 def signin():
-    """sign in"""
-    if request.method == 'POST':
+    """Sign in"""
+    form = SigninForm(request.form)
+    if request.method == 'POST' and form.validate():
         pass  # sign in user
     return render_template('signin.html')
 
 @app.route('/signup')
 def signup():
-    """sign up"""
-    if request.method == 'POST':
-        pass  # sign up user
+    """Sign up"""
+    form = UserForm(request.form)
+    if request.method == 'POST' and form.validate():
+        return render_template('confirm.html', **add_user(request.form))
     return render_template('signup.html')
+
+######################
+# SESSION UTILIITIES #
+######################

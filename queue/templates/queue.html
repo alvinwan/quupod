@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% set title="Queue" %}
+{% block main %}
+<a href="{{ url_for('inquiry') }}">Add Inquiry</a>
+{% for inquiry in inquiries %}
+<li>{{ inquiry.name or inquiry.owner.name }} requests {{ inquiry.problem.tag }} from {{ inquiry.assignment.name }}</li>
+{% endfor %}
+{% endblock %}
