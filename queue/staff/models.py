@@ -3,14 +3,6 @@ from sqlalchemy import types
 from sqlalchemy_utils import EncryptedType, PasswordType
 from sqlalchemy_utils.types.choice import ChoiceType
 
-#############
-# UTILITIES #
-#############
-
-def save(self):
-    db.session.add(self)
-    db.session.commit()
-
 ##########
 # MODELS #
 ##########
@@ -58,7 +50,7 @@ class Inquiry(db.Model):
     )
 
     id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(ChoiceType(STATUSES))
+    status = db.Column(ChoiceType(STATUSES), default='unresolved')
     name = db.Column(db.String(50))
     question = db.Column(db.Text)
     assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'))
@@ -67,6 +59,18 @@ class Inquiry(db.Model):
     resolvers = db.relationship('User', secondary=resolutions,
         backref=db.backref('resolutions', lazy='dynamic'))
     category = db.Column(ChoiceType(CATEGORIES))
+
+    @property
+    def assignment(self):
+        return Assignment.query.filter_by(id=self.assignment_id).first()
+
+    @property
+    def problem(self):
+        return Problem.query.filter_by(id=self.problem_id).first()
+
+    @property
+    def owner(self):
+        return Owner.query.filter_by(id=self.owner_id).first()
 
 
 class Assignment(db.Model):

@@ -21,7 +21,7 @@ class InquiryForm(ModelForm):
     """form for placing inquiries"""
     class Meta:
         model = Inquiry
-        only = ('question',)
+        only = ('name', 'question')
 
     assignment_id = ModelFieldList(FormField(AssignmentForm))
     problem_id = ModelFieldList(FormField(ProblemForm))

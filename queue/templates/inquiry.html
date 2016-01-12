@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 {% set title="Inquiry" %}
 {% block main %}
-<form>
+<form method="POST">
 {% for field in form %}
   <div>
-    <p>{{ field.label }}</p>
+    <p>{{ field.label }} </p>
+    {% for error in form.errors[field] %}
+      <p><strong>Error!</strong> {{error}}</p>
+    {% endfor %}
     {{ field }}
   </div>
 {% endfor %}

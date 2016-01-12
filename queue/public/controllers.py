@@ -1,3 +1,4 @@
+from queue import db
 from flask import redirect, url_for
 from queue.staff.models import User, Inquiry
 

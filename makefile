@@ -10,4 +10,8 @@ run:
 
 db:
 	source activate.sh && \
-		python3 db.py
+		python3 dbcreate.py
+
+refresh:
+	source activate.sh && \
+		python3 dbrefresh.py
