@@ -25,17 +25,22 @@ def inquiry():
     Place a new inquiry, which may be authored by either a system user or an
     anonymous user.
     """
-    form = InquiryForm(request.form)
+    form, user = InquiryForm(request.form), flask_login.current_user
     if request.method == 'POST' and form.validate():
-        return render_template('confirm.html', **add_inquiry(request.form))
+        if user.is_authenticated:
+            data = multi2dict(request.form)
+            data.update({'name': user.name})
+        else:
+            data = request.form
+        return render_template('confirm.html', **add_inquiry(data))
     return render_template('inquiry.html', form=form)
 
 ###################
 # SIGN IN/SIGN UP #
 ###################
 
-@anonymous_required
 @public.route('/signin', methods=['POST', 'GET'])
+@anonymous_required
 def signin():
     """Sign in"""
     form, message = SigninForm(request.form), ''
@@ -48,8 +53,8 @@ def signin():
         message = 'Login failed.'
     return render_template('signin.html', message=message, form=form)
 
-@anonymous_required
 @public.route('/signup', methods=['GET', 'POST'])
+@anonymous_required
 def signup():
     """Sign up"""
     form = UserForm(request.form)
@@ -71,12 +76,14 @@ def user_loader(id):
 def request_loader(request):
     """Loads user by Flask Request object"""
     id = request.form.get('id')
-    print(' * Reloading user with id "%s", from request_loader' % id)
     user = get_user(id=id)
     if not user:
+        print(' * Anonymous user found.')
         return
     # encryption handled by SQLAlchemy PasswordType field
     user.is_authenticated = user.password == request.form['password']
+    if user.is_authenticated:
+        print(' * Reloaded user with id "%s", from request_loader' % id)
     return user
 
 @app.route('/logout')
@@ -86,4 +93,4 @@ def logout():
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
-    return 'Unauthorized'
+    return get_user_home(flask_login.current_user)

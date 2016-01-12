@@ -3,6 +3,7 @@ from wtforms.fields import FormField
 import wtforms as wtf
 from queue.staff.forms import AssignmentForm, ProblemForm
 from queue.staff.models import Inquiry, User
+import flask_login
 
 
 class SigninForm(wtf.Form):
@@ -25,3 +26,10 @@ class InquiryForm(ModelForm):
 
     assignment = ModelFieldList(FormField(AssignmentForm))
     problem = ModelFieldList(FormField(ProblemForm))
+
+    def __iter__(self):
+        fields = (getattr(self, str(f)) for f in self._fields)
+        if flask_login.current_user.is_authenticated:
+            condition = lambda f: f.name != 'name'
+            fields = filter(condition, fields)
+        return iter(fields)

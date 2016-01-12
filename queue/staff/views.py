@@ -1,8 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from queue import app
+from queue.views import requires
 from queue.public.controllers import unresolved_inquiries, resolving_inquiries
 from .models import User, Inquiry
 from .controllers import *
+import flask_login
 
 
 staff = Blueprint('staff', __name__, url_prefix='/staff')
@@ -12,11 +14,14 @@ staff = Blueprint('staff', __name__, url_prefix='/staff')
 #########
 
 @staff.route('/')
+@flask_login.login_required
+@requires('staff')
 def home():
     """staff homepage"""
     # option to see analytics or to start helping
     return render_template('staff.html')
 
+@requires('staff')
 @staff.route('/clear/<string:location>', methods=['POST', 'GET'])
 @staff.route('/clear', methods=['POST', 'GET'])
 def clear(location=None):
@@ -31,6 +36,7 @@ def clear(location=None):
         action='staff home',
         url=url_for('staff.home'))
 
+@requires('staff')
 @staff.route('/help')
 def help():
     """automatically selects next inquiry"""
@@ -43,6 +49,7 @@ def help():
     lock_inquiry(inquiry)
     return redirect(url_for('staff.help_inquiry', id=inquiry.id))
 
+@requires('staff')
 @staff.route('/help/<string:id>', methods=['POST', 'GET'])
 def help_inquiry(id):
     """automatically selects next inquiry or reloads inquiry """
@@ -56,6 +63,7 @@ def help_inquiry(id):
 # ANALYTICS #
 #############
 
+@requires('staff')
 @staff.route('/analytics')
 def analytics():
     """analytics for requests"""

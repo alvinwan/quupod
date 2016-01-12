@@ -79,8 +79,6 @@ def get_user_home(user):
     :param User user: user object
     :return: User object or None
     """
-    if not user:
-        return
-    if user.role == 'staff':
+    if user and getattr(user, 'role', None) == 'staff':
         return redirect(url_for('staff.home'))
     return redirect(url_for('public.queue'))
