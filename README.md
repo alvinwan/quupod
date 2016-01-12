@@ -21,36 +21,55 @@ in-session questions queue management and analytics
 
 > These instructions assume the mySQL server has been started. See MySQL below.
 
-**Dependencies**
+### Dependencies
 
 Check that Python3 and MySQL are installed using `make check`.
 
-**Getting Started**
+### Getting Started
 
 1. Run the installation using `make install`.
-2. Add valid mysql user credentials to `queue.cfg`.
-3. Create the database using `make db`.
+1. Add valid mysql user credentials to `queue.cfg`.
+1. Create the database using `make db`.
+1. In the future, use `source activate.sh` to activate the virtual environment.
+1. Any model modifications, in the **development** environment, should be
+followed by `make refresh`, which will **delete** the old database and replace
+it with a new one.
 
-> All model modifications need to be followed by some form of database
-migration. In the development environment, the simplest approach is to
-`make refresh`, which will **delete** the old database and replace it with
-a new one.
+> If the bash scripts do not work, see the Details section below for an outline
+of what each script does.
 
-**Details**
+### Details
 
-In case the installation script fails, you may execute the contents of the bash script line by line:
+In case the installation script fails, you may execute the contents of the
+installation bash script line by line:
 
 1. Setup a new virtual environment: `python3 -m virtualenv env`.
 1. Start the virtual environment: `source env/bin/activate`.
-1. Install all requirements `pip install -r requirements.txt`.
+1. Install all requirements: `pip install -r requirements.txt`.
+1. Make a new configuration file: `cp default-queue.cfg queue.cfg`.
+1. Add valid MySQL user credentials to `queue.cfg`.
+1. Create the database: `python3 -c 'from queue import db; db.create_all()'`.
 
-> To activate the virtual environment for the future, use `source activate.sh`.
+Any model modifications should be followed by the following, which will
+**delete** the old database and replace it with a new one.
+
+```
+python3 -c 'from queue import db; db.drop_all(); db.create_all()'
+```
 
 ## Launch
 
 > These instructions assume the mySQL server has been started. See MySQL below.
 
 Use `make run`.
+
+> If the bash script does not work, see the Details section below for an outline
+of `make run`.
+
+### Details
+
+1. Start the virtual environment: `source env/bin/activate`.
+1. Launch server: `python3 run.py`.
 
 ## MySQL
 
