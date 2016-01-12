@@ -2,6 +2,13 @@ from queue import db
 from flask import redirect, url_for
 from queue.staff.models import User, Inquiry, add_obj
 
+#############
+# UTILITIES #
+#############
+
+def multi2dict(multi):
+    return dict(multi.items())
+
 ###############
 # CONTROLLERS #
 ###############
@@ -13,7 +20,7 @@ def add_inquiry(data):
     :param Request request: Flask request object
     :return: information for confirmation page
     """
-    add_obj(Inquiry(**data))
+    add_obj(Inquiry(**multi2dict(data)))
     return {
         'message': 'Inquiry created! <code>%s</code>' % str(data),
         'action': 'Back to queue',
@@ -45,9 +52,35 @@ def add_user(data):
     :param Request request: Flask request object
     :return: information for confirmation page
     """
-    add_obj(User(**data))
+    add_obj(User(**multi2dict(data)))
     return {
-        'message': 'Signed up! <code>%s</code>' % str(data),
+        'message': 'Signed up! <code>%s</code>' % str({
+            'username': data['username'],
+            'email': data['email'],
+            'name': data['name']
+        }),
         'action': 'Sign in',
         'url': url_for('public.signin')
     }
+
+def get_user(**kwargs):
+    """
+    Get user by kwargs.
+
+    :param kwargs: key arguments containing user details
+    :return: User object or None
+    """
+    return User.query.filter_by(**kwargs).first()
+
+def get_user_home(user):
+    """
+    Get home page for user
+
+    :param User user: user object
+    :return: User object or None
+    """
+    if not user:
+        return
+    if user.role == 'staff':
+        return redirect(url_for('staff.home'))
+    return redirect(url_for('public.queue'))

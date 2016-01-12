@@ -6,6 +6,7 @@ from queue import db
 from sqlalchemy import types
 from sqlalchemy_utils import EncryptedType, PasswordType
 from sqlalchemy_utils.types.choice import ChoiceType
+import flask_login
 
 #############
 # UTILITIES #
@@ -32,7 +33,7 @@ resolutions = db.Table('resolutions',
 )
 
 
-class User(db.Model):
+class User(db.Model, flask_login.UserMixin):
     """queue system user"""
 
     __tablename__ = 'user'
@@ -43,7 +44,7 @@ class User(db.Model):
     )
 
     id = db.Column(db.Integer, primary_key=True)
-    role = db.Column(ChoiceType(ROLES))
+    role = db.Column(ChoiceType(ROLES), default='student')
     inquiries = db.relationship('Inquiry', backref='owner', lazy='dynamic')
     name = db.Column(db.String(100))
     email = db.Column(db.String(100))

@@ -4,6 +4,11 @@
   </head>
   <body>
     <header>
+      {% if current_user.is_authenticated %}
+      <p>Hi, {{ current_user.name }} - <a href="{{ url_for('logout') }}">logout</a></p>
+      {% else %}
+      <p><a href="{{ url_for('public.signin')}}">sign in</a> or <a href="{{ url_for('public.signup') }}">sign up</a></p>
+      {% endif %}
     </header>
     <main>
       {% block main %}

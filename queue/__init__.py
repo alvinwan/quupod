@@ -1,7 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+import flask_login
 
-# parse configuration file
+# Parse configuration file
 try:
     lines = filter(bool, open('queue.cfg').read().splitlines())
     config = dict(map(lambda s: s.strip(), d.split(':')) for d in lines)
@@ -19,16 +20,24 @@ except KeyError:
 following must be present: username, password, server, database, secret_key, \
 debug')
 
+# Flask app
 app = Flask(__name__)
+
+# Configuration for mySQL database
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://%s:%s@%s/%s' % settings
 db = SQLAlchemy(app)
 
+# Configuration for login sessions
+app.secret_key = secret_key
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
+
+# Configuration for app views
 from .public.views import public
 from .staff.views import staff
 
 blueprints = (public, staff)
-
 for blueprint in blueprints:
     print(' * Registering blueprint "%s"' % blueprint.name)
     app.register_blueprint(blueprint)
