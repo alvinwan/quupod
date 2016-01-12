@@ -1,5 +1,21 @@
 # Queue
-CS70 tutoring queue
+in-session questions queue management and analytics
+
+## Features
+
+**Guest**
+
+- ease of use: *Anonymous users can submit inquiries without creating an account*
+- (soon) easy inquiry creation: *Registered users only need to select an assignment and a question. All other fields are automatically filled.*
+
+**Staff**
+
+- data race prevention: *Staff can click the 'help' button to assign the next unresolved inquiry to him/herself. This prevents multiple staff members from trying to resolve the same inquiry.*
+- mutex lock: *Once a staff member locks (or starts resolving) an inquiry, other staff members will be notified. Additionally other staff members cannot modify the same inquiry until the original staff member releases or resolves it.*
+- simple user flow: *For each inquiry, staff members need only two clicks: 'help' to help and 'resolved' to resolve.*
+- (soon) verified users: *Staff members need to register to gain access to the admin panel.*
+
+**Analytics**
 
 ## Installation
 
