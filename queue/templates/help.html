@@ -5,5 +5,8 @@ No inquiries to process!
 {% else %}
 Student: {{ inquiry.name or inquiry.owner.name }}
 Question: {{ inquiry.question }}
+<form action="post">
+  <input type="submit" value="resolve">
+</form>
 {% endif %}
 {% endblock %}

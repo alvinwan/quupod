@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect, url_for
 from queue import app
 from .models import User, Inquiry
 from .controllers import *
@@ -19,10 +19,15 @@ def home():
 @staff.route('/help/<string:id>', methods=['POST', 'GET'])
 @staff.route('/help')
 def help(id=None):
-    """automatically selects next inquiry"""
-    inquiry = lock_inquiry(get_latest_inquiry(id))
+    """automatically selects next inquiry or reloads inquiry """
+    if not id:
+        inquiry = get_latest_inquiry()
+        lock_inquiry(inquiry)
+        return redirect(url_for('staff.help', id=inquiry.id))
+    inquiry = get_inquiry(id)
     if request.method == 'POST':
-        pass  # mark request as resolved
+        resolve_inquiry(inquiry)
+        return redirect(url_for('staff.help'))
     return render_template('help.html', inquiry=inquiry)
 
 #############
