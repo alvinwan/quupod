@@ -78,11 +78,13 @@ of `make run`.
 
 For Mac OSX installations of MySQL, via Brew, start the server using
 `mysql.server start`. For other Linux-based operating systems, use
-`sudo service mysql start`. For Windows, just start the server using `services.msc`.
+`sudo service mysql start`. 
+For Windows, just start the server using `services.msc`.
 
 
 ## Windows Notes
 Because of incompatbility issues with the makefile, on Windows you will have to manually run the installation instructions.
+
 1. Setup a new virtual environment by calling `python3 -m virtualenv env`.
 1. Start the virtual environment by calling `env/Scripts/activate.bat` in cmd.
 1. Install all requirements `pip install -r requirements.txt`.
@@ -95,5 +97,4 @@ from queue import db
 db.drop_all()
 db.create_all()
 ```
-
 1. Run with `python run.py`
