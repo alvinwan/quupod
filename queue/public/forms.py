@@ -6,13 +6,13 @@ from queue.staff.models import Inquiry, User
 import flask_login
 
 
-class SigninForm(wtf.Form):
+class LoginForm(wtf.Form):
     username = wtf.StringField()
     password = wtf.PasswordField()
 
 
-class UserForm(ModelForm):
-    """form for user signup and signin"""
+class RegisterForm(ModelForm):
+    """form for user register and login"""
     class Meta:
         model = User
         only = ('name', 'email', 'username', 'password')
@@ -28,8 +28,8 @@ class InquiryForm(ModelForm):
     problem = ModelFieldList(FormField(ProblemForm))
 
     def __iter__(self):
+        """Exclude name field if user is logged in"""
         fields = (getattr(self, str(f)) for f in self._fields)
         if flask_login.current_user.is_authenticated:
-            condition = lambda f: f.name != 'name'
-            fields = filter(condition, fields)
+            fields = filter(lambda f: f.name != 'name', fields)
         return iter(fields)

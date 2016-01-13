@@ -24,7 +24,7 @@ def add_inquiry(data):
     return {
         'message': 'Inquiry created! <code>%s</code>' % str(data),
         'action': 'Back to queue',
-        'url': url_for('public.queue')
+        'url': url_for('public.home')
     }
 
 def unresolved_inquiries():
@@ -60,7 +60,7 @@ def add_user(data):
             'name': data['name']
         }),
         'action': 'Sign in',
-        'url': url_for('public.signin')
+        'url': url_for('public.login')
     }
 
 def get_user(**kwargs):
@@ -81,4 +81,4 @@ def get_user_home(user):
     """
     if user and getattr(user, 'role', None) == 'staff':
         return redirect(url_for('staff.home'))
-    return redirect(url_for('public.queue'))
+    return redirect(url_for('public.home'))
