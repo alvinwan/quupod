@@ -87,5 +87,7 @@ For Mac OSX installations of MySQL, via Brew, start the server using
 python3 -i
 from queue import db
 db.drop_all()
-db.create_all()```.
+db.create_all()
+```
+
 1. Run with `python run.py`
