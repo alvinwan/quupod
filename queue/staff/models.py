@@ -4,9 +4,9 @@ Important: Changes here need to be followed by `make refresh`.
 
 from queue import db
 from sqlalchemy import types
-from sqlalchemy_utils import EncryptedType, PasswordType
+from sqlalchemy_utils import EncryptedType, PasswordType, ArrowType
 from sqlalchemy_utils.types.choice import ChoiceType
-import flask_login
+import flask_login, arrow
 
 #############
 # UTILITIES #
@@ -44,7 +44,7 @@ class User(db.Model, flask_login.UserMixin):
     )
 
     id = db.Column(db.Integer, primary_key=True)
-    created_at = db.Column(db.DateTime)
+    created_at = db.Column(ArrowType, default=arrow.utcnow())
 
     role = db.Column(ChoiceType(ROLES), default='student')
     inquiries = db.relationship('Inquiry', backref='owner', lazy='dynamic')
@@ -52,7 +52,7 @@ class User(db.Model, flask_login.UserMixin):
     email = db.Column(db.String(100))
     username = db.Column(db.String(50), unique=True)
     password = db.Column(PasswordType(schemes=['pbkdf2_sha512']))
-    created_at = db.Column(db.DateTime)
+    created_at = db.Column(ArrowType, default=arrow.utcnow())
 
 
 class Inquiry(db.Model):
@@ -73,7 +73,7 @@ class Inquiry(db.Model):
     )
 
     id = db.Column(db.Integer, primary_key=True)
-    created_at = db.Column(db.DateTime)
+    created_at = db.Column(ArrowType, default=arrow.utcnow())
 
     status = db.Column(ChoiceType(STATUSES), default='unresolved')
     name = db.Column(db.String(50))
@@ -103,16 +103,16 @@ class Event(db.Model):
 
     __tablename__ = 'event'
     id = db.Column(db.Integer, primary_key=True)
-    updated_at = db.Column(db.DateTime)
+    updated_at = db.Column(ArrowType)
     updated_by = db.Column(db.Integer, db.ForeignKey('user.id'))
-    created_at = db.Column(db.DateTime)
+    created_at = db.Column(ArrowType, default=arrow.utcnow())
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     google_id = db.Column(db.String(100), unique=True)
     name = db.Column(db.String(50))
     description = db.Column(db.Text)
-    start = db.Column(db.DateTime)
-    end = db.Column(db.DateTime)
+    start = db.Column(ArrowType)
+    end = db.Column(ArrowType)
     location = db.Column(db.Text)
 
 
@@ -121,15 +121,15 @@ class Assignment(db.Model):
 
     __tablename__ = 'assignment'
     id = db.Column(db.Integer, primary_key=True)
-    updated_at = db.Column(db.DateTime)
+    updated_at = db.Column(ArrowType)
     updated_by = db.Column(db.Integer, db.ForeignKey('user.id'))
-    created_at = db.Column(db.DateTime)
+    created_at = db.Column(ArrowType, default=arrow.utcnow())
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     name = db.Column(db.String(50))
     inquiries = db.relationship('Inquiry', backref='assignment', lazy='dynamic')
     problems = db.relationship('Problem', backref='assignment', lazy='dynamic')
-    created_at = db.Column(db.DateTime)
+    created_at = db.Column(ArrowType, default=arrow.utcnow())
     is_active = db.Column(db.Boolean, default=True)
 
 
@@ -138,9 +138,9 @@ class Problem(db.Model):
 
     __tablename__ = 'problem'
     id = db.Column(db.Integer, primary_key=True)
-    updated_at = db.Column(db.DateTime)
+    updated_at = db.Column(ArrowType)
     updated_by = db.Column(db.Integer, db.ForeignKey('user.id'))
-    created_at = db.Column(db.DateTime)
+    created_at = db.Column(ArrowType, default=arrow.utcnow())
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     tag = db.Column(db.String(10))
