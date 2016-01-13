@@ -48,7 +48,7 @@ def add_user(data):
     :return: information for confirmation page
     """
     data = multi2dict(data)
-    return whitelist_promote(User(**data))
+    whitelist_promote(User(**data))
     return {
         'message': 'Signed up! <code>%s</code>' % str({
             'username': data['username'],

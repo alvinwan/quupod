@@ -22,7 +22,6 @@ def home():
     assignments = get_assignments()
     return render_template('admin.html', assignments=assignments)
 
-
 @requires('staff')
 @admin.route('/clear/<string:location>', methods=['POST', 'GET'])
 @admin.route('/clear', methods=['POST', 'GET'])
@@ -76,16 +75,15 @@ def assignment_create():
         return redirect(url_for('admin.assignment_detail', id=assignment.id))
     return render_template('form.html', form=form, title='Create Assignment')
 
-
 @requires('/admin')
 @admin.route('/assignment/<string:id>/edit', methods=['POST', 'GET'])
 def assignment_edit(id):
-    form = AssignmentForm(request.form)
+    assignment = get_assignment(id=id)
+    form = AssignmentForm(request.form, obj=assignment)
     if request.method == 'POST' and form.validate():
         assignment = edit_assignment(request.form)
         return redirect(url_for('admin.assignment_detail', id=assignment.id))
     return render_template('form.html', form=form, title='Edit Assignment')
-
 
 @requires('/admin')
 @admin.route('/assignment/<string:id>', methods=['POST', 'GET'])
