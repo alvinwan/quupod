@@ -23,8 +23,8 @@ class InquiryForm(ModelForm):
         model = Inquiry
         only = ('name', 'question')
 
-    # assignment = 
-    # problem =
+    assignment = wtf.SelectField('Assignment', coerce=str)
+    problem = wtf.SelectField('Problem', coerce=str)
 
     def __iter__(self):
         """Exclude name field if user is logged in"""

@@ -88,11 +88,15 @@ main {
     z-index:5;
   }
     .event-text {
-      padding:3em 0 2em 5em;
+      padding:3em 0 0 5em;
     }
     .event-decor {
-      padding:3em 5em 2em 0;
+      padding:1em 5em 3em 5em;
+      float:left;
     }
+      .event-decor .button {
+        margin:0.5em;
+      }
   .event-title,.event-copy {
     width:100%;
   }
@@ -117,10 +121,6 @@ main {
       font-size:1.2em;
       font-weight:300;
       color:#FFF;
-    }
-    .event-decor .button {
-      float:right;
-      margin-top:4em;
     }
   .event-nav, .event-nav ul {
     width:100%;
@@ -280,3 +280,23 @@ main {
     .module .content-copy {
       text-align:center;
     }
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  header .left {
+    display:block;
+  }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  .event-decor {
+    padding:3em 5em 2em 0;
+  }
+  .event-decor .button {
+    float:right;
+    margin-top:4em;
+  }
+  .event-text {
+    padding:3em 0 2em 5em;
+  }
+}

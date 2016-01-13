@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request
 from .forms import *
 from .controllers import *
+from queue.admin.controllers import get_assignments
 from queue import app, login_manager, whitelist
 from queue.admin.models import User, Inquiry
 from queue.views import anonymous_required
@@ -26,6 +27,9 @@ def inquiry():
     anonymous user.
     """
     form, user = InquiryForm(request.form), flask_login.current_user
+    form.assignment.choices = [(a.id, a.name)
+        for a in get_assignments(is_active=True)]
+    form.problem.choices = [('yo', 'yo')]
     if request.method == 'POST' and form.validate():
         if user.is_authenticated:
             data = multi2dict(request.form)
