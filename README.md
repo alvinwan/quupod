@@ -14,6 +14,9 @@ in-session questions queue management and analytics
 - mutex lock: *Once a staff member locks (or starts resolving) an inquiry, other staff members will be notified. Additionally other staff members cannot modify the same inquiry until the original staff member releases or resolves it.*
 - simple user flow: *For each inquiry, staff members need only two clicks: 'help' to help and 'resolved' to resolve.*
 - verified users: *Staff members need to register to gain access to the admin panel.*
+- whitelist: *In your configuration file, add a comma-separated list of emails
+to the whitelist parameter. Users registering with those emails will
+automatically be granted staff status.*
 
 **Analytics**
 
