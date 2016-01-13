@@ -12,7 +12,7 @@ try:
         config['database'])
     secret_key = config['secret_key']
     debug = bool(config['debug'])
-    whitelist = config['whitelist'].split(',')
+    whitelist = config.get('whitelist', '').split(',')
 except FileNotFoundError:
     raise UserWarning('Configuration file not found. Rerun `make install` and \
     update the new queue.cfg accordingly.')
