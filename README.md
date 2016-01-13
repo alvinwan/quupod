@@ -83,8 +83,9 @@ For Mac OSX installations of MySQL, via Brew, start the server using
 1. Make a new configuration file: `cp default-queue.cfg queue.cfg`.
 1. Add valid MySQL user credentials to `queue.cfg`.
 1. Create the database: 
- ```python3 -i
-  from queue import db
+ ```
+python3 -i
+from queue import db
 db.drop_all()
-  db.create_all()```.
+db.create_all()```.
 1. Run with `python run.py`
