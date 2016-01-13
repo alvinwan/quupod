@@ -1,14 +1,27 @@
 <html>
   <head>
     <title>{{ title }}</title>
+    <!-- scale mobile version correctly -->
+    <meta name="viewport" content="width=device-width, initial-scale=0.8">
+    <!-- third-party code -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
+    <!-- custom code -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   </head>
   <body>
     <header>
-      {% if current_user.is_authenticated %}
-      <p>Hi, {{ current_user.name }} - <a href="{{ url_for('logout') }}">logout</a></p>
-      {% else %}
-      <p><a href="{{ url_for('public.login')}}">sign in</a> or <a href="{{ url_for('public.register') }}">sign up</a></p>
-      {% endif %}
+      <div class="col-md-2 left">
+        <h1 class="name">CS70<span>Queue</span></h1>
+      </div>
+      <div class="col-md-3 right">
+        {% if current_user.is_authenticated %}
+        <p>Hi, {{ current_user.name }} - <a href="{{ url_for('logout') }}">logout</a></p>
+        <a href="{{ url_for('staff.home') }}">Staff?</a>
+        {% else %}
+        <a class="header-action" href="{{ url_for('public.login')}}">sign in</a> <a class="header-action"  href="{{ url_for('public.register') }}">sign up</a>
+        {% endif %}
+      </div>
     </header>
     <main>
       {% block main %}

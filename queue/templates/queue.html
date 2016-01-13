@@ -1,8 +1,20 @@
 {% extends "base.html" %}
 {% set title="Queue" %}
 {% block main %}
-<a href="{{ url_for('staff.home') }}">Staff?</a>
-<a href="{{ url_for('public.inquiry') }}">Add Inquiry</a>
+<section class="event">
+  <div class="col-md-6 event-text">
+    <p class="event-byline">2 - 4 p.m. in Woz Lounge</p>
+    <h1 class="event-title">Homework Party</h1>
+    <p class="event-copy">Event description goes here in this field right here.</p>
+    <a class="button" href="{{ url_for('public.inquiry') }}">Add Inquiry</a>
+  </div>
+  <nav class="event-nav">
+    <ul>
+      <li><a class="s" href="#resolving">resolving</a></li>
+      <li><a href="#unresolved">unresolved</a></li>
+    </ul>
+  </nav>
+</section>
 <h2>Resolving</h2>
 {% for inquiry in resolving %}
 <li>{{ inquiry.name or inquiry.owner.name }} ({{ inquiry.assignment.name }} - {{ inquiry.problem.tag }}) {{ inquiry.question }}</li>

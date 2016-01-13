@@ -108,7 +108,7 @@ class Event(db.Model):
     created_at = db.Column(db.DateTime)
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    google_id = db.Column(db.String, unique=True)
+    google_id = db.Column(db.String(100), unique=True)
     name = db.Column(db.String(50))
     description = db.Column(db.Text)
     start = db.Column(db.DateTime)
