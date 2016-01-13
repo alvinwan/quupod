@@ -36,4 +36,24 @@
   </table>
   {% endif %}
 </section>
+<section class="queue">
+  <h2 class="queue-title">Events</h2>
+  {% if events | length == 0 %}
+    <p class="queue-note">No events! <a href="{{ url_for('admin.event_create') }}">Create one now.</a></p>
+  {% else %}
+  <a href="{{ url_for('admin.event_create') }}" class="button color">Create Assignment</a>
+  <table>
+    <tr><th>Name</th><th>Start</th><th>End</th><th>Location</th><th>Edit</th></tr>
+    {% for event in events %}
+    <tr>
+      <td><a href="{{ url_for('admin.event_detail', id=event.id) }}">{{ event.name }}</a></td>
+      <td>{{ event.start.humanize() }}</td>
+      <td>{{ event.end.humanize() }}</td>
+      <td>{{ event.location }}</td>
+      <td><a href="{{ url_for('admin.event_edit', id=event.id) }}" class="button color xs">edit</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+</section>
 {% endblock %}

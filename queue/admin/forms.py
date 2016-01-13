@@ -1,6 +1,7 @@
 from wtforms_alchemy import ModelForm, ModelFieldList
 from wtforms.fields import FormField
-from .models import Assignment
+import wtforms as wtf
+from .models import Assignment, Event
 
 
 class AssignmentForm(ModelForm):
@@ -8,3 +9,13 @@ class AssignmentForm(ModelForm):
     class Meta:
         model = Assignment
         only = ('name', 'problems', 'is_active')
+
+
+class EventForm(ModelForm):
+    """form for events"""
+    class Meta:
+        model = Event
+        only = ('name', 'description', 'location')
+
+    start = wtf.DateTimeField(format='%Y-%m-%d %H:%M:%S')
+    end = wtf.DateTimeField(format='%Y-%m-%d %H:%M:%S')

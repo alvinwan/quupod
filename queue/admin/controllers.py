@@ -1,7 +1,7 @@
 from flask import url_for
 from queue import db
 from queue.controllers import multi2dict
-from .models import Inquiry, add_obj, Assignment
+from .models import Inquiry, add_obj, Assignment, Event
 from sqlalchemy import desc
 
 
@@ -139,3 +139,34 @@ def get_problem_inquiries(assignmentId, problem):
     """
     return Inquiry.query.filter_by(
         assignment_id=assignmentId, problem=problem).all()
+
+##########
+# EVENTS #
+##########
+
+def create_event(data):
+    """
+    Create a new event for the queue
+
+    :param ImmutableDict data: all data for event
+    :return: new Event object
+    """
+    return add_obj(Event(**multi2dict(data)))
+
+def get_event(**kwargs):
+    """
+    Retrieve event
+
+    :param kwargs: key argument filters
+    :return: Event object
+    """
+    return Event.query.filter_by(**kwargs).first()
+
+def get_events(**kwargs):
+    """
+    Retrieve events
+
+    :param kwargs: key argument filters
+    :return: list of Event objects
+    """
+    return Event.query.filter_by(**kwargs).all()

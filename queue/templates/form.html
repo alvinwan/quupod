@@ -10,7 +10,7 @@
     <form class="module" method="POST">
     {% for field in form %}
       <h3>{{ field.label }} </h3>
-      {% for error in form.errors[field] %}
+      {% for error in form.errors[field.name] %}
         <p><strong>Error!</strong> {{error}}</p>
       {% endfor %}
       {{ field }}

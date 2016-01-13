@@ -3,7 +3,7 @@
 {% block main %}
 <section class="event">
   <div class="col-md-6 event-text">
-    <p class="event-byline"><a href="{{ url_for('admin.home') }}">Admin</a> &raquo; hw0</p>
+    <p class="event-byline"><a href="{{ url_for('admin.home') }}">Admin</a> &raquo; {{ assignment.name }}</p>
     <h1 class="event-title">{{ assignment.name }}</h1>
     <p class="event-copy">{% if assignment.is_active %}Active{% else %}Inactive{% endif %}</p>
   </div>

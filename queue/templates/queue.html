@@ -27,7 +27,7 @@
     <p class="queue-note">Queue is empty!</p>
   {% else %}
   <table>
-    <tr><th>Name</th><th>Assignment</th><th>Problem</th><th>Question</th><th>Time</th></tr>
+    <tr><th>Name</th><th>Assignment</th><th>Problem</th><th>Question</th><th>Queue Time</th></tr>
     {% for inquiry in unresolved %}
     <tr>
       <td>{{ inquiry.name or inquiry.owner.name }}</td>
@@ -47,7 +47,7 @@
     <p class="queue-note">Queue is empty!</p>
   {% else %}
   <table>
-    <tr><th>Name</th><th>Assignment</th><th>Problem</th><th>Question</th><th>Time</th></tr>
+    <tr><th>Name</th><th>Assignment</th><th>Problem</th><th>Question</th><th>Queue Time</th></tr>
     {% for inquiry in resolving %}
     <tr>
       <td>{{ inquiry.name or inquiry.owner.name }}</td>
