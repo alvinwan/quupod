@@ -93,8 +93,8 @@ Because of incompatbility issues with the makefile, on Windows you will have to 
 1. Create the database: 
 ```
 python3 -i
-from queue import db
-db.drop_all()
-db.create_all()
+>>> from queue import db
+>>> db.drop_all()
+>>> db.create_all()
 ```
 1. Run with `python run.py`
