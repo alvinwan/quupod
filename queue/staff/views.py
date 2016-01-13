@@ -60,6 +60,37 @@ def help_inquiry(id):
         return redirect(url_for('staff.help'))
     return render_template('help.html', inquiry=inquiry)
 
+##############
+# ASSIGNMENT #
+##############
+
+@requires('staff')
+@staff.route('/assignment/create', methods=['POST', 'GET'])
+def create_assignment():
+    """create a new assignment"""
+    form = AssignmentForm(request.form)
+    if request.method == 'POST' and form.validate():
+        assignment = create_assignment(request.form)
+        return redirect(url_for('staff.assignment_detail', id=assignment.id))
+    return render_template('form.html', form=form, title='Create Assignment')
+
+
+@requires('/staff')
+@staff.route('/assignment/<string:id>/edit', methods=['POST', 'GET'])
+def edit_assignment(id):
+    form = AssignmentForm(request.form)
+    if request.method == 'POST' and form.validate():
+        assignment = edit_assignment(request.form)
+        return redirect(url_for('staff.assignment_detail', id=assignment.id))
+    return render_template('form.html', form=form, title='Edit Assignment')
+
+
+@requires('/staff')
+@staff.route('/assignment/<string:id>', methods=['POST', 'GET'])
+def assignment_detail(id):
+    return 'assignment detail!'
+
+
 #############
 # ANALYTICS #
 #############
