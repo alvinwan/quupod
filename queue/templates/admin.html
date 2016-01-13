@@ -7,13 +7,14 @@
     <p class="event-copy">Want to get started clearing the queue? Click 'help'. Interested in seeing numbers? Click 'analytics'.</p>
   </div>
   <div class="col-md-6 event-decor">
-    <a href="{{ url_for('admin.clear') }}" class="button">Clear all unfinished inquiries</a>
+    <a href="{{ url_for('admin.clear') }}" class="button">Clear Inquiries</a>
     <a href="{{ url_for('admin.help') }}" class="button">Help</a>
+    <a href="{{ url_for('admin.analytics') }}" class="button">Analytics</a>
   </div>
   <nav class="event-nav">
     <ul>
-      <li><a href="{{ url_for('admin.analytics') }}">View Analytics</a></li>
-      <li><a href="{{ url_for('admin.help') }}">Help</a></li>
+      <li><a href="#assignments">Assignments</a></li>
+      <li><a href="#events">Events</a></li>
     </ul>
   </nav>
 </section>
