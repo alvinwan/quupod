@@ -91,10 +91,6 @@ class Inquiry(db.Model):
         return Assignment.query.filter_by(id=self.assignment_id).first()
 
     @property
-    def problem(self):
-        return Problem.query.filter_by(id=self.problem_id).first()
-
-    @property
     def owner(self):
         return Owner.query.filter_by(id=self.owner_id).first()
 

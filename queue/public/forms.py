@@ -23,7 +23,7 @@ class InquiryForm(ModelForm):
         model = Inquiry
         only = ('name', 'question')
 
-    assignment = wtf.SelectField('Assignment', coerce=str)
+    assignment_id = wtf.SelectField('Assignment', coerce=int)
     problem = wtf.SelectField('Problem', coerce=str)
 
     def __iter__(self):

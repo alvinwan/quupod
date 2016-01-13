@@ -23,6 +23,7 @@
   {% if assignments | length == 0 %}
     <p class="queue-note">No assignments! <a href="{{ url_for('admin.assignment_create') }}">Create one now.</a></p>
   {% else %}
+  <a href="{{ url_for('admin.assignment_create') }}" class="button color">Create Assignment</a>
   <table>
     <tr><th>Name</th><th>Is Active</th><th>Edit</th></tr>
     {% for assignment in assignments %}

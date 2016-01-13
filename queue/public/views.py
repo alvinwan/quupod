@@ -27,7 +27,7 @@ def inquiry():
     anonymous user.
     """
     form, user = InquiryForm(request.form), flask_login.current_user
-    form.assignment.choices = [(a.id, a.name)
+    form.assignment_id.choices = [(a.id, a.name)
         for a in get_assignments(is_active=True)]
     form.problem.choices = [('yo', 'yo')]
     if request.method == 'POST' and form.validate():
