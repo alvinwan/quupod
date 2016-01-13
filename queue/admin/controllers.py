@@ -79,8 +79,23 @@ def create_assignment(data):
     :return: new Assignment object
     """
     data = multi2dict(data)
-    data['is_active'] = True if data.get('is_active', None) == 'y' else False
+    data['is_active'] = data.get('is_active', None) == 'y'
     return add_obj(Assignment(**data))
+
+
+def edit_assignment(assignment, data):
+    """
+    Edit assignment
+
+    :param Assignment assignment: assignment object to update
+    :param ImmutableDict data: all data for Assignment
+    :return: new Assignment object
+    """
+    data = multi2dict(data)
+    data['is_active'] = data.get('is_active', None) == 'y'
+    for k, v in data.items():
+        setattr(assignment, k, v)
+    return add_obj(assignment)
 
 
 def get_assignment(**kwargs):

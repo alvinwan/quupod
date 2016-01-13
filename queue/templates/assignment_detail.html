@@ -5,7 +5,7 @@
   <div class="col-md-6 event-text">
     <p class="event-byline"><a href="{{ url_for('admin.home') }}">Admin</a> &raquo; hw0</p>
     <h1 class="event-title">{{ assignment.name }}</h1>
-    <p class="event-copy"></p>
+    <p class="event-copy">{% if assignment.is_active %}Active{% else %}Inactive{% endif %}</p>
   </div>
   <div class="col-md-6 event-decor">
     <a href="{{ url_for('admin.assignment_edit', id=assignment.id) }}" class="button">Edit Assignment</a>

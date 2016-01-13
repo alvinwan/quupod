@@ -81,7 +81,7 @@ def assignment_edit(id):
     assignment = get_assignment(id=id)
     form = AssignmentForm(request.form, obj=assignment)
     if request.method == 'POST' and form.validate():
-        assignment = edit_assignment(request.form)
+        assignment = edit_assignment(assignment, request.form)
         return redirect(url_for('admin.assignment_detail', id=assignment.id))
     return render_template('form.html', form=form, title='Edit Assignment')
 
