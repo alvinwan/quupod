@@ -91,7 +91,7 @@ Because of incompatbility issues with the makefile, on Windows you will have to 
 1. Make a new configuration file: `cp default-queue.cfg queue.cfg`.
 1. Add valid MySQL user credentials to `queue.cfg`.
 1. Create the database: 
- ```
+```
 python3 -i
 from queue import db
 db.drop_all()
