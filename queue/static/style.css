@@ -77,6 +77,8 @@ main {
   width:100%;
   z-index:10;
   padding:5em 0 3em 0;
+  background-color:#f6f6f6;
+  min-height:100%;
 }
   .event {
     width:100%;
@@ -147,11 +149,28 @@ main {
     text-transform:uppercase;
     color:rgba(255,255,255,0.5);
     background-color:rgba(0,0,0,0.15);
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    -o-appearance:none;
+    appearance:none;
+    box-shadow:none;
+    border:none;
+    outline:none;
   }
     .button:hover {
       background-color:rgba(0,0,0,0.25);
       text-decoration:none;
       color:#FFF;
+    }
+    .button.color {
+      background-color:#C90;
+      color:#FFF;
+    }
+    .button.color:hover {
+      background-color:#a57602;
+    }
+    input[type="submit"].button {
+      width:100%;
     }
   .queue {
     width:100%;
@@ -189,4 +208,49 @@ main {
     .queue td,.queue th {
       font-size:1.1em;
       padding:1em;
+    }
+  .sidebar {
+    background-color:#C90;
+    height:20em;
+    z-index:2;
+    width:100%;
+    position:absolute;
+    top:0;
+    left:0;
+  }
+    input[type="text"], input[type="password"], textarea {
+      width:100%;
+      color:#999;
+      border:none;
+      border-bottom:0.25em solid #eee;
+      outline:none;
+      padding:0.25em;
+      font-size:1.15em;
+      margin:1em 0;
+    }
+      input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
+        color:#333;
+      }
+    .content {
+      z-index:3;
+    }
+    .content-title {
+      padding:1em 0;
+      text-align:center;
+      width:100%;
+      color:#FFF;
+      font-weight:400;
+    }
+    .module {
+      float:left;
+      width:100%;
+      margin-bottom:5em;
+      background-color:#FFF;
+      padding:5em 5em 6em 5em;
+      box-shadow:0 0 0.5em 0 rgba(0,0,0,0.15);
+    }
+    .module h3 {
+      margin:0;
+      font-size:1.25em;
+      text-transform:capitalize;
     }

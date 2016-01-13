@@ -33,7 +33,7 @@ def inquiry():
         else:
             data = request.form
         return render_template('confirm.html', **add_inquiry(data))
-    return render_template('form.html', form=form)
+    return render_template('form.html', form=form, title='Add Inquiry')
 
 ###################
 # SIGN IN/SIGN UP #
@@ -51,7 +51,8 @@ def login():
             print(' * %s (%s) logged in.' % (user.name, user.email))
             return get_user_home(user)
         message = 'Login failed.'
-    return render_template('form.html', message=message, form=form)
+    return render_template('form.html', message=message, form=form,
+        title='Login')
 
 @public.route('/register', methods=['GET', 'POST'])
 @anonymous_required
@@ -60,7 +61,7 @@ def register():
     form = RegisterForm(request.form)
     if request.method == 'POST' and form.validate():
         return render_template('confirm.html', **add_user(request.form))
-    return render_template('form.html', form=form)
+    return render_template('form.html', form=form, title='Register')
 
 ######################
 # SESSION UTILIITIES #
