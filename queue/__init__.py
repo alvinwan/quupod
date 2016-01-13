@@ -13,6 +13,7 @@ try:
     secret_key = config['secret_key']
     debug = bool(config['debug'])
     whitelist = config.get('whitelist', '').split(',')
+    print(whitelist)
 except FileNotFoundError:
     raise UserWarning('Configuration file not found. Rerun `make install` and \
     update the new queue.cfg accordingly.')

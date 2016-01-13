@@ -99,6 +99,14 @@ main {
   .event-byline {
     color:rgba(255,255,255,0.75);
   }
+    .event-byline a {
+      color:#FFF;
+      border-bottom:1px dotted #FFF;
+    }
+    .event-byline a:hover {
+      border-bottom:1px solid #FFF;
+      text-decoration:none;
+    }
   .event-title {
     font-weight:400;
     color:#FFF;

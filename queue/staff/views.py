@@ -21,7 +21,7 @@ def home():
     """staff homepage"""
     assignments = get_assignments()
     return render_template('staff.html', assignments=assignments)
-    
+
 
 @requires('staff')
 @staff.route('/clear/<string:location>', methods=['POST', 'GET'])
@@ -91,36 +91,9 @@ def assignment_edit(id):
 @staff.route('/assignment/<string:id>', methods=['POST', 'GET'])
 def assignment_detail(id):
     assignment = get_assignment(id=id)
-    problems = get_problems(assignment_id=id)
+    problems = get_problems(assignment)
     return render_template('assignment_detail.html', assignment=assignment,
         problems=problems)
-
-
-@requires('staff')
-@staff.route('/assignment/<string:assignmentId>/problem/create', methods=['POST', 'GET'])
-def problem_create(assignmentId):
-    """create new assignment problem"""
-    form = ProblemForm(request.form)
-    assignment = get_assignment(id=assignmentId)
-    if request.method == 'POST' and form.validate():
-        problem = create_problem(assignmentId, request.form)
-        return redirect(url_for('staff.assignment_detail', id=assignment.id))
-    return render_template('form.html',
-        form=form, title='Create Problem for %s' % assignment.name)
-
-
-@requires('/staff')
-@staff.route('/assignment/<string:assignmentId>/problem/<string:problemId>/edit', methods=['POST', 'GET'])
-def problem_edit(assignmentId, problemId):
-    problem = get_problem(id=problemId)
-    assignment = get_assignment(id=assignmentId)
-    form = ProblemForm(request.form)
-    form.populate_obj(problem)
-    if request.method == 'POST' and form.validate():
-        problem = edit_problem(problem, request.form)
-        return redirect(url_for('staff.assignment_detail', id=assignmentId))
-    return render_template('form.html', form=form,
-        title='Edit Problem for %s' % assignment.name)
 
 
 #############

@@ -1,17 +1,10 @@
 from wtforms_alchemy import ModelForm, ModelFieldList
 from wtforms.fields import FormField
-from .models import Assignment, Problem
+from .models import Assignment
 
 
 class AssignmentForm(ModelForm):
     """form for assignments"""
     class Meta:
         model = Assignment
-        only = ('name', 'is_active')
-
-
-class ProblemForm(ModelForm):
-    """form for problems"""
-    class Meta:
-        model = Problem
-        only = ('tag', 'description')
+        only = ('name', 'problems', 'is_active')

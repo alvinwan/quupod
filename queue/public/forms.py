@@ -1,7 +1,6 @@
 from wtforms_alchemy import ModelForm, ModelFieldList
 from wtforms.fields import FormField
 import wtforms as wtf
-from queue.staff.forms import AssignmentForm, ProblemForm
 from queue.staff.models import Inquiry, User
 import flask_login
 
@@ -24,8 +23,8 @@ class InquiryForm(ModelForm):
         model = Inquiry
         only = ('name', 'question')
 
-    assignment = ModelFieldList(FormField(AssignmentForm))
-    problem = ModelFieldList(FormField(ProblemForm))
+    # assignment = 
+    # problem =
 
     def __iter__(self):
         """Exclude name field if user is logged in"""

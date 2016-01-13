@@ -1,7 +1,7 @@
 from flask import url_for
 from queue import db
 from queue.controllers import multi2dict
-from .models import Inquiry, add_obj, Assignment, Problem
+from .models import Inquiry, add_obj, Assignment
 from sqlalchemy import desc
 
 
@@ -103,46 +103,24 @@ def get_assignments(**kwargs):
     return Assignment.query.filter_by(**kwargs).all()
 
 
-def create_problem(assignmentId, data):
-    """
-    Create a new problem
-
-    :param ImmutableDict data: all data for a problem
-    :return: new Problem object
-    """
-    data = multi2dict(data)
-    data['assignment_id'] = assignmentId
-    return add_obj(Problem(**data))
-
-
-def get_problem(**kwargs):
-    """
-    Get problem according to filters.
-
-    :param kwargs: keyword argument filters
-    :return: Problem
-    """
-    return Problem.query.filter_by(**kwargs).first()
-
-
-def get_problems(**kwargs):
+def get_problems(assignment):
     """
     Get all problems that match the filters
 
     :param kwargs: keyword argument filters
     :return: list of Problem objects
     """
-    return Problem.query.filter_by(**kwargs).all()
+    return [{'name': n, 'count': len(get_problem_inquiries(assignment.id, n))}
+        for n in assignment.problems.split(',')]
 
 
-def edit_problem(problem, data):
+def get_problem_inquiries(assignmentId, problem):
     """
-    Update a problem using data.
+    Get all inquiries for a problem
 
-    :param ImmutableDict data: data
-    :param Problem problem: problem object to update
-    :return: old problem object
+    :param int assignmentId: assignment id
+    :param str problem: problem number
+    :return: list of Inquiries
     """
-    for k, v in data.items():
-        setattr(problem, k, v)
-    return add_obj(problem)
+    return Inquiry.query.filter_by(
+        assignment_id=assignmentId, problem=problem).all()

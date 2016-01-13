@@ -80,7 +80,7 @@ class Inquiry(db.Model):
     name = db.Column(db.String(50))
     question = db.Column(db.Text)
     assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'))
-    problem_id = db.Column(db.Integer, db.ForeignKey('problem.id'))
+    problem = db.Column(db.String(25))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     resolvers = db.relationship('User', secondary=resolutions,
         backref=db.backref('resolutions', lazy='dynamic'))
@@ -129,21 +129,6 @@ class Assignment(db.Model):
 
     name = db.Column(db.String(50))
     inquiries = db.relationship('Inquiry', backref='assignment', lazy='dynamic')
-    problems = db.relationship('Problem', backref='assignment', lazy='dynamic')
+    problems = db.Column(db.Text)  # csv of problems
     created_at = db.Column(ArrowType, default=arrow.utcnow())
     is_active = db.Column(db.Boolean, default=True)
-
-
-class Problem(db.Model):
-    """Problems in assignment"""
-
-    __tablename__ = 'problem'
-    id = db.Column(db.Integer, primary_key=True)
-    updated_at = db.Column(ArrowType)
-    updated_by = db.Column(db.Integer, db.ForeignKey('user.id'))
-    created_at = db.Column(ArrowType, default=arrow.utcnow())
-    created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
-
-    tag = db.Column(db.String(10))
-    description = db.Column(db.Text)
-    assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'))
