@@ -8,7 +8,9 @@
     <p class="event-copy">Event description goes here in this field right here.</p>
   </div>
   <div class="col-md-6 event-decor">
+    {% if not current_user.is_authenticated or current_user.role != 'staff' %}
     <a class="button" href="{{ url_for('public.inquiry') }}">Add Inquiry</a>
+    {% endif %}
   </div>
   <nav class="event-nav">
     <ul>
@@ -23,13 +25,14 @@
     <p class="queue-note">Queue is empty!</p>
   {% else %}
   <table>
-    <tr><th>Name</th><th>Assignment</th><th>Problem</th><th>Question</th></tr>
+    <tr><th>Name</th><th>Assignment</th><th>Problem</th><th>Question</th><th>Time</th></tr>
     {% for inquiry in unresolved %}
     <tr>
       <td>{{ inquiry.name or inquiry.owner.name }}</td>
       <td>{{ inquiry.assignment.name }}</td>
       <td>{{ inquiry.problem.tag }}</td>
       <td>{{ inquiry.question }}</td>
+      <td>{{ inquiry.created_at }}</td>
     </tr>
     {% endfor %}
   </table>

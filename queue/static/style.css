@@ -169,8 +169,9 @@ main {
     .button.color:hover {
       background-color:#a57602;
     }
-    input[type="submit"].button {
+    .module .button {
       width:100%;
+      text-align:center;
     }
   .queue {
     width:100%;
@@ -234,6 +235,12 @@ main {
     .content {
       z-index:3;
     }
+    .content-copy {
+      font-size:1.25em;
+      line-height:2em;
+      color:#666;
+      margin-bottom:1em;
+    }
     .content-title {
       padding:1em 0;
       text-align:center;
@@ -246,11 +253,14 @@ main {
       width:100%;
       margin-bottom:5em;
       background-color:#FFF;
-      padding:5em 5em 6em 5em;
+      padding:5em;
       box-shadow:0 0 0.5em 0 rgba(0,0,0,0.15);
     }
     .module h3 {
       margin:0;
       font-size:1.25em;
       text-transform:capitalize;
+    }
+    .module .content-copy {
+      text-align:center;
     }

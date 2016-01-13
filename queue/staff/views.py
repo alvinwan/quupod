@@ -43,6 +43,7 @@ def help():
     inquiry = get_latest_inquiry()
     if not inquiry:
         return render_template('confirm.html',
+            title='All done!',
             message='No more inquiries to process!',
             url=url_for('staff.home'),
             action='staff home')

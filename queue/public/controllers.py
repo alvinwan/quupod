@@ -1,4 +1,4 @@
-from queue import db
+from queue import db, whitelist
 from flask import redirect, url_for
 from queue.staff.models import User, Inquiry, add_obj
 
@@ -22,6 +22,7 @@ def add_inquiry(data):
     """
     add_obj(Inquiry(**multi2dict(data)))
     return {
+        'title': 'Inquiry created',
         'message': 'Inquiry created! <code>%s</code>' % str(data),
         'action': 'Back to queue',
         'url': url_for('public.home')
@@ -52,7 +53,10 @@ def add_user(data):
     :param Request request: Flask request object
     :return: information for confirmation page
     """
-    add_obj(User(**multi2dict(data)))
+    data = multi2dict(data)
+    if data['email'] in whitelist:
+        data['role'] = 'staff'
+    add_obj(User(**data))
     return {
         'message': 'Signed up! <code>%s</code>' % str({
             'username': data['username'],

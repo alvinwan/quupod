@@ -1,4 +1,19 @@
-<p><a href="{{ url_for('public.home') }}">Public queue</a></p>
-<p><a href="{{ url_for('staff.analytics') }}">View Analytics</a></p>
-<p><a href="{{ url_for('staff.help') }}">Help</a></p>
-<p><a href="{{ url_for('staff.clear') }}">Clear all unfinished inquiries</a></p>
+{% extends "base.html" %}
+{% block main %}
+<section class="event">
+  <div class="col-md-6 event-text">
+    <p class="event-byline">Staff only</p>
+    <h1 class="event-title">Administration Panel</h1>
+    <p class="event-copy">Want to get started clearing the queue? Click 'help'. Interested in seeing numbers? Click 'analytics'.</p>
+  </div>
+  <div class="col-md-6 event-decor">
+    <a href="{{ url_for('staff.clear') }}" class="button">Clear all unfinished inquiries</a>
+  </div>
+  <nav class="event-nav">
+    <ul>
+      <li><a href="{{ url_for('staff.analytics') }}">View Analytics</a></li>
+      <li><a href="{{ url_for('staff.help') }}">Help</a></li>
+    </ul>
+  </nav>
+</section>
+{% endblock %}

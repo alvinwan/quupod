@@ -1,8 +1,15 @@
 {% extends "base.html" %}
 {% block main %}
-Student: {{ inquiry.name or inquiry.owner.name }}
-Question: {{ inquiry.question }}
-<form method="post">
-  <input type="submit" value="resolve">
-</form>
+<section class="event">
+  <div class="col-md-6 event-text">
+    <p class="event-byline">Student Name</p>
+    <h1 class="event-title">{{ inquiry.name or inquiry.owner.name }}</h1>
+    <p class="event-copy">{{ inquiry.question }}</p>
+  </div>
+  <div class="col-md-6 event-decor">
+    <form method="post">
+      <input type="submit" class="button" value="resolve">
+    </form>
+  </div>
+</section>
 {% endblock %}

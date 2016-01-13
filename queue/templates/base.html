@@ -24,7 +24,8 @@
         </p>
         <a class="header-action" href="{{ url_for('logout') }}">logout</a>
         {% if current_user.role == 'staff' %}
-        <a class="header-action" href="{{ url_for('staff.home') }}">Staff Panel</a>
+        <a class="header-action" href="{{ url_for('staff.home') }}">Admin</a>
+        <a class="header-action" href="{{ url_for('public.home') }}">Queue</a>
         {% endif %}
         {% else %}
         <a class="header-action" href="{{ url_for('public.login')}}">sign in</a> <a class="header-action"  href="{{ url_for('public.register') }}">sign up</a>
