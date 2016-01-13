@@ -1,5 +1,4 @@
 * {
-  float:left;
   position:relative;
   margin:0;
   padding:0;
@@ -11,18 +10,28 @@ a, b, i {
 body .right {
   float:right;
 }
-html, body {
+html, body,section, main {
   width:100%;
+  float:left;
 }
 header {
   background-color:#a57602;
   width:100%;
   z-index:20;
+  position:fixed;
+  top:0;
+  left:0;
 }
+  header a:hover {
+    text-decoration:none;
+  }
+  a:hover .name {
+    color:#FFF;
+  }
   header .name {
     margin:0;
     padding:1em 2em;
-    color:#FFF;
+    color:rgba(255,255,255,0.75);
     font-size:1.5em;
   }
   .name span {
@@ -45,23 +54,48 @@ header {
       color:#FFF;
       text-decoration:none;
     }
+  .header-text {
+    font-size:1em;
+    line-height:1em;
+    padding:2em;
+    float:right;
+    margin:0;
+    color:#FFF;
+  }
+  .user-profile {
+    width:2.5em;
+    height:2.5em;
+    border-radius:50%;
+    display:block;
+    background-color:rgba(0,0,0,0.15);
+    line-height:2.5em;
+    float:right;
+    margin:-0.75em 0 -0.75em 0;
+    margin-left:0.5em;
+  }
 main {
   width:100%;
   z-index:10;
+  padding:5em 0 3em 0;
 }
   .event {
     width:100%;
     background-color:#C90;
     box-shadow:0 0 1em 0 rgba(0,0,0,0.5);
+    float:left;
+    z-index:5;
   }
     .event-text {
-      padding:3em 0 2em 3em;
+      padding:3em 0 2em 5em;
+    }
+    .event-decor {
+      padding:3em 5em 2em 0;
     }
   .event-title,.event-copy {
     width:100%;
   }
   .event-byline {
-    color:rgba(0,0,0,0.5);
+    color:rgba(255,255,255,0.75);
   }
   .event-title {
     font-weight:400;
@@ -74,14 +108,23 @@ main {
       font-weight:300;
       color:#FFF;
     }
+    .event-decor .button {
+      float:right;
+      margin-top:4em;
+    }
   .event-nav, .event-nav ul {
     width:100%;
+    float:left;
   }
     .event-nav {
-      padding:0 0 0 3em;
+      padding:0 0 0 5em;
     }
     .event-nav ul {
       margin:0;
+    }
+    .event-nav li {
+      float:left;
+      list-style:none;
     }
     .event-nav a {
       padding:1em;
@@ -109,4 +152,41 @@ main {
       background-color:rgba(0,0,0,0.25);
       text-decoration:none;
       color:#FFF;
+    }
+  .queue {
+    width:100%;
+    padding:1em 5em;
+    z-index:1;
+  }
+    .event + .queue {
+      margin-top:2em;
+    }
+    .queue + .queue {
+      padding-top:0;
+    }
+    .queue-title {
+      width:100%;
+      padding: 1em 0;
+      margin:0;
+    }
+    .queue-list {
+    }
+    .queue-note {
+      color:#666;
+      border-radius:0.25em;
+      background-color:#eee;
+      padding:1em 2em;
+      font-size:1.15em;
+      float:left;
+    }
+    .queue table {
+      width:100%;
+    }
+    .queue th {
+      color:#ccc;
+      border-bottom:0.2em solid #eee;
+    }
+    .queue td,.queue th {
+      font-size:1.1em;
+      padding:1em;
     }

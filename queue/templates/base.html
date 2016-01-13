@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=0.8">
     <!-- third-party code -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
     <!-- custom code -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -12,12 +13,19 @@
   <body>
     <header>
       <div class="col-md-2 left">
-        <h1 class="name">CS70<span>Queue</span></h1>
+        <a href="{{ url_for('public.home') }}"><h1 class="name">CS70<span>Queue</span></h1></a>
       </div>
-      <div class="col-md-3 right">
+      <div class="col-md-6 right">
         {% if current_user.is_authenticated %}
-        <p>Hi, {{ current_user.name }} - <a href="{{ url_for('logout') }}">logout</a></p>
-        <a href="{{ url_for('staff.home') }}">Staff?</a>
+        <p class="header-text">Hi, {{ current_user.name }}
+          <span class="user-profile">
+            <i class="fa fa-user fa-stack-1x"></i>
+          </span>
+        </p>
+        <a class="header-action" href="{{ url_for('logout') }}">logout</a>
+        {% if current_user.role == 'staff' %}
+        <a class="header-action" href="{{ url_for('staff.home') }}">Staff Panel</a>
+        {% endif %}
         {% else %}
         <a class="header-action" href="{{ url_for('public.login')}}">sign in</a> <a class="header-action"  href="{{ url_for('public.register') }}">sign up</a>
         {% endif %}
