@@ -44,6 +44,8 @@ class User(db.Model, flask_login.UserMixin):
     )
 
     id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime)
+
     role = db.Column(ChoiceType(ROLES), default='student')
     inquiries = db.relationship('Inquiry', backref='owner', lazy='dynamic')
     name = db.Column(db.String(100))
@@ -71,6 +73,8 @@ class Inquiry(db.Model):
     )
 
     id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime)
+
     status = db.Column(ChoiceType(STATUSES), default='unresolved')
     name = db.Column(db.String(50))
     question = db.Column(db.Text)
@@ -80,7 +84,6 @@ class Inquiry(db.Model):
     resolvers = db.relationship('User', secondary=resolutions,
         backref=db.backref('resolutions', lazy='dynamic'))
     category = db.Column(ChoiceType(CATEGORIES))
-    created_at = db.Column(db.DateTime)
 
     @property
     def assignment(self):
@@ -95,25 +98,51 @@ class Inquiry(db.Model):
         return Owner.query.filter_by(id=self.owner_id).first()
 
 
+class Event(db.Model):
+    """Event"""
+
+    __tablename__ = 'event'
+    id = db.Column(db.Integer, primary_key=True)
+    updated_at = db.Column(db.DateTime)
+    updated_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    created_at = db.Column(db.DateTime)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    google_id = db.Column(db.String, unique=True)
+    name = db.Column(db.String(50))
+    description = db.Column(db.Text)
+    start = db.Column(db.DateTime)
+    end = db.Column(db.DateTime)
+    location = db.Column(db.Text)
+
+
 class Assignment(db.Model):
     """Assignments"""
 
     __tablename__ = 'assignment'
-
     id = db.Column(db.Integer, primary_key=True)
+    updated_at = db.Column(db.DateTime)
+    updated_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    created_at = db.Column(db.DateTime)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+
     name = db.Column(db.String(50))
     inquiries = db.relationship('Inquiry', backref='assignment', lazy='dynamic')
     problems = db.relationship('Problem', backref='assignment', lazy='dynamic')
     created_at = db.Column(db.DateTime)
+    is_active = db.Column(db.Boolean, default=True)
 
 
 class Problem(db.Model):
     """Problems in assignment"""
 
     __tablename__ = 'problem'
-
     id = db.Column(db.Integer, primary_key=True)
+    updated_at = db.Column(db.DateTime)
+    updated_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    created_at = db.Column(db.DateTime)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+
     tag = db.Column(db.String(10))
     description = db.Column(db.Text)
     assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'))
-    created_at = db.Column(db.DateTime)
