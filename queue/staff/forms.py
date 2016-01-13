@@ -7,11 +7,11 @@ class AssignmentForm(ModelForm):
     """form for assignments"""
     class Meta:
         model = Assignment
+        only = ('name', 'is_active')
 
 
 class ProblemForm(ModelForm):
     """form for problems"""
     class Meta:
         model = Problem
-
-    assignment_id = ModelFieldList(FormField(AssignmentForm))
+        only = ('tag', 'description')

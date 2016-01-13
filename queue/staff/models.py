@@ -21,6 +21,7 @@ def add_obj(obj):
     """
     db.session.add(obj)
     db.session.commit()
+    return obj
 
 ##########
 # MODELS #

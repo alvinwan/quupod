@@ -1,13 +1,7 @@
 from queue import db, whitelist
+from queue.controllers import multi2dict
 from flask import redirect, url_for
 from queue.staff.models import User, Inquiry, add_obj
-
-#############
-# UTILITIES #
-#############
-
-def multi2dict(multi):
-    return dict(multi.items())
 
 ###############
 # CONTROLLERS #

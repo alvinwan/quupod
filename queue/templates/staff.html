@@ -16,4 +16,21 @@
     </ul>
   </nav>
 </section>
+<section class="queue">
+  <h2 class="queue-title">Assignments</h2>
+  {% if assignments | length == 0 %}
+    <p class="queue-note">No assignments! <a href="{{ url_for('staff.assignment_create') }}">Create one now.</a></p>
+  {% else %}
+  <table>
+    <tr><th>Name</th><th>Is Active</th><th>Edit</th></tr>
+    {% for assignment in assignments %}
+    <tr>
+      <td><a href="{{ url_for('staff.assignment_detail', id=assignment.id) }}">{{ assignment.name }}</a></td>
+      <td>{{ assignment.is_active }}</td>
+      <td><a href="{{ url_for('staff.assignment_edit', id=assignment.id) }}" class="button color xs">edit</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+</section>
 {% endblock %}

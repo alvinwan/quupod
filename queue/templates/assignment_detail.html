@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% set title="Assignment %s" % assignment.name %}
+{% block main %}
+<section class="event">
+  <div class="col-md-6 event-text">
+    <p class="event-byline">{% if assignment.is_active %}Active{% else %}Inactive{% endif %}</p>
+    <h1 class="event-title">{{ assignment.name }}</h1>
+    <p class="event-copy"></p>
+  </div>
+  <div class="col-md-6 event-decor">
+    <a href="{{ url_for('staff.assignment_edit', id=assignment.id) }}" class="button">Edit Assignment</a>
+  </div>
+  <nav class="event-nav">
+    <ul>
+      <li><a class="s" href="#">All Problems</a></li>
+    </ul>
+  </nav>
+</section>
+<section class="queue">
+  <h2 class="queue-title">Problems</h2>
+  {% if problems | length == 0 %}
+    <p class="queue-note">No problems! <a href="{{ url_for('staff.problem_create', assignmentId=assignment.id) }}">Create one now.</a></p>
+  {% else %}
+  <a class="button color sm" href="{{ url_for('staff.problem_create', assignmentId=assignment.id) }}">Add Problem</a>
+  <table>
+    <tr><th>Name</th><th>Description</th><th>Edit</th></tr>
+    {% for problem in problems %}
+    <tr>
+      <td>{{ problem.tag }}</td>
+      <td>{{ problem.description }}</td>
+      <td><a href="{{ url_for('staff.problem_edit', assignmentId=assignment.id, problemId=problem.id) }}" class="button color xs">Edit</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+</section>
+{% endblock %}

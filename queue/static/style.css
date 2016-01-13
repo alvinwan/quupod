@@ -172,6 +172,13 @@ main {
     .module .button {
       width:100%;
       text-align:center;
+      margin-top:2em;
+    }
+    .button.sm {
+      font-size:0.85em;
+    }
+    .button.xs {
+      font-size:0.6em;
     }
   .queue {
     width:100%;
@@ -219,7 +226,7 @@ main {
     top:0;
     left:0;
   }
-    input[type="text"], input[type="password"], textarea {
+    input[type="text"], input[type="password"], input[type="datetime"], textarea {
       width:100%;
       color:#999;
       border:none;
@@ -229,8 +236,9 @@ main {
       font-size:1.15em;
       margin:1em 0;
     }
-      input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
+      input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus, textarea:focus {
         color:#333;
+        border-bottom:0.25em solid #C90;
       }
     .content {
       z-index:3;
