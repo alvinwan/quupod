@@ -1,8 +1,8 @@
 from flask import url_for
 from queue import db
 from queue.controllers import multi2dict
-from .models import Inquiry, add_obj, Assignment, Event
-from sqlalchemy import desc
+from .models import Inquiry, add_obj, Event
+from sqlalchemy import asc
 
 
 #############
@@ -40,7 +40,7 @@ def get_latest_inquiry():
     :return: Inquiry object
     """
     return Inquiry.query.filter_by(status='unresolved').order_by(
-        desc(Inquiry.created_at)).first()
+        asc(Inquiry.created_at)).first()
 
 def lock_inquiry(inquiry):
     """
@@ -66,79 +66,6 @@ def resolve_inquiry(inquiry):
     inquiry.status = 'resolved'
     return add_obj(inquiry)
 
-
-###############
-# ASSIGNMENTS #
-###############
-
-def create_assignment(data):
-    """
-    Create a new assignment for the queue
-
-    :param ImmutableDict data: all data for Assignment
-    :return: new Assignment object
-    """
-    data = multi2dict(data)
-    data['is_active'] = data.get('is_active', None) == 'y'
-    return add_obj(Assignment(**data))
-
-
-def edit_assignment(assignment, data):
-    """
-    Edit assignment
-
-    :param Assignment assignment: assignment object to update
-    :param ImmutableDict data: all data for Assignment
-    :return: new Assignment object
-    """
-    data = multi2dict(data)
-    data['is_active'] = data.get('is_active', None) == 'y'
-    for k, v in data.items():
-        setattr(assignment, k, v)
-    return add_obj(assignment)
-
-
-def get_assignment(**kwargs):
-    """
-    Get assignment by keyword argument filters.
-
-    :param kwargs: key arguments
-    :return: Assignment object
-    """
-    return Assignment.query.filter_by(**kwargs).first()
-
-
-def get_assignments(**kwargs):
-    """
-    Get all assignments that match the filters
-
-    :param kwargs: keyword argument filters
-    :return: list of Problem objects
-    """
-    return Assignment.query.filter_by(**kwargs).all()
-
-
-def get_problems(assignment):
-    """
-    Get all problems that match the filters
-
-    :param kwargs: keyword argument filters
-    :return: list of Problem objects
-    """
-    return [{'name': n, 'count': len(get_problem_inquiries(assignment.id, n))}
-        for n in assignment.problems.split(',')]
-
-
-def get_problem_inquiries(assignmentId, problem):
-    """
-    Get all inquiries for a problem
-
-    :param int assignmentId: assignment id
-    :param str problem: problem number
-    :return: list of Inquiries
-    """
-    return Inquiry.query.filter_by(
-        assignment_id=assignmentId, problem=problem).all()
 
 ##########
 # EVENTS #

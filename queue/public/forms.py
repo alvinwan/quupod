@@ -1,5 +1,6 @@
 from wtforms_alchemy import ModelForm, ModelFieldList
 from wtforms.fields import FormField
+from wtforms.validators import InputRequired, DataRequired
 import wtforms as wtf
 from queue.admin.models import Inquiry, User
 import flask_login
@@ -19,16 +20,12 @@ class RegisterForm(ModelForm):
 
 class InquiryForm(ModelForm):
     """form for placing inquiries"""
-    class Meta:
-        model = Inquiry
-        only = ('name', 'question')
 
-    assignment_id = wtf.SelectField('Assignment', coerce=int)
-    problem = wtf.SelectField('Problem', coerce=str)
-
-    def __iter__(self):
-        """Exclude name field if user is logged in"""
-        fields = (getattr(self, str(f)) for f in self._fields)
-        if flask_login.current_user.is_authenticated:
-            fields = filter(lambda f: f.name != 'name', fields)
-        return iter(fields)
+    name = wtf.StringField('Name',
+        description='your full name', validators=[DataRequired()])
+    category = wtf.SelectField('Category',
+        description='What type of inquiry are you submitting?', coerce=str)
+    assignment = wtf.StringField('Assignment',
+        description='<b>Use the following abbreviations</b>: <code>hw</code> for "homework", <code>proj</code> for "project", and <code>dis</code> for "discussion".', validators=[InputRequired()])
+    problem = wtf.StringField('Problem',
+        description='Be specific about which part, and do not include spaces or punctuation. For example, to specify problem 1 part a, only use <code>1a</code>.', validators=[InputRequired()])

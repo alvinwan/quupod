@@ -27,13 +27,12 @@
     <p class="queue-note">Queue is empty!</p>
   {% else %}
   <table>
-    <tr><th>Name</th><th>Assignment</th><th>Problem</th><th>Question</th><th>Queue Time</th></tr>
+    <tr><th>Name</th><th>Assignment</th><th>Problem</th><th>Queue Time</th></tr>
     {% for inquiry in unresolved %}
     <tr>
-      <td>{{ inquiry.name or inquiry.owner.name }}</td>
-      <td>{{ inquiry.assignment.name }}</td>
+      <td>{{ inquiry.name }}</td>
+      <td>{{ inquiry.assignment }}</td>
       <td>{{ inquiry.problem }}</td>
-      <td>{{ inquiry.question }}</td>
       <td>{{ inquiry.created_at.humanize() }}</td>
     </tr>
     {% endfor %}
@@ -47,13 +46,12 @@
     <p class="queue-note">Queue is empty!</p>
   {% else %}
   <table>
-    <tr><th>Name</th><th>Assignment</th><th>Problem</th><th>Question</th><th>Queue Time</th></tr>
+    <tr><th>Name</th><th>Assignment</th><th>Problem</th><th>Queue Time</th></tr>
     {% for inquiry in resolving %}
     <tr>
-      <td>{{ inquiry.name or inquiry.owner.name }}</td>
-      <td>{{ inquiry.assignment.name }}</td>
+      <td>{{ inquiry.name }}</td>
+      <td>{{ inquiry.assignment }}</td>
       <td>{{ inquiry.problem }}</td>
-      <td>{{ inquiry.question }}</td>
       <td>{{ inquiry.created_at.humanize() }}</td>
     </tr>
     {% endfor %}

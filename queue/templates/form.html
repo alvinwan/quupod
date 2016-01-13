@@ -9,13 +9,16 @@
     <h2 class="content-title">{{ title }}</h2>
     <form class="module" method="POST">
     {% for field in form %}
-      <h3>{{ field.label }} </h3>
+      <h3>{{ field.label }}</h3>
+      {% if field.description %}
+      <p>{{ field.description | safe }}</p>
+      {% endif %}
       {% for error in form.errors[field.name] %}
-        <p><strong>Error!</strong> {{error}}</p>
+        <p style="color:red"><strong>Error!</strong> {{error}}</p>
       {% endfor %}
       {{ field }}
     {% endfor %}
-      <input type="submit" class="button color">
+      <input type="submit" class="button color" value="{{ submit }}">
     </form>
   </div>
 </section>

@@ -2,6 +2,7 @@ from queue import db, whitelist
 from queue.controllers import multi2dict
 from flask import redirect, url_for
 from queue.admin.models import User, Inquiry, add_obj
+import flask_login
 
 ###############
 # CONTROLLERS #
@@ -14,7 +15,11 @@ def add_inquiry(data):
     :param Request request: Flask request object
     :return: information for confirmation page
     """
-    add_obj(Inquiry(**multi2dict(data)))
+    user = flask_login.current_user
+    data = multi2dict(data)
+    if user.is_authenticated:
+        data['owner_id'] = user.id
+    add_obj(Inquiry(**data))
     return {
         'title': 'Inquiry created',
         'message': 'Inquiry created! <code>%s</code>' % str(data),

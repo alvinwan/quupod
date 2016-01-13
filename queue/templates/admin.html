@@ -20,21 +20,6 @@
 </section>
 <section class="queue">
   <h2 class="queue-title">Assignments</h2>
-  {% if assignments | length == 0 %}
-    <p class="queue-note">No assignments! <a href="{{ url_for('admin.assignment_create') }}">Create one now.</a></p>
-  {% else %}
-  <a href="{{ url_for('admin.assignment_create') }}" class="button color">Create Assignment</a>
-  <table>
-    <tr><th>Name</th><th>Is Active</th><th>Edit</th></tr>
-    {% for assignment in assignments %}
-    <tr>
-      <td><a href="{{ url_for('admin.assignment_detail', id=assignment.id) }}">{{ assignment.name }}</a></td>
-      <td>{{ assignment.is_active }}</td>
-      <td><a href="{{ url_for('admin.assignment_edit', id=assignment.id) }}" class="button color xs">edit</a></td>
-    </tr>
-    {% endfor %}
-  </table>
-  {% endif %}
 </section>
 <section class="queue">
   <h2 class="queue-title">Events</h2>

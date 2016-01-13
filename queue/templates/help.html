@@ -2,9 +2,9 @@
 {% block main %}
 <section class="event">
   <div class="col-md-6 event-text">
-    <p class="event-byline">Student Name</p>
-    <h1 class="event-title">{{ inquiry.name or inquiry.owner.name }}</h1>
-    <p class="event-copy">{{ inquiry.question }}</p>
+    <p class="event-byline">asked {{ inquiry.created_at.humanize() }}</p>
+    <h1 class="event-title">{{ inquiry.name }}</h1>
+    <p class="event-copy">{% if inquiry.question %}<i>Question: </i>{{ inquiry.question }}{% else %}<i>No question.</i>{% endif %}</p>
   </div>
   <div class="col-md-6 event-decor">
     <form method="post">

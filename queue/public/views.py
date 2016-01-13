@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request
 from .forms import *
 from .controllers import *
-from queue.admin.controllers import get_assignments
 from queue import app, login_manager, whitelist
 from queue.admin.models import User, Inquiry
 from queue.views import anonymous_required
@@ -26,18 +25,14 @@ def inquiry():
     Place a new inquiry, which may be authored by either a system user or an
     anonymous user.
     """
-    form, user = InquiryForm(request.form), flask_login.current_user
-    form.assignment_id.choices = [(a.id, a.name)
-        for a in get_assignments(is_active=True)]
-    form.problem.choices = [('yo', 'yo')]
+    user, form = flask_login.current_user, InquiryForm(request.form)
+    if user.is_authenticated:
+        form = InquiryForm(request.form, obj=user)
+    form.category.choices = [(s, s) for s in ('question', 'tutoring')]
     if request.method == 'POST' and form.validate():
-        if user.is_authenticated:
-            data = multi2dict(request.form)
-            data.update({'name': user.name})
-        else:
-            data = request.form
-        return render_template('confirm.html', **add_inquiry(data))
-    return render_template('form.html', form=form, title='Add Inquiry')
+        return render_template('confirm.html', **add_inquiry(request.form))
+    return render_template('form.html', form=form, title='Add Inquiry',
+        submit='Ask')
 
 ###################
 # SIGN IN/SIGN UP #
@@ -57,7 +52,7 @@ def login():
             return get_user_home(user)
         message = 'Login failed.'
     return render_template('form.html', message=message, form=form,
-        title='Login')
+        title='Login', submit='Login')
 
 @public.route('/register', methods=['GET', 'POST'])
 @anonymous_required
@@ -66,7 +61,8 @@ def register():
     form = RegisterForm(request.form)
     if request.method == 'POST' and form.validate():
         return render_template('confirm.html', **add_user(request.form))
-    return render_template('form.html', form=form, title='Register')
+    return render_template('form.html', form=form, title='Register',
+        submit='Register')
 
 ######################
 # SESSION UTILIITIES #

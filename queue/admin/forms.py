@@ -1,14 +1,7 @@
 from wtforms_alchemy import ModelForm, ModelFieldList
 from wtforms.fields import FormField
 import wtforms as wtf
-from .models import Assignment, Event
-
-
-class AssignmentForm(ModelForm):
-    """form for assignments"""
-    class Meta:
-        model = Assignment
-        only = ('name', 'problems', 'is_active')
+from .models import Event
 
 
 class EventForm(ModelForm):

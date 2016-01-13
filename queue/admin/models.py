@@ -78,17 +78,13 @@ class Inquiry(db.Model):
 
     status = db.Column(ChoiceType(STATUSES), default='unresolved')
     name = db.Column(db.String(50))
-    question = db.Column(db.Text)
-    assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'))
+    comments = db.Column(db.Text)
+    assignment = db.Column(db.String(25))
     problem = db.Column(db.String(25))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     resolvers = db.relationship('User', secondary=resolutions,
         backref=db.backref('resolutions', lazy='dynamic'))
     category = db.Column(ChoiceType(CATEGORIES))
-
-    @property
-    def assignment(self):
-        return Assignment.query.filter_by(id=self.assignment_id).first()
 
     @property
     def owner(self):
@@ -113,10 +109,10 @@ class Event(db.Model):
     location = db.Column(db.Text)
 
 
-class Assignment(db.Model):
-    """Assignments"""
+class Setting(db.Model):
+    """settings for the queue application"""
 
-    __tablename__ = 'assignment'
+    __tablename__ = 'setting'
     id = db.Column(db.Integer, primary_key=True)
     updated_at = db.Column(ArrowType)
     updated_by = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -124,7 +120,4 @@ class Assignment(db.Model):
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     name = db.Column(db.String(50))
-    inquiries = db.relationship('Inquiry', backref='assignment', lazy='dynamic')
-    problems = db.Column(db.Text)  # csv of problems
-    created_at = db.Column(ArrowType, default=arrow.utcnow())
-    is_active = db.Column(db.Boolean, default=True)
+    data = db.Column(db.Text)
