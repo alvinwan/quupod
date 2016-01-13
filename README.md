@@ -76,3 +76,15 @@ of `make run`.
 For Mac OSX installations of MySQL, via Brew, start the server using
 `mysql.server start`. For other Linux-based operating systems, use
 `sudo service mysql start`.
+
+## Windows Notes
+1. Start the virtual environment by calling `env/Scripts/activate.bat` in cmd.
+1. Install all requirements `pip install -r requirements.txt`.
+1. Make a new configuration file: `cp default-queue.cfg queue.cfg`.
+1. Add valid MySQL user credentials to `queue.cfg`.
+1. Create the database: 
+ ```python3 -i
+  from queue import db
+db.drop_all()
+  db.create_all()```.
+1. Run with `python run.py`
