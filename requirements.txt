@@ -8,3 +8,4 @@ wtforms==2.1
 wtforms-alchemy==0.13.3
 passlib==1.6.5
 flask_login==0.3.2
+arrow==0.7.0
