@@ -19,8 +19,8 @@ def clear_unfinished():
     db.session.commit()
     return {
         'message': 'All cleared',
-        'action': 'staff home',
-        'url': url_for('staff.home')
+        'action': 'admin home',
+        'url': url_for('admin.home')
     }
 
 def get_inquiry(id):
@@ -44,7 +44,7 @@ def get_latest_inquiry():
 
 def lock_inquiry(inquiry):
     """
-    Lock inquiry as 'resolving' so no other staff member takes it.
+    Lock inquiry as 'resolving' so no other admin member takes it.
 
     :param Inquiry inquiry: Inquiry object
     :return: original inquiry object

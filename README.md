@@ -10,13 +10,13 @@ in-session questions queue management and analytics
 
 **Staff**
 
-- data race prevention: *Staff can click the 'help' button to assign the next unresolved inquiry to him/herself. This prevents multiple staff members from trying to resolve the same inquiry.*
-- mutex lock: *Once a staff member locks (or starts resolving) an inquiry, other staff members will be notified. Additionally other staff members cannot modify the same inquiry until the original staff member releases or resolves it.*
-- simple user flow: *For each inquiry, staff members need only two clicks: 'help' to help and 'resolved' to resolve.*
+- data race prevention: *Staff can click the 'help' button to assign the next unresolved inquiry to him/herself. This prevents multiple admin members from trying to resolve the same inquiry.*
+- mutex lock: *Once a admin member locks (or starts resolving) an inquiry, other admin members will be notified. Additionally other admin members cannot modify the same inquiry until the original admin member releases or resolves it.*
+- simple user flow: *For each inquiry, admin members need only two clicks: 'help' to help and 'resolved' to resolve.*
 - verified users: *Staff members need to register to gain access to the admin panel.*
 - whitelist: *In your configuration file, add a comma-separated list of emails
 to the whitelist parameter. Users registering with those emails will
-automatically be granted staff status.*
+automatically be granted admin status.*
 
 **Analytics**
 

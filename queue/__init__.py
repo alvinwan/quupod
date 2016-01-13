@@ -13,7 +13,6 @@ try:
     secret_key = config['secret_key']
     debug = bool(config['debug'])
     whitelist = config.get('whitelist', '').split(',')
-    print(whitelist)
 except FileNotFoundError:
     raise UserWarning('Configuration file not found. Rerun `make install` and \
     update the new queue.cfg accordingly.')
@@ -37,9 +36,9 @@ login_manager.init_app(app)
 
 # Configuration for app views
 from .public.views import public
-from .staff.views import staff
+from .admin.views import admin
 
-blueprints = (public, staff)
+blueprints = (public, admin)
 for blueprint in blueprints:
     print(' * Registering blueprint "%s"' % blueprint.name)
     app.register_blueprint(blueprint)

@@ -7,27 +7,27 @@
     <p class="event-copy">Want to get started clearing the queue? Click 'help'. Interested in seeing numbers? Click 'analytics'.</p>
   </div>
   <div class="col-md-6 event-decor">
-    <a href="{{ url_for('staff.clear') }}" class="button">Clear all unfinished inquiries</a>
+    <a href="{{ url_for('admin.clear') }}" class="button">Clear all unfinished inquiries</a>
   </div>
   <nav class="event-nav">
     <ul>
-      <li><a href="{{ url_for('staff.analytics') }}">View Analytics</a></li>
-      <li><a href="{{ url_for('staff.help') }}">Help</a></li>
+      <li><a href="{{ url_for('admin.analytics') }}">View Analytics</a></li>
+      <li><a href="{{ url_for('admin.help') }}">Help</a></li>
     </ul>
   </nav>
 </section>
 <section class="queue">
   <h2 class="queue-title">Assignments</h2>
   {% if assignments | length == 0 %}
-    <p class="queue-note">No assignments! <a href="{{ url_for('staff.assignment_create') }}">Create one now.</a></p>
+    <p class="queue-note">No assignments! <a href="{{ url_for('admin.assignment_create') }}">Create one now.</a></p>
   {% else %}
   <table>
     <tr><th>Name</th><th>Is Active</th><th>Edit</th></tr>
     {% for assignment in assignments %}
     <tr>
-      <td><a href="{{ url_for('staff.assignment_detail', id=assignment.id) }}">{{ assignment.name }}</a></td>
+      <td><a href="{{ url_for('admin.assignment_detail', id=assignment.id) }}">{{ assignment.name }}</a></td>
       <td>{{ assignment.is_active }}</td>
-      <td><a href="{{ url_for('staff.assignment_edit', id=assignment.id) }}" class="button color xs">edit</a></td>
+      <td><a href="{{ url_for('admin.assignment_edit', id=assignment.id) }}" class="button color xs">edit</a></td>
     </tr>
     {% endfor %}
   </table>

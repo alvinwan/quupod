@@ -1,7 +1,7 @@
 from queue import db, whitelist
 from queue.controllers import multi2dict
 from flask import redirect, url_for
-from queue.staff.models import User, Inquiry, add_obj
+from queue.admin.models import User, Inquiry, add_obj
 
 ###############
 # CONTROLLERS #
@@ -48,9 +48,7 @@ def add_user(data):
     :return: information for confirmation page
     """
     data = multi2dict(data)
-    if data['email'] in whitelist:
-        data['role'] = 'staff'
-    add_obj(User(**data))
+    return whitelist_promote(User(**data))
     return {
         'message': 'Signed up! <code>%s</code>' % str({
             'username': data['username'],
@@ -77,6 +75,17 @@ def get_user_home(user):
     :param User user: user object
     :return: User object or None
     """
-    if user and getattr(user, 'role', None) == 'staff':
-        return redirect(url_for('staff.home'))
+    if user and getattr(user, 'role', None) == 'admin':
+        return redirect(url_for('admin.home'))
     return redirect(url_for('public.home'))
+
+def whitelist_promote(user):
+    """
+    Promote a user if on the whitelist
+
+    :param User user: user object
+    :return: origina User object
+    """
+    if user.email in whitelist:
+        user.role = 'staff'
+    return add_obj(user)

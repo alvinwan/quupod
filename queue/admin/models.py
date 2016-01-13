@@ -68,7 +68,7 @@ class Inquiry(db.Model):
 
     STATUSES = (
         ('unresolved', 'has not yet been addressed'),
-        ('resolving', 'being addressed by staff'),
+        ('resolving', 'being addressed by admin'),
         ('resolved', 'addressed and closed'),
         ('closed', 'closed without resolution - end of session, MIA etc.')
     )

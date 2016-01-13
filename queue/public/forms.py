@@ -1,7 +1,7 @@
 from wtforms_alchemy import ModelForm, ModelFieldList
 from wtforms.fields import FormField
 import wtforms as wtf
-from queue.staff.models import Inquiry, User
+from queue.admin.models import Inquiry, User
 import flask_login
 
 

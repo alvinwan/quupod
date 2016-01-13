@@ -3,12 +3,12 @@
 {% block main %}
 <section class="event">
   <div class="col-md-6 event-text">
-    <p class="event-byline"><a href="{{ url_for('staff.home') }}">Admin</a> &raquo; hw0</p>
+    <p class="event-byline"><a href="{{ url_for('admin.home') }}">Admin</a> &raquo; hw0</p>
     <h1 class="event-title">{{ assignment.name }}</h1>
     <p class="event-copy"></p>
   </div>
   <div class="col-md-6 event-decor">
-    <a href="{{ url_for('staff.assignment_edit', id=assignment.id) }}" class="button">Edit Assignment</a>
+    <a href="{{ url_for('admin.assignment_edit', id=assignment.id) }}" class="button">Edit Assignment</a>
   </div>
   <nav class="event-nav">
     <ul>
@@ -19,7 +19,7 @@
 <section class="queue">
   <h2 class="queue-title">Problems</h2>
   {% if problems | length == 0 %}
-    <p class="queue-note">No problems! <a href="{{ url_for('staff.assignment_edit', id=assignment.id) }}">Add to the assignment's list of problems.</a></p>
+    <p class="queue-note">No problems! <a href="{{ url_for('admin.assignment_edit', id=assignment.id) }}">Add to the assignment's list of problems.</a></p>
   {% else %}
   <table>
     <tr><th>Name</th></th><th>Questions</th></tr>

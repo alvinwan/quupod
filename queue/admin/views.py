@@ -8,24 +8,24 @@ from .forms import *
 import flask_login
 
 
-staff = Blueprint('staff', __name__, url_prefix='/staff')
+admin = Blueprint('admin', __name__, url_prefix='/admin')
 
 #########
 # ADMIN #
 #########
 
-@staff.route('/')
+@admin.route('/')
 @flask_login.login_required
 @requires('staff')
 def home():
-    """staff homepage"""
+    """admin homepage"""
     assignments = get_assignments()
-    return render_template('staff.html', assignments=assignments)
+    return render_template('admin.html', assignments=assignments)
 
 
 @requires('staff')
-@staff.route('/clear/<string:location>', methods=['POST', 'GET'])
-@staff.route('/clear', methods=['POST', 'GET'])
+@admin.route('/clear/<string:location>', methods=['POST', 'GET'])
+@admin.route('/clear', methods=['POST', 'GET'])
 def clear(location=None):
     """Clear all inquiries, period. Or, clear all inquiries for a location."""
     if location:
@@ -35,11 +35,11 @@ def clear(location=None):
     return render_template('confirm.html',
         message='Are you sure? This will clear all resolving and unresolved. \
         <form method="POST"><input type="submit" value="clear"></form>',
-        action='staff home',
-        url=url_for('staff.home'))
+        action='admin home',
+        url=url_for('admin.home'))
 
 @requires('staff')
-@staff.route('/help')
+@admin.route('/help')
 def help():
     """automatically selects next inquiry"""
     inquiry = get_latest_inquiry()
@@ -47,19 +47,19 @@ def help():
         return render_template('confirm.html',
             title='All done!',
             message='No more inquiries to process!',
-            url=url_for('staff.home'),
-            action='staff home')
+            url=url_for('admin.home'),
+            action='admin home')
     lock_inquiry(inquiry)
-    return redirect(url_for('staff.help_inquiry', id=inquiry.id))
+    return redirect(url_for('admin.help_inquiry', id=inquiry.id))
 
 @requires('staff')
-@staff.route('/help/<string:id>', methods=['POST', 'GET'])
+@admin.route('/help/<string:id>', methods=['POST', 'GET'])
 def help_inquiry(id):
     """automatically selects next inquiry or reloads inquiry """
     inquiry = get_inquiry(id)
     if request.method == 'POST':
         resolve_inquiry(inquiry)
-        return redirect(url_for('staff.help'))
+        return redirect(url_for('admin.help'))
     return render_template('help.html', inquiry=inquiry)
 
 ##############
@@ -67,28 +67,28 @@ def help_inquiry(id):
 ##############
 
 @requires('staff')
-@staff.route('/assignment/create', methods=['POST', 'GET'])
+@admin.route('/assignment/create', methods=['POST', 'GET'])
 def assignment_create():
     """create a new assignment"""
     form = AssignmentForm(request.form)
     if request.method == 'POST' and form.validate():
         assignment = create_assignment(request.form)
-        return redirect(url_for('staff.assignment_detail', id=assignment.id))
+        return redirect(url_for('admin.assignment_detail', id=assignment.id))
     return render_template('form.html', form=form, title='Create Assignment')
 
 
-@requires('/staff')
-@staff.route('/assignment/<string:id>/edit', methods=['POST', 'GET'])
+@requires('/admin')
+@admin.route('/assignment/<string:id>/edit', methods=['POST', 'GET'])
 def assignment_edit(id):
     form = AssignmentForm(request.form)
     if request.method == 'POST' and form.validate():
         assignment = edit_assignment(request.form)
-        return redirect(url_for('staff.assignment_detail', id=assignment.id))
+        return redirect(url_for('admin.assignment_detail', id=assignment.id))
     return render_template('form.html', form=form, title='Edit Assignment')
 
 
-@requires('/staff')
-@staff.route('/assignment/<string:id>', methods=['POST', 'GET'])
+@requires('/admin')
+@admin.route('/assignment/<string:id>', methods=['POST', 'GET'])
 def assignment_detail(id):
     assignment = get_assignment(id=id)
     problems = get_problems(assignment)
@@ -101,7 +101,7 @@ def assignment_detail(id):
 #############
 
 @requires('staff')
-@staff.route('/analytics')
+@admin.route('/analytics')
 def analytics():
     """analytics for requests"""
     return render_template('analytics.html')

@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request
 from .forms import *
 from .controllers import *
 from queue import app, login_manager, whitelist
-from queue.staff.models import User, Inquiry
+from queue.admin.models import User, Inquiry
 from queue.views import anonymous_required
 import flask_login
 
@@ -48,9 +48,7 @@ def login():
         user = get_user(username=request.form['username'])
         if user and user.password == request.form['password']:
             flask_login.login_user(user)
-            if user.email in whitelist:
-                user.role = 'staff'
-            add_obj(user)
+            whitelist_promote(user)
             print(' * %s (%s) logged in.' % (user.name, user.email))
             return get_user_home(user)
         message = 'Login failed.'
