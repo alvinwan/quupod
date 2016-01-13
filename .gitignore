@@ -58,3 +58,9 @@ docs/_build/
 
 # PyBuilder
 target/
+
+#Emacs temps
+*~
+
+#Hello
+hello.py
