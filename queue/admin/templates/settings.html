@@ -19,7 +19,7 @@
       <input type="hidden" value="{{ setting.name }}" name="name">
       {% if setting.enabled %}
       <input type="text" value="{{ setting.value }}" name="value">
-      <input type="submit" class="button sm color">
+      <input type="submit" class="button sm color" value="Save">
       {% else %}
       <p><b>Why enable?</b> {{ setting.enable_description }}</p>
       <input type="hidden" value="1" name="enabled">

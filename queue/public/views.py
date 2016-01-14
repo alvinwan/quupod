@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from .forms import *
 from .controllers import *
 from queue import app, login_manager, whitelist
+from queue.admin.controllers import setting
 from queue.admin.models import User, Inquiry
 from queue.views import anonymous_required, render
 import flask_login
@@ -45,9 +46,11 @@ def inquiry():
     user, form = flask_login.current_user, InquiryForm(request.form)
     if user.is_authenticated:
         form = InquiryForm(request.form, obj=user)
-    form.category.choices = [(s, s) for s in ('question', 'tutoring')]
-    if request.method == 'POST' and form.validate():
+    form = add_inquiry_choices(form)
+    if request.method == 'POST' and form.validate() and \
+        valid_assignment(request, form):
         return render('confirm.html', **add_inquiry(request.form))
+    print(form.errors)
     return render('form.html', form=form, title='Add Inquiry',
         submit='Ask')
 

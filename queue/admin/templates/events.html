@@ -14,7 +14,7 @@
 <section class="queue">
   <h2 class="queue-title">Events</h2>
   {% if events | length == 0 %}
-    <p class="queue-note">No events! <a href="{{ url_for('admin.event_create') }}">Create one now.</a></p>
+    <p class="queue-note">No events! <a href="{{ url_for('admin.event_create') }}">Create an event.</a></p>
   {% else %}
   <a href="{{ url_for('admin.event_create') }}" class="button color">Create Assignment</a>
   <table>

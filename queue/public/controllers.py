@@ -2,6 +2,7 @@ from queue import db, whitelist
 from queue.controllers import multi2dict
 from flask import redirect, url_for
 from queue.admin.models import User, Inquiry
+from queue.admin.controllers import get_setting, setting
 import flask_login
 from queue.models import add_obj
 
@@ -27,6 +28,47 @@ def add_inquiry(data):
         'action': 'Back to queue',
         'url': url_for('public.home')
     }
+
+def add_inquiry_choices(form):
+    """
+    Add choices to inquiry form, based on settings
+
+    :param InquiryForm form: form to add choices too
+    :return: original form
+    """
+    choicify = lambda lst: [(s, s) for s in lst]
+    form.location.choices = choicify(setting('Locations').split(','))
+    form.category.choices = choicify(setting('Inquiry Types').split(','))
+    return form
+
+def valid_assignment(request, form):
+    """
+    Check if the assignment is valid, based on the settings
+
+    :param InquiryForm form: form to check
+    :return: boolean
+    """
+    return not get_setting(name='Assignments').enabled or \
+        allowed_assignment(request, form)
+
+def allowed_assignment(request, form):
+    """
+    Returns if assignment is allowed, per settings
+
+    :param InquiryForm form: form to check
+    :return: list of assignment names
+    """
+    lst = setting('Assignments')
+    str2lst = lambda s: (s.strip() for s in lst.split(','))
+    assignment, category = request.form['assignment'], request.form['category']
+    if ':' in lst:
+        lst = dict(lst.split(':')).get(category, None)
+        if not lst:
+            return True
+    if assignment not in str2lst(lst):
+        form.errors.setdefault('assignment', []).append('Assignment "%s" is not allowed. Only the following assignments are: %s' % (assignment, lst))
+        return False
+    return True
 
 def unresolved_inquiries():
     """

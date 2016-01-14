@@ -121,3 +121,8 @@ def get_setting(**kwargs):
     :return: Setting object
     """
     return Setting.query.filter_by(**kwargs).first()
+
+
+def setting(name):
+    """Return setting value"""
+    return get_setting(name=name).value

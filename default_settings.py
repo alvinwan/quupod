@@ -28,10 +28,10 @@ default_settings = [
         'toggable': True
     }, {
         'name': 'Locations',
-        'description': 'All locations available on the inquiry form. Disable to automatically detect locations from ongoing events.',
+        'description': 'All locations available on the inquiry form. Leave empty to automatically detect locations from ongoing events.',
         'value': 'Evans B4',
         'enabled': True,
-        'enable_description': 'Enable to manually specify locations.',
+        'enable_description': 'Enable to give users the option to specify a location for an inquiry.',
         'toggable': True
     }
 ]
