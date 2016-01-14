@@ -90,11 +90,13 @@ Because of incompatbility issues with the makefile, on Windows you will have to 
 1. Install all requirements `pip install -r requirements.txt`.
 1. Make a new configuration file: `cp default-queue.cfg queue.cfg`.
 1. Add valid MySQL user credentials to `queue.cfg`.
-1. Create the database: 
+1. Start the MySQL service using services.msc
+1. Create the database by using `mysql -u root -p`, then entering `create database queue` in the interactive prompt.
+1. Setup the database: 
 ```
 python -i
 >>> from queue import db
 >>> db.drop_all()
 >>> db.create_all()
 ```
-1. Run with `python run.py`
+
