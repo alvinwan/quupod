@@ -27,6 +27,8 @@ def home():
 @requires('staff')
 def help():
     """help start"""
+    if not get_setting(name='Location Selection').enabled:
+        return redirect(url_for('admin.help_latest'))
     return render('help.html')
 
 @admin.route('/clear/<string:location>', methods=['POST', 'GET'])
@@ -45,10 +47,11 @@ def clear(location=None):
         action='admin home',
         url=url_for('admin.home'))
 
-@admin.route('/help/<string:location>')
+@admin.route('/help/<string:location>/latest')
+@admin.route('/help/latest')
 @flask_login.login_required
 @requires('staff')
-def help_location(location):
+def help_latest(location=None):
     """automatically selects next inquiry"""
     inquiry = get_latest_inquiry(location=location)
     if not inquiry:
@@ -69,7 +72,9 @@ def help_inquiry(id, location=None):
     inquiry = get_inquiry(id)
     if request.method == 'POST':
         resolve_inquiry(inquiry)
-        return redirect(url_for('admin.help_location', location=location))
+        if not location:
+            return redirect(url_for('admin.help'))
+        return redirect(url_for('admin.help_latest', location=location))
     return render('help_inquiry.html', inquiry=inquiry)
 
 

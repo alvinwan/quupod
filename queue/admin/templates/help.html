@@ -15,7 +15,7 @@
     <h2>Active Locations</h2>
     <p>Choose one to start.</p>
     {% for location in app_locations.split(',') %}
-      <a class="button color" href="{{ url_for('admin.help_location', location=location) }}">{{ location }}</a>
+      <a class="button color" href="{{ url_for('admin.help_latest', location=location) }}">{{ location }}</a>
     {% endfor %}
   </div>
 </section>
