@@ -18,7 +18,7 @@ config = {
     'DATABASE': database_url.split('/')[3].split('?')[0],
     'SECRET_KEY': get('SECRET_KEY', 'dEf@u1t$eCRE+KEY'),
     'DEBUG': get('DEBUG', False),
-    'WHITELIST': get('whitelist', ''),
+    'WHITELIST': get('WHITELIST', ''),
     'GOOGLECLIENTID': get('GOOGLECLIENTID', None)
 }
 try:
