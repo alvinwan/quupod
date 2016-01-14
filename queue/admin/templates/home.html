@@ -1,0 +1,17 @@
+{% extends "admin.html" %}
+{% set panel='Home' %}
+{% block text %}
+<p class="event-byline">Admin</p>
+<h1 class="event-title">Administration Panel</h1>
+<p class="event-copy">Want to get started clearing the queue? Click 'help'.</p>
+{% endblock %}
+{% block decor %}
+<a href="{{ url_for('admin.clear') }}" class="button">Clear Inquiries</a>
+<a href="{{ url_for('admin.help') }}" class="button">Help</a>
+{% endblock %}
+{% block panel %}
+<section class="queue">
+  <h2 class="queue-title">Alerts</h2>
+  <p class="queue-note">All is well.</p>
+</section>
+{% endblock %}

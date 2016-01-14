@@ -1,22 +1,15 @@
-{% extends "base.html" %}
-{% block main %}
-<section class="event">
-  <div class="col-md-6 event-text">
-    <p class="event-byline">Admin</p>
-    <h1 class="event-title">Administration Panel</h1>
-    <p class="event-copy">Want to get started clearing the queue? Click 'help'. Interested in seeing numbers? Click 'analytics'.</p>
-  </div>
-  <div class="col-md-6 event-decor">
-    <a href="{{ url_for('admin.clear') }}" class="button">Clear Inquiries</a>
-    <a href="{{ url_for('admin.help') }}" class="button">Help</a>
-    <a href="{{ url_for('admin.settings') }}" class="button">Settings</a>
-  </div>
-  <nav class="event-nav">
-    <ul>
-      <li><a class="s" href="#events">Events</a></li>
-    </ul>
-  </nav>
-</section>
+{% extends "admin.html" %}
+{% set panel='Events' %}
+{% block text %}
+<p class="event-byline"><a href="{{ url_for('admin.home') }}">Admin</a> &raquo; Events</p>
+<h1 class="event-title">Events</h1>
+<p class="event-copy">Here are all of the events that your queue has available.</p>
+{% endblock %}
+{% block decor %}
+<a href="{{ url_for('admin.clear') }}" class="button">Clear Inquiries</a>
+<a href="{{ url_for('admin.help') }}" class="button">Help</a>
+{% endblock %}
+{% block panel %}
 <section class="queue">
   <h2 class="queue-title">Events</h2>
   {% if events | length == 0 %}

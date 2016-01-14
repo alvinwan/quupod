@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block main %}
+<section class="event">
+  <div class="col-md-6 event-text">
+    {% block text %}
+    {% endblock %}
+  </div>
+  <div class="col-md-6 event-decor">
+    {% block decor %}
+    {% endblock %}
+  </div>
+  <nav class="event-nav">
+    <ul>
+      {% for link in (
+          (url_for('admin.home'), 'Home'),
+          (url_for('admin.events'), 'Events'),
+          (url_for('admin.settings'), 'Settings')) %}
+      <li><a class="{% if link[1] == panel %}s{% endif %}" href="{% if link[1] != panel %}{{ link[0] }}{% else %}#{% endif %}">{{ link[1] }}</a></li>
+      {% endfor %}
+    </ul>
+  </nav>
+</section>
+{% block panel %}
+{% endblock %}
+{% endblock %}

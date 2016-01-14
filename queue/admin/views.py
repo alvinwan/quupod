@@ -8,7 +8,8 @@ from .forms import *
 import flask_login
 
 
-admin = Blueprint('admin', __name__, url_prefix='/admin')
+admin = Blueprint('admin', __name__, url_prefix='/admin',
+    template_folder='templates')
 
 #########
 # ADMIN #
@@ -20,7 +21,15 @@ admin = Blueprint('admin', __name__, url_prefix='/admin')
 def home():
     """admin homepage"""
     events = get_events()
-    return render('admin.html', events=events)
+    return render('home.html', events=events)
+
+@admin.route('/events')
+@flask_login.login_required
+@requires('staff')
+def events():
+    """admin events page"""
+    events = get_events()
+    return render('events.html', events=events)
 
 @requires('staff')
 @admin.route('/clear/<string:location>', methods=['POST', 'GET'])
@@ -76,7 +85,7 @@ def event_create():
     if request.method == 'POST' and form.validate():
         event = create_event(request.form)
         return redirect(url_for('admin.event_detail', id=event.id))
-    return render('form.html', form=form, title='Create Event')
+    return render('form.html', form=form, title='Create Event', submit='Create')
 
 @requires('/admin')
 @admin.route('/event/<string:id>/edit', methods=['POST', 'GET'])
@@ -86,7 +95,7 @@ def event_edit(id):
     if request.method == 'POST' and form.validate():
         event = edit_event(event, request.form)
         return redirect(url_for('admin.event_detail', id=event.id))
-    return render('form.html', form=form, title='Edit Event')
+    return render('form.html', form=form, title='Edit Event', submit='Save')
 
 @requires('/admin')
 @admin.route('/event/<string:id>', methods=['POST', 'GET'])

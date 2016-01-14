@@ -6,7 +6,7 @@ from queue.admin.models import User, Inquiry
 from queue.views import anonymous_required, render
 import flask_login
 
-public = Blueprint('public', __name__)
+public = Blueprint('public', __name__, template_folder='templates')
 
 #########
 # QUEUE #

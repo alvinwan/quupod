@@ -14,6 +14,12 @@ html, body,section, main {
   width:100%;
   float:left;
 }
+input[type="text"], input[type="password"], input[type="datetime"], textarea {
+  transition:         0.3s ease;
+  -webkit-transition: 0.3s ease;
+  -moz-transition:    0.3s ease;
+  -o-transition:      0.3s ease;
+}
 header {
   background-color:#a57602;
   width:100%;
@@ -282,10 +288,16 @@ main {
       text-align:center;
     }
   .setting {
-    margin-top:2em;
+    margin:0 0 2em 0;
+    padding:0;
   }
   .setting form + form .button {
     margin-left:0.5em;
+  }
+  .setting h2 + p {
+    font-size:1.2em;
+    color:#666;
+    font-weight:300;
   }
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
