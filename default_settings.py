@@ -9,7 +9,7 @@ default_settings = [
         'description': 'Comma-separated list of all inquiry types',
         'enabled': False,
         'enable_description': 'Enable to specify different inquiry types. These types can then be prioritized in the queue or have different restrictions applied.',
-        'value': 'question'
+        'value': 'question',
         'toggable': True
     }, {
         'name': 'Assignments',

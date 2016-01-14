@@ -1,7 +1,16 @@
 from functools import wraps
-from flask import url_for, redirect
+from flask import url_for, redirect, render_template
 import flask_login
 from queue.public.controllers import get_user_home
+from queue.admin.controllers import get_setting
+from default_settings import default_settings
+
+
+def render(template, **kwargs):
+    """Render with settings"""
+    for k in (s['name'] for s in default_settings):
+        kwargs.setdefault('app_%s' % k.lower(), get_setting(name=k).value)
+    return render_template(template, **kwargs)
 
 
 def anonymous_required(f):

@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, request, redirect, url_for
 from queue import app
-from queue.views import requires
+from queue.views import requires, render
 from queue.public.controllers import unresolved_inquiries, resolving_inquiries
 from .models import User, Inquiry
 from .controllers import *
@@ -20,7 +20,7 @@ admin = Blueprint('admin', __name__, url_prefix='/admin')
 def home():
     """admin homepage"""
     events = get_events()
-    return render_template('admin.html', events=events)
+    return render('admin.html', events=events)
 
 @requires('staff')
 @admin.route('/clear/<string:location>', methods=['POST', 'GET'])
@@ -30,8 +30,8 @@ def clear(location=None):
     if location:
         return 'Not yet implemented.'
     if request.method == 'POST':
-        return render_template('confirm.html', **clear_unfinished())
-    return render_template('confirm.html',
+        return render('confirm.html', **clear_unfinished())
+    return render('confirm.html',
         message='Are you sure? This will clear all resolving and unresolved. \
         <form method="POST"><input type="submit" value="clear"></form>',
         action='admin home',
@@ -43,7 +43,7 @@ def help():
     """automatically selects next inquiry"""
     inquiry = get_latest_inquiry()
     if not inquiry:
-        return render_template('confirm.html',
+        return render('confirm.html',
             title='All done!',
             message='No more inquiries to process!',
             url=url_for('admin.home'),
@@ -59,7 +59,7 @@ def help_inquiry(id):
     if request.method == 'POST':
         resolve_inquiry(inquiry)
         return redirect(url_for('admin.help'))
-    return render_template('help.html', inquiry=inquiry)
+    return render('help.html', inquiry=inquiry)
 
 
 #########
@@ -76,7 +76,7 @@ def event_create():
     if request.method == 'POST' and form.validate():
         event = create_event(request.form)
         return redirect(url_for('admin.event_detail', id=event.id))
-    return render_template('form.html', form=form, title='Create Event')
+    return render('form.html', form=form, title='Create Event')
 
 @requires('/admin')
 @admin.route('/event/<string:id>/edit', methods=['POST', 'GET'])
@@ -86,13 +86,13 @@ def event_edit(id):
     if request.method == 'POST' and form.validate():
         event = edit_event(event, request.form)
         return redirect(url_for('admin.event_detail', id=event.id))
-    return render_template('form.html', form=form, title='Edit Event')
+    return render('form.html', form=form, title='Edit Event')
 
 @requires('/admin')
 @admin.route('/event/<string:id>', methods=['POST', 'GET'])
 def event_detail(id):
     event = get_event(id=id)
-    return render_template('event_detail.html', event=event)
+    return render('event_detail.html', event=event)
 
 
 ############
@@ -109,14 +109,5 @@ def settings():
         for k, v in request.form.items():
             setattr(setting, k, v)
         setting = add_obj(setting)
-        return render_template('confirm.html',
-            title='Setting updated',
-            url=url_for('admin.settings'),
-            action='Back to settings',
-            message='Setting "%s" updated with <code>%s</code>' % (setting.name, str(request.form)))
-    return render_template('settings.html', settings=settings)
-
-# add setting as a Jinja filter
-@app.template_filter('setting')
-def setting(name):
-    return get_setting(name=name).value
+        return redirect(url_for('admin.settings'))
+    return render('settings.html', settings=settings)

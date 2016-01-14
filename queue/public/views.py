@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, request
 from .forms import *
 from .controllers import *
 from queue import app, login_manager, whitelist
 from queue.admin.models import User, Inquiry
-from queue.views import anonymous_required
+from queue.views import anonymous_required, render
 import flask_login
 
 public = Blueprint('public', __name__)
@@ -15,7 +15,7 @@ public = Blueprint('public', __name__)
 @public.route('/')
 def home():
     """List of all 'unresolved' and 'resolving' inquiries for the homepage"""
-    return render_template('queue.html',
+    return render('queue.html',
         unresolved=unresolved_inquiries(),
         resolving=resolving_inquiries())
 
@@ -30,8 +30,8 @@ def inquiry():
         form = InquiryForm(request.form, obj=user)
     form.category.choices = [(s, s) for s in ('question', 'tutoring')]
     if request.method == 'POST' and form.validate():
-        return render_template('confirm.html', **add_inquiry(request.form))
-    return render_template('form.html', form=form, title='Add Inquiry',
+        return render('confirm.html', **add_inquiry(request.form))
+    return render('form.html', form=form, title='Add Inquiry',
         submit='Ask')
 
 ###################
@@ -51,7 +51,7 @@ def login():
             print(' * %s (%s) logged in.' % (user.name, user.email))
             return get_user_home(user)
         message = 'Login failed.'
-    return render_template('form.html', message=message, form=form,
+    return render('form.html', message=message, form=form,
         title='Login', submit='Login')
 
 @public.route('/register', methods=['GET', 'POST'])
@@ -60,8 +60,8 @@ def register():
     """Register"""
     form = RegisterForm(request.form)
     if request.method == 'POST' and form.validate():
-        return render_template('confirm.html', **add_user(request.form))
-    return render_template('form.html', form=form, title='Register',
+        return render('confirm.html', **add_user(request.form))
+    return render('form.html', form=form, title='Register',
         submit='Register')
 
 ######################
