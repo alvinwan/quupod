@@ -95,12 +95,28 @@ def event_detail(id):
     return render_template('event_detail.html', event=event)
 
 
-#############
-# ANALYTICS #
-#############
+############
+# SETTINGS #
+############
 
 @requires('staff')
-@admin.route('/analytics')
-def analytics():
-    """analytics for requests"""
-    return render_template('analytics.html')
+@admin.route('/settings', methods=['POST', 'GET'])
+def settings():
+    """settings"""
+    settings = get_settings()
+    if request.method == 'POST':
+        setting = Setting.query.filter_by(name=request.form['name']).first()
+        for k, v in request.form.items():
+            setattr(setting, k, v)
+        setting = add_obj(setting)
+        return render_template('confirm.html',
+            title='Setting updated',
+            url=url_for('admin.settings'),
+            action='Back to settings',
+            message='Setting "%s" updated with <code>%s</code>' % (setting.name, str(request.form)))
+    return render_template('settings.html', settings=settings)
+
+# add setting as a Jinja filter
+@app.template_filter('setting')
+def setting(name):
+    return get_setting(name=name).value

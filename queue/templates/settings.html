@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block main %}
+<section class="event">
+  <div class="col-md-6 event-text">
+    <p class="event-byline"><a href="{{ url_for('admin.home') }}">Admin</a> &raquo; Settings</p>
+    <h1 class="event-title">Settings</h1>
+    <p class="event-copy"></p>
+  </div>
+  <div class="col-md-6 event-decor">
+    <a href="{{ url_for('admin.help') }}" class="button">Help</a>
+  </div>
+  <!-- <nav class="event-nav">
+    <ul>
+      <li><a class="s" href="#events"></a></li>
+    </ul>
+  </nav> -->
+</section>
+<section class="queue">
+  {% for setting in settings %}
+  <div class="setting col-md-12">
+    <h3>{{ setting.name }}</h2>
+    <p>{{ setting.description | safe }}</p>
+    <form method="POST">
+      <input type="hidden" value="{{ setting.name }}" name="name">
+      {% if setting.enabled %}
+      <input type="text" value="{{ setting.value }}" name="value">
+      <input type="submit" class="button sm color">
+      {% else %}
+      <p><b>Why enable?</b> {{ setting.enable_description }}</p>
+      <input type="hidden" value="1" name="enabled">
+      <input type="submit" class="button sm color" value="Enable">
+      {% endif %}
+    </form>
+    {% if setting.enabled and setting.toggable %}
+    <form method="POST">
+      <input type="hidden" value="1" name="enabled">
+      <input type="submit" class="button sm color" value="Disable">
+    </form>
+    {% endif %}
+  </div>
+  {% endfor %}
+</section>
+{% endblock %}

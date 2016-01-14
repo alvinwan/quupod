@@ -1,8 +1,9 @@
 from queue import db, whitelist
 from queue.controllers import multi2dict
 from flask import redirect, url_for
-from queue.admin.models import User, Inquiry, add_obj
+from queue.admin.models import User, Inquiry
 import flask_login
+from queue.models import add_obj
 
 ###############
 # CONTROLLERS #

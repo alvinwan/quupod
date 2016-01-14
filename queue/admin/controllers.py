@@ -1,7 +1,8 @@
 from flask import url_for
 from queue import db
 from queue.controllers import multi2dict
-from .models import Inquiry, add_obj, Event
+from queue.models import add_obj, Setting
+from .models import Inquiry, Event
 from sqlalchemy import asc
 
 
@@ -97,3 +98,26 @@ def get_events(**kwargs):
     :return: list of Event objects
     """
     return Event.query.filter_by(**kwargs).all()
+
+############
+# SETTINGS #
+############
+
+def get_settings(**kwargs):
+    """
+    Get settings by filters
+
+    :param kwargs: keyword argument filters
+    :return: list of Setting objects
+    """
+    return Setting.query.filter_by(**kwargs).all()
+
+
+def get_setting(**kwargs):
+    """
+    Get setting by filters
+
+    :param kwargs: keyword argument filters
+    :return: Setting object
+    """
+    return Setting.query.filter_by(**kwargs).first()

@@ -243,6 +243,7 @@ main {
       padding:0.25em;
       font-size:1.15em;
       margin:1em 0;
+      background-color:transparent;
     }
       input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus, textarea:focus {
         color:#333;
@@ -280,6 +281,12 @@ main {
     .module .content-copy {
       text-align:center;
     }
+  .setting {
+    margin-top:2em;
+  }
+  .setting form + form .button {
+    margin-left:0.5em;
+  }
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
   header .left {

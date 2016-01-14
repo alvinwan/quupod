@@ -6,7 +6,7 @@ import flask_login
 try:
     lines = filter(bool, open('queue.cfg').read().splitlines())
     config = dict(map(lambda s: s.strip(), d.split(':')) for d in lines)
-    settings = (config['username'],
+    creds = (config['username'],
         config['password'],
         config['server'],
         config['database'])
@@ -26,7 +26,7 @@ app = Flask(__name__)
 
 # Configuration for mySQL database
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://%s:%s@%s/%s' % settings
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://%s:%s@%s/%s' % creds
 db = SQLAlchemy(app)
 
 # Configuration for login sessions
