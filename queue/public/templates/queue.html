@@ -1,7 +1,9 @@
 {% extends "public.html" %}
 {% block panel %}
 <section class="queue">
-  <h2 class="queue-title">{{ panel }}</h2>
+  <p class="queue-note ttr">Estimated Time to Resolution: {{ ttr }}</p>
+  <h2 class="queue-title col-md-6">{{ panel }} {% if inquiries | length != 0 %}({{ inquiries | length }}){% endif %}</h2>
+  <div class="col-md-12 queue-content">
   {% if inquiries | length == 0 %}
     <p class="queue-note">{{ empty }}</p>
   {% else %}
@@ -20,5 +22,6 @@
     {% endfor %}
   </table>
   {% endif %}
+  </div>
 </section>
 {% endblock %}

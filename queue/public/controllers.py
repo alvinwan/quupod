@@ -141,7 +141,7 @@ def whitelist_promote(user):
 def present_staff():
     """Fetch all present staff members"""
     resolutions = Resolution.query.filter(
-        Resolution.resolved_at >= arrow.utcnow().replace(hours=-6)).all()
+        Resolution.resolved_at >= arrow.utcnow().replace(hours=-3)).all()
     staff = set()
     for resolution in resolutions:
         user = get_user(id=resolution.user_id)
@@ -159,3 +159,14 @@ def present_staff():
         user.status = 'free' if not current else 'busy'
         staff.add(user)
     return staff
+
+
+def ttr():
+    """Compute average time until resolution."""
+    resolutions = Resolution.query.filter(
+        Resolution.resolved_at >= arrow.utcnow().replace(hours=-3)).all()
+    ns = [res.resolved_at - res.created_at for res in resolutions]
+    total = ns[0]
+    for n in ns[1:]:
+        total = n + total
+    return total/len(ns)

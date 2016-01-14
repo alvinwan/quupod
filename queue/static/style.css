@@ -218,9 +218,15 @@ main {
       padding-top:0;
     }
     .queue-title {
-      width:100%;
       padding: 1em 0;
       margin:0;
+    }
+    .queue-content {
+      margin:0;
+      padding:0;
+    }
+    .queue .ttr {
+      float:right;
     }
     .queue-list {
     }

@@ -19,7 +19,8 @@ def home():
     return render('queue.html',
         inquiries=unresolved_inquiries(),
         panel='Unresolved',
-        empty='No unaddressed inquiries!')
+        empty='No unaddressed inquiries!',
+        ttr=ttr())
 
 @public.route('/resolving')
 def resolving():
@@ -27,7 +28,8 @@ def resolving():
     return render('queue.html',
         inquiries=resolving_inquiries(),
         panel='Resolving',
-        empty='No inquiries currently being resolved.')
+        empty='No inquiries currently being resolved.',
+        ttr=ttr())
 
 @public.route('/staff')
 def staff():
@@ -35,7 +37,8 @@ def staff():
     return render('staff.html',
         staff=present_staff(),
         panel='Staff',
-        empty='No staff members currently present.')
+        empty='No staff members currently present.',
+        ttr=ttr())
 
 @public.route('/inquiry', methods=['POST', 'GET'])
 def inquiry():
