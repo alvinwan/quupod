@@ -9,3 +9,6 @@ wtforms-alchemy==0.13.3
 passlib==1.6.5
 flask_login==0.3.2
 arrow==0.7.0
+oauth2client==1.5.2
+google-api-python-client==1.4.2
+pycrypto==2.6.1

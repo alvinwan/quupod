@@ -69,7 +69,7 @@ def login():
     if request.method == 'POST' and form.validate():
         user = get_user(username=request.form['username'])
         if user and user.password == request.form['password']:
-            return login_and_redirect(user)
+            return redirect(login_and_url(user))
         message = 'Login failed.'
     return render('form.html', message=message, form=form,
         title='Login', submit='Login')
@@ -90,20 +90,18 @@ def token_login():
     """Login via Google token"""
     google_info = verify_google_token(request.form['token'])
     if google_info:
+        print(' * Google Token verified!')
         google_id = google_info['sub']
         user = User.query.filter_by(google_id=google_id).first()
         if not user:
+            print(' * Registering user using Google token...')
             user = add_obj(User(
                 name=google_info['name'],
                 email=google_info['email'],
                 google_id=google_id
             ))
-        return login_and_redirect(user)
-    return render('confirm.html',
-        title='Invalid token',
-        message='Your login attempt has been logged and reported.',
-        url=url_for('public.home'),
-        action='Home')
+        return login_and_url(user)
+    return 'Google token verification failed.'
 
 ######################
 # SESSION UTILIITIES #

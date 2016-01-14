@@ -18,10 +18,16 @@
       var xhr = new XMLHttpRequest();
       xhr.open('POST', "{{ url_for('public.token_login') }}");
       xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      xhr.onload = function() {
-        console.log('Signed in as: ' + xhr.responseText);
-      };
       xhr.send('token=' + id_token);
+      xhr.onload = function() {
+        window.location.replace(xhr.responseText);
+      };
+    }
+    function signOut() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      auth2.signOut().then(function () {
+        window.location.replace('/');
+      });
     }
     </script>
   </head>
@@ -37,7 +43,7 @@
             <i class="fa fa-user fa-stack-1x"></i>
           </span>
         </p>
-        <a class="header-action" href="{{ url_for('logout') }}">logout</a>
+        <a class="header-action" onclick="signOut()" href="{{ url_for('logout') }}">logout</a>
         {% if current_user.role == 'staff' %}
         <a class="header-action" href="{{ url_for('admin.home') }}">Admin</a>
         <a class="header-action" href="{{ url_for('public.home') }}">Queue</a>

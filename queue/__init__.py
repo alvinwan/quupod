@@ -17,7 +17,7 @@ config = {
     'PORT': url.port,
     'DATABASE': database_url.split('/')[3].split('?')[0],
     'SECRET_KEY': get('SECRET_KEY', 'dEf@u1t$eCRE+KEY'),
-    'DEBUG': get('DEBUG', False),
+    'DEBUG': get('DEBUG', 'False'),
     'WHITELIST': get('WHITELIST', ''),
     'GOOGLECLIENTID': get('GOOGLECLIENTID', None)
 }
@@ -25,7 +25,7 @@ try:
     lines = filter(bool, open('config.cfg').read().splitlines())
     config.update(dict(filter(
         lambda item: item[1],
-        (map(lambda s: s.strip(), d.split(':')) for d in lines))))
+        (tuple(map(lambda s: s.strip(), d.split(':'))) for d in lines))))
 except FileNotFoundError:
     print(' * Configuration file not found. Rerun `make install` and \
 update the new config.cfg accordingly.')
@@ -38,9 +38,15 @@ found in the environment. All of the following must be present: username, \
 password, server, database, secret_key, debug')
 
 secret_key = config['SECRET_KEY']
-debug = bool(config['DEBUG'])
+debug = config['DEBUG'].lower() == 'true'
 whitelist = config['WHITELIST'].split(',')
 googleclientID = config['GOOGLECLIENTID']
+
+print(' * Running in DEBUG mode.' if debug else
+      ' * Running in PRODUCTION mode.')
+
+print(' * Google Client ID: %s' % googleclientID if googleclientID else
+      ' * No Google Client ID found.')
 
 # Flask app
 app = Flask(__name__)

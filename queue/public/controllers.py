@@ -1,10 +1,11 @@
-from queue import db, whitelist
+from queue import db, whitelist, googleclientID
 from queue.controllers import multi2dict
 from flask import redirect, url_for
 from queue.admin.models import User, Inquiry, Resolution
 from queue.admin.controllers import get_setting, setting
 import flask_login, arrow
 from queue.models import add_obj
+from oauth2client import client, crypt
 
 ###############
 # CONTROLLERS #
@@ -116,6 +117,17 @@ def get_user(**kwargs):
     """
     return User.query.filter_by(**kwargs).first()
 
+def get_user_url(user):
+    """
+    Get home page URL for user
+
+    :param User user: user object
+    :return: User object or None
+    """
+    if user and getattr(user, 'role', None) == 'admin':
+        return url_for('admin.home')
+    return url_for('public.home')
+
 def get_user_home(user):
     """
     Get home page for user
@@ -123,9 +135,7 @@ def get_user_home(user):
     :param User user: user object
     :return: User object or None
     """
-    if user and getattr(user, 'role', None) == 'admin':
-        return redirect(url_for('admin.home'))
-    return redirect(url_for('public.home'))
+    return redirect(get_user_url(user))
 
 def whitelist_promote(user):
     """
@@ -138,7 +148,7 @@ def whitelist_promote(user):
         user.role = 'staff'
     return add_obj(user)
 
-def login_and_redirect(user):
+def login_and_url(user):
     """
     Login and redirect user
 
@@ -148,7 +158,7 @@ def login_and_redirect(user):
     flask_login.login_user(user)
     whitelist_promote(user)
     print(' * %s (%s) logged in.' % (user.name, user.email))
-    return get_user_home(user)
+    return get_user_url(user)
 
 def present_staff():
     """Fetch all present staff members"""
@@ -196,17 +206,16 @@ def verify_google_token(token):
     :param token str: token
     :return: token information if valid or None
     """
-    from oauth2client import client, crypt
-
     try:
-        idinfo = client.verify_id_token(token, CLIENT_ID)
-        # If multiple clients access the backend server:
-        if idinfo['aud'] not in [ANDROID_CLIENT_ID, IOS_CLIENT_ID, WEB_CLIENT_ID]:
+        idinfo = client.verify_id_token(token, googleclientID)
+        #If multiple clients access the backend server:
+        if idinfo['aud'] not in [googleclientID]:
             raise crypt.AppIdentityError("Unrecognized client.")
         if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
             raise crypt.AppIdentityError("Wrong issuer.")
-        if idinfo['hd'] != APPS_DOMAIN_NAME:
-            raise crypt.AppIdentityError("Wrong hosted domain.")
+        # Is this needed?
+        # if idinfo['hd'] != url_for('public.home'):
+        #     raise crypt.AppIdentityError("Wrong hosted domain.")
     except crypt.AppIdentityError:
         return
     return idinfo
