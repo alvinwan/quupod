@@ -51,7 +51,7 @@ class User(db.Model, flask_login.UserMixin):
     password = db.Column(PasswordType(schemes=['pbkdf2_sha512']))
     created_at = db.Column(ArrowType, default=arrow.utcnow())
 
-    google_id = db.Column(db.Text, unique=True)
+    google_id = db.Column(db.String(30), unique=True)
 
 
 class Inquiry(db.Model):
