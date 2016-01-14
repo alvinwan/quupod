@@ -3,4 +3,5 @@ from dbcreate import dbcreate
 
 if __name__ == "__main__":
     dbcreate()
-    app.run(debug=debug)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=debug)
