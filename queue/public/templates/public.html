@@ -3,9 +3,9 @@
 {% block main %}
 <section class="event">
   <div class="col-md-6 event-text">
-    <p class="event-byline">2 - 4 p.m. in Woz Lounge</p>
-    <h1 class="event-title">Homework Party</h1>
-    <p class="event-copy">Event description goes here in this field right here.</p>
+    <p class="event-byline"><a href="{{ app_url}}">{{ app_url }}</a></p>
+    <h1 class="event-title">{{ app_name }}</h1>
+    <p class="event-copy">{{ app_description }}<br>Current Locations: {{ app_locations }}</p>
   </div>
   <div class="col-md-6 event-decor">
     {% if not current_user.is_authenticated or current_user.role != 'staff' %}

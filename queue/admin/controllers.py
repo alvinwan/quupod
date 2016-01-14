@@ -125,4 +125,7 @@ def get_setting(**kwargs):
 
 def setting(name):
     """Return setting value"""
-    return get_setting(name=name).value
+    try:
+        return get_setting(name=name).value
+    except AttributeError:
+        return None

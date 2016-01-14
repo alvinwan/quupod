@@ -7,6 +7,16 @@ default_settings = [
         'value': 'CS70',
         'toggable': False
     }, {
+        'name': 'Description',
+        'description': 'byline displayed on the front page',
+        'value': 'Discrete Mathematics and Probability Theory',
+        'toggable': False
+    }, {
+        'name': 'URL',
+        'description': 'course website URL',
+        'value': 'cs70berkeley.com',
+        'toggable': False
+    }, {
         'name': 'Inquiry Types',
         'description': 'Comma-separated list of all inquiry types',
         'enabled': False,
