@@ -5,22 +5,20 @@ by [Alvin Wan](http://alvinwan.com), with contributions from [Ben Kha](http://gi
 
 ## Features
 
-**General**
+**Google login**
+Login with Google, or use the built-in login/registration system.
 
-- Google login: *Login with Google, or use the built-in login/registration system.*
+**Ease of use**
+Anonymous users can submit inquiries without creating an account. (may be disabled, requiring registration)
 
-**Guest**
+**Mutex Lock**
+Only one staff member can be assigned to an inquiry at a time.
 
-- ease of use: *Anonymous users can submit inquiries without creating an account*
+**Staff Approval**
+Add staff emails to the whitelist to auto-promote staff.
 
-**Staff**
-
-- mutex lock: *Only one staff member can be assigned to an inquiry at a time.*
-- staff approval: *Add staff emails to the whitelist to auto-promote staff.*
-
-**Analytics**
-
-- helpful statistics: *Queue calculates estimated time until resolution, and extra statistics are included for each active staff member.*
+**Basic Statistics**
+Queue calculates estimated time until resolution, and extra statistics are included for each active staff member.
 
 ## Preview
 
