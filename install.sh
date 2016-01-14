@@ -15,7 +15,7 @@ pip3 install --upgrade pip
 pip3 install -r requirements.txt
 
 # add configuration file if does not exist
-[ ! -f "queue.cfg" ] && cp default-queue.cfg queue.cfg
+[ ! -f "config.cfg" ] && cp default-config.cfg config.cfg
 
 echo "---
 

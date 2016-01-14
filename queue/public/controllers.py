@@ -150,10 +150,13 @@ def present_staff():
             Resolution.resolved_at >= arrow.utcnow().replace(hours=-6),
             Resolution.user_id == user.id
         )]
-        total = ns[0]
-        for n in ns[1:]:
-            total = n + total
-        user.average = total/len(ns)
+        if ns:
+            total = ns[0]
+            for n in ns[1:]:
+                total = n + total
+            user.average = total/len(ns)
+        else:
+            user.average = 'n/a'
         current = Resolution.query.filter_by(user_id=user.id,
             resolved_at=None).first()
         user.status = 'free' if not current else 'busy'
@@ -166,7 +169,9 @@ def ttr():
     resolutions = Resolution.query.filter(
         Resolution.resolved_at >= arrow.utcnow().replace(hours=-3)).all()
     ns = [res.resolved_at - res.created_at for res in resolutions]
-    total = ns[0]
-    for n in ns[1:]:
-        total = n + total
-    return total/len(ns)
+    if ns:
+        total = ns[0]
+        for n in ns[1:]:
+            total = n + total
+        return total/len(ns)
+    return 'n/a'
