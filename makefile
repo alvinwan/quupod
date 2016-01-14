@@ -15,3 +15,7 @@ db:
 refresh: queue/*/models.py
 	source activate.sh && \
 		python3 dbrefresh.py
+
+settings:
+	source activate.sh && \
+		python3 default_settings.py

@@ -14,10 +14,27 @@ public = Blueprint('public', __name__, template_folder='templates')
 
 @public.route('/')
 def home():
-    """List of all 'unresolved' and 'resolving' inquiries for the homepage"""
+    """List of all 'unresolved' inquiries for the homepage"""
     return render('queue.html',
-        unresolved=unresolved_inquiries(),
-        resolving=resolving_inquiries())
+        inquiries=unresolved_inquiries(),
+        panel='Unresolved',
+        empty='No unaddressed inquiries!')
+
+@public.route('/resolving')
+def resolving():
+    """List of all 'resolving' inquiries for the homepage"""
+    return render('queue.html',
+        inquiries=resolving_inquiries(),
+        panel='Resolving',
+        empty='No inquiries currently being resolved.')
+
+@public.route('/staff')
+def staff():
+    """Lists all staff present at the current event."""
+    return render('queue.html',
+        staff=present_staff(),
+        panel='Staff',
+        empty='No staff members currently present.')
 
 @public.route('/inquiry', methods=['POST', 'GET'])
 def inquiry():

@@ -95,3 +95,7 @@ def whitelist_promote(user):
     if user.email in whitelist:
         user.role = 'staff'
     return add_obj(user)
+
+def present_staff():
+    """Fetch all present staff members"""
+    return []

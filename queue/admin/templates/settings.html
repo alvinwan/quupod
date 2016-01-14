@@ -1,4 +1,5 @@
 {% extends "admin.html" %}
+{% set title='%s | %s' % (app_name, 'Settings') %}
 {% set panel='Settings' %}
 {% block text %}
     <p class="event-byline"><a href="{{ url_for('admin.home') }}">Admin</a> &raquo; Settings</p>
@@ -27,7 +28,8 @@
     </form>
     {% if setting.enabled and setting.toggable %}
     <form method="POST">
-      <input type="hidden" value="1" name="enabled">
+      <input type="hidden" value="{{ setting.name }}" name="name">
+      <input type="hidden" value="0" name="enabled">
       <input type="submit" class="button sm color" value="Disable">
     </form>
     {% endif %}

@@ -1,3 +1,5 @@
+from queue.models import Setting, add_obj
+
 default_settings = [
     {
         'name': 'Name',
@@ -24,5 +26,26 @@ default_settings = [
         'enabled': False,
         'enable_description': 'Enable to specify priority by inquiry type. Default is to order all inquiries, regardless of type, by time.',
         'toggable': True
+    }, {
+        'name': 'Locations',
+        'description': 'All locations available on the inquiry form. Disable to automatically detect locations from ongoing events.',
+        'value': 'Evans B4',
+        'enabled': True,
+        'enable_description': 'Enable to manually specify locations.',
+        'toggable': True
     }
 ]
+
+def load_settings():
+    """Add default settings to database if settings do not already exist."""
+    for setting in default_settings:
+        if not Setting.query.filter_by(name=setting['name']).first():
+            add_obj(Setting(**setting))
+
+if __name__ == '__main__':
+    load_settings()
+    print("""---
+
+    [OK] Default settings loaded.
+    Use 'make run' to launch server.
+    """)

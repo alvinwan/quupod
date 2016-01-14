@@ -1,13 +1,8 @@
 from queue import db
-from .default_settings import default_settings
-from queue.models import Setting, add_obj
+from default_settings import load_settings
 
 db.create_all()
-
-# Add all settings to database
-for setting in default_settings:
-    if not Setting.query.filter_by(name=setting['name']).first():
-        add_obj(Setting(**setting))
+load_settings()
 
 print("""---
 

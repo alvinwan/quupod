@@ -14,12 +14,12 @@ html, body,section, main {
   width:100%;
   float:left;
 }
-input[type="text"], input[type="password"], input[type="datetime"], textarea {
+/*input[type="text"], input[type="password"], input[type="datetime"], textarea {
   transition:         0.3s ease;
   -webkit-transition: 0.3s ease;
   -moz-transition:    0.3s ease;
   -o-transition:      0.3s ease;
-}
+}*/
 header {
   background-color:#a57602;
   width:100%;
@@ -294,7 +294,7 @@ main {
   .setting form + form .button {
     margin-left:0.5em;
   }
-  .setting h2 + p {
+  .setting p {
     font-size:1.2em;
     color:#666;
     font-weight:300;
