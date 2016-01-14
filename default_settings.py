@@ -21,12 +21,6 @@ default_settings = [
         'value': 'hw0,hw1',
         'toggable': True
     }, {
-        'name': 'Processing Priority',
-        'description': 'Comma-separated list of priorities. The order of priorities listed here will determine the order in which inquiries are processed.',
-        'enabled': False,
-        'enable_description': 'Enable to specify priority by inquiry type. Default is to order all inquiries, regardless of type, by time.',
-        'toggable': True
-    }, {
         'name': 'Locations',
         'description': 'All locations available on the inquiry form. Leave empty to automatically detect locations from ongoing events.',
         'value': 'Evans B4',
