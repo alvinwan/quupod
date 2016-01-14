@@ -30,13 +30,20 @@ default_settings = [
         'enable_description': 'Enable to restrict assignments students may place inquiries for.',
         'value': 'hw0,hw1',
         'toggable': True,
-        'textarea': True
+        'input_type': 'textarea'
     }, {
-        'name': 'Locations',
-        'description': 'All locations available on the inquiry form. Leave empty to automatically detect locations from ongoing events.',
-        'value': 'Evans B4',
+        'name': 'Location Toggle',
+        'description': 'Toggle whether or not inquiries will contain location information.',
         'enabled': True,
         'enable_description': 'Enable to give users the option to specify a location for an inquiry.',
+        'toggable': True,
+        'input_type': 'None'
+    }, {
+        'name': 'Locations',
+        'description': 'Manually specify a comma-separated list of locations. Disable to read list of locations from events or Google Calendar.',
+        'enabled': True,
+        'enable_description': 'Enable to manually specify a list of locations.',
+        'value': 'Evans B4',
         'toggable': True
     }
 ]

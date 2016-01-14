@@ -14,17 +14,19 @@
   {% for setting in settings %}
   <div class="setting col-md-12">
     <h2 class="queue-title">{{ setting.name }}</h2>
-    <p>{{ setting.description | safe }}</p>
+    <p>{{ setting.description | safe }}{% if setting.toggable %}<br>Enabled: <b>{{ setting.enabled }}</b>{% endif %}</p>
     <form method="POST">
       <input type="hidden" value="{{ setting.name }}" name="name">
       {% if setting.enabled %}
-        {% if setting.textarea %}
+        {% if setting.input_type != 'None' %}
+          {% if setting.input_type == 'textarea' %}
       <textarea name="value">
 {{ setting.value }}</textarea>
-        {% else %}
-      <input type="text" value="{{ setting.value }}" name="value">
-        {% endif %}
+          {% else %}
+      <input type="{{ setting.input_type }}" value="{{ setting.value }}" name="value">
+          {% endif %}
       <input type="submit" class="button sm color" value="Save">
+        {% endif %}
       {% else %}
       <p><b>Why enable?</b> {{ setting.enable_description }}</p>
       <input type="hidden" value="1" name="enabled">
