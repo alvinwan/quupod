@@ -1,1 +1,3 @@
-web: python run.py
+web:
+python dbcreate.py
+python run.py
