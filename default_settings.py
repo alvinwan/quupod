@@ -17,6 +17,18 @@ default_settings = [
         'value': 'cs70berkeley.com',
         'toggable': False
     }, {
+        'name': 'Google Login',
+        'description': 'Allow users to login using Google.',
+        'enabled': True,
+        'toggable': True,
+        'input_type': 'None'
+    }, {
+        'name': 'Default Login',
+        'description': 'Use the default registration and login system.',
+        'enabled': False,
+        'toggable': True,
+        'input_type': 'None'
+    }, {
         'name': 'Inquiry Types',
         'description': 'Comma-separated list of all inquiry types',
         'enabled': False,

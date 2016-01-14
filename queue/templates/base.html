@@ -14,6 +14,13 @@
     <!-- inline scripts -->
     <script>
     function onSignIn(googleUser) {
+      if ({{ logout }}) {
+        signOut();
+      } else {
+        signIn(googleUser);
+      }
+    }
+    function signIn(googleUser) {
       var id_token = googleUser.getAuthResponse().id_token;
       var xhr = new XMLHttpRequest();
       xhr.open('POST', "{{ url_for('public.token_login') }}");
@@ -43,7 +50,7 @@
             <i class="fa fa-user fa-stack-1x"></i>
           </span>
         </p>
-        <a class="header-action" onclick="signOut()" href="{{ url_for('logout') }}">logout</a>
+        <a class="header-action" href="{{ url_for('logout') }}">logout</a>
         {% if current_user.role == 'staff' %}
         <a class="header-action" href="{{ url_for('admin.home') }}">Admin</a>
         <a class="header-action" href="{{ url_for('public.home') }}">Queue</a>

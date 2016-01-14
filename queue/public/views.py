@@ -20,7 +20,8 @@ def home():
         inquiries=unresolved_inquiries(),
         panel='Unresolved',
         empty='No unaddressed inquiries!',
-        ttr=ttr())
+        ttr=ttr(),
+        logout=request.args.get('logout', 'false'))
 
 @public.route('/resolving')
 def resolving():
@@ -130,7 +131,7 @@ def request_loader(request):
 @app.route('/logout')
 def logout():
     flask_login.logout_user()
-    return redirect(url_for('public.home'))
+    return redirect(url_for('public.home', logout='true'))
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():

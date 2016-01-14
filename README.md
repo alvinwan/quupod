@@ -5,15 +5,18 @@ by [Alvin Wan](http://alvinwan.com), with contributions from [Ben Kha](http://gi
 
 ## Features
 
+**General**
+
+- Google login: *Login with Google, or use the built-in login/registration system.*
+
 **Guest**
 
 - ease of use: *Anonymous users can submit inquiries without creating an account*
 
 **Staff**
 
-- mutex lock: *Once a staff member starts resolving an inquiry, other staff members will not be able to modify the inquiry until it has been released or resolved.*
-- verified users: *Add staff emails to the whitelist, to auto-promote staff members upon registration or login.*
-- configurability: *Add inquiry types, restrict assignments per inquiry, specify locations and more.*
+- mutex lock: *Only one staff member can be assigned to an inquiry at a time.*
+- staff approval: *Add staff emails to the whitelist to auto-promote staff.*
 
 **Analytics**
 
@@ -76,7 +79,7 @@ Because of incompatbility issues with the makefile, on Windows you will have to 
 1. Add valid MySQL user credentials to `config.cfg`.
 1. Start the MySQL service using services.msc
 1. Create the database by using `mysql -u root -p`, then entering `create database queue;` in the interactive prompt.
-1. Setup the database; enter the python interactive shell `python -i`. Then, do the following: 
+1. Setup the database; enter the python interactive shell `python -i`. Then, do the following:
 ```
 >>> from queue import db
 >>> db.drop_all()
@@ -103,6 +106,5 @@ of `make run`.
 
 - For Mac OSX installations of MySQL, via Brew, start the server using
 `mysql.server start`. For other Linux-based operating systems, use
-`sudo service mysql start`. 
+`sudo service mysql start`.
 - For Windows, just start the server using `services.msc`.
-
