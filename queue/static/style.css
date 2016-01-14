@@ -337,3 +337,21 @@ main {
     padding:3em 0 2em 5em;
   }
 }
+
+/* style Google's button */
+header div.abcRioButton {
+  width:auto !important;
+  height:auto !important;
+  outline:none;
+  box-shadow:none;
+  background-color:transparent;
+  color:rgba(255,255,255,0.5);
+  text-transform:uppercase;
+  float:right;
+  padding:1.25em;
+}
+  header div.abcRioButton:hover {
+    color:#FFF;
+    font-weight:700;
+    box-shadow:none;
+  }
