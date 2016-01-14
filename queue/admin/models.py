@@ -46,10 +46,12 @@ class User(db.Model, flask_login.UserMixin):
     role = db.Column(ChoiceType(ROLES), default='student')
     inquiries = db.relationship('Inquiry', backref='owner', lazy='dynamic')
     name = db.Column(db.String(100))
-    email = db.Column(db.String(100))
+    email = db.Column(db.String(100), unique=True)
     username = db.Column(db.String(50), unique=True)
     password = db.Column(PasswordType(schemes=['pbkdf2_sha512']))
     created_at = db.Column(ArrowType, default=arrow.utcnow())
+
+    google_id = db.Column(db.Text, unique=True)
 
 
 class Inquiry(db.Model):

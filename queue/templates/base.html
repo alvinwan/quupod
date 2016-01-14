@@ -11,6 +11,19 @@
     <meta name="google-signin-client_id" content="{{ googleclientID }}">
     <!-- custom code -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- inline scripts -->
+    <script>
+    function onSignIn(googleUser) {
+      var id_token = googleUser.getAuthResponse().id_token;
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', "{{ url_for('public.token_login') }}");
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      xhr.onload = function() {
+        console.log('Signed in as: ' + xhr.responseText);
+      };
+      xhr.send('token=' + id_token);
+    }
+    </script>
   </head>
   <body class="{{ color }}">
     <header>

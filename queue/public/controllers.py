@@ -138,6 +138,18 @@ def whitelist_promote(user):
         user.role = 'staff'
     return add_obj(user)
 
+def login_and_redirect(user):
+    """
+    Login and redirect user
+
+    :param User user: user object
+    :return: redirect
+    """
+    flask_login.login_user(user)
+    whitelist_promote(user)
+    print(' * %s (%s) logged in.' % (user.name, user.email))
+    return get_user_home(user)
+
 def present_staff():
     """Fetch all present staff members"""
     resolutions = Resolution.query.filter(
@@ -175,3 +187,26 @@ def ttr():
             total = n + total
         return total/len(ns)
     return 'n/a'
+
+
+def verify_google_token(token):
+    """
+    Verify a google token
+
+    :param token str: token
+    :return: token information if valid or None
+    """
+    from oauth2client import client, crypt
+
+    try:
+        idinfo = client.verify_id_token(token, CLIENT_ID)
+        # If multiple clients access the backend server:
+        if idinfo['aud'] not in [ANDROID_CLIENT_ID, IOS_CLIENT_ID, WEB_CLIENT_ID]:
+            raise crypt.AppIdentityError("Unrecognized client.")
+        if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+            raise crypt.AppIdentityError("Wrong issuer.")
+        if idinfo['hd'] != APPS_DOMAIN_NAME:
+            raise crypt.AppIdentityError("Wrong hosted domain.")
+    except crypt.AppIdentityError:
+        return
+    return idinfo
