@@ -187,13 +187,13 @@ main {
       color:#FFF;
     }
       .blue .button.color {
-        background-color:#1e7896;
+        background-color:#37a3c6;
       }
     .button.color:hover {
       background-color:#a57602;
     }
       .blue .button.color:hover {
-        background-color:#37a3c6;
+        background-color:#1e7896;
       }
     .module .button {
       width:100%;
