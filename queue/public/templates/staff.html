@@ -1,0 +1,23 @@
+{% extends "public.html" %}
+{% block panel %}
+<section class="queue">
+  <h2 class="queue-title">Staff</h2>
+  <p>All staff members who have been active in the past 6 hours</p>
+  {% if staff | length == 0 %}
+    <p class="queue-note">Staff will be arriving soon.</p>
+  {% else %}
+  <table>
+    <tr><th>Name</th><th>Last Inquiry Resolved</th><th>Last Resolution Location</th><th>Average Resolution Time</th><th>Status</th></tr>
+    {% for member in staff %}
+    <tr>
+      <td>{{ member.name }}</td>
+      <td>{{ member.resolution.resolved_at.humanize() }}</td>
+      <td>{{ member.resolution.inquiry.location }}</td>
+      <td>{{ member.average }}</td>
+      <td>{{ member.status }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+</section>
+{% endblock %}

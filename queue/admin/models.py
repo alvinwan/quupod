@@ -12,11 +12,22 @@ import flask_login, arrow
 # MODELS #
 ##########
 
-resolutions = db.Table('resolutions',
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('inquiry_id', db.Integer, db.ForeignKey('inquiry.id')),
-    db.Column('comment', db.Text)
-)
+
+class Resolution(db.Model):
+
+    __tablename__ = 'resolution'
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(ArrowType, default=arrow.utcnow())
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    inquiry_id = db.Column(db.Integer, db.ForeignKey('inquiry.id'))
+    resolved_at = db.Column(ArrowType)
+    comment = db.Column(db.Text)
+
+    @property
+    def inquiry(self):
+        return Inquiry.query.filter_by(id=self.inquiry_id).first()
 
 
 class User(db.Model, flask_login.UserMixin):
@@ -68,8 +79,6 @@ class Inquiry(db.Model):
     problem = db.Column(db.String(25))
     location = db.Column(db.String(25))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    resolvers = db.relationship('User', secondary=resolutions,
-        backref=db.backref('resolutions', lazy='dynamic'))
     category = db.Column(ChoiceType(CATEGORIES))
 
     @property

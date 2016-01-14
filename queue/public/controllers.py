@@ -1,9 +1,9 @@
 from queue import db, whitelist
 from queue.controllers import multi2dict
 from flask import redirect, url_for
-from queue.admin.models import User, Inquiry
+from queue.admin.models import User, Inquiry, Resolution
 from queue.admin.controllers import get_setting, setting
-import flask_login
+import flask_login, arrow
 from queue.models import add_obj
 
 ###############
@@ -140,4 +140,22 @@ def whitelist_promote(user):
 
 def present_staff():
     """Fetch all present staff members"""
-    return []
+    resolutions = Resolution.query.filter(
+        Resolution.resolved_at >= arrow.utcnow().replace(hours=-6)).all()
+    staff = set()
+    for resolution in resolutions:
+        user = get_user(id=resolution.user_id)
+        user.resolution = resolution
+        ns = [res.resolved_at - res.created_at for res in Resolution.query.filter(
+            Resolution.resolved_at >= arrow.utcnow().replace(hours=-6),
+            Resolution.user_id == user.id
+        )]
+        total = ns[0]
+        for n in ns[1:]:
+            total = n + total
+        user.average = total/len(ns)
+        current = Resolution.query.filter_by(user_id=user.id,
+            resolved_at=None).first()
+        user.status = 'free' if not current else 'busy'
+        staff.add(user)
+    return staff

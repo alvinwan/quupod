@@ -32,7 +32,7 @@ def resolving():
 @public.route('/staff')
 def staff():
     """Lists all staff present at the current event."""
-    return render('queue.html',
+    return render('staff.html',
         staff=present_staff(),
         panel='Staff',
         empty='No staff members currently present.')

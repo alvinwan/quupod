@@ -40,8 +40,8 @@ def clear(location=None):
     if location:
         return 'Not yet implemented.'
     if request.method == 'POST':
-        return render('confirm.html', **clear_unfinished())
-    return render('confirm.html',
+        return render('admin_confirm.html', **clear_unfinished())
+    return render('admin_confirm.html',
         message='Are you sure? This will clear all resolving and unresolved. \
         <form method="POST"><input type="submit" value="clear"></form>',
         action='admin home',
@@ -55,7 +55,7 @@ def help_latest(location=None):
     """automatically selects next inquiry"""
     inquiry = get_latest_inquiry(location=location)
     if not inquiry:
-        return render('confirm.html',
+        return render('admin_confirm.html',
             title='All done!',
             message='No more inquiries to process!',
             url=url_for('admin.home'),

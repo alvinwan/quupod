@@ -2,9 +2,9 @@ from flask import url_for
 from queue import db
 from queue.controllers import multi2dict
 from queue.models import add_obj, Setting
-from .models import Inquiry
+from .models import Inquiry, Resolution
 from sqlalchemy import asc
-import flask_login
+import flask_login, arrow
 
 
 #############
@@ -61,12 +61,14 @@ def link_inquiry(inquiry):
     Link inquiry with current staff member.
 
     :param Inquiry inquiry: Inquiry object
-    :return: original inquiry object
+    :return: new Resolution object
     """
     user = flask_login.current_user
-    if user not in inquiry.resolvers:
-        inquiry.resolvers.append(user)
-    return add_obj(inquiry)
+    resolution = Resolution.query.filter_by(
+        user_id=user.id, inquiry_id=inquiry.id).first()
+    if not resolution:
+        return add_obj(Resolution(user_id=user.id, inquiry_id=inquiry.id))
+    return resolution
 
 def resolve_inquiry(inquiry):
     """
@@ -75,9 +77,14 @@ def resolve_inquiry(inquiry):
     :param Inquiry inquiry: Inquiry object
     :return: original inquiry object
     """
+    user = flask_login.current_user
     if not inquiry:
         return None
     inquiry.status = 'resolved'
+    resolution = Resolution.query.filter_by(
+        user_id=user.id, inquiry_id=inquiry.id).first()
+    resolution.resolved_at = arrow.utcnow()
+    add_obj(resolution)
     return add_obj(inquiry)
 
 

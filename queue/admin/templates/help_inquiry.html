@@ -1,16 +1,13 @@
-{% extends "base.html" %}
+{% extends "admin.html" %}
 {% set title='%s | %s %s' % (app_name, 'Helping', inquiry.name) %}
-{% block main %}
-<section class="event">
-  <div class="col-md-6 event-text">
+{% set panel='Help' %}
+{% block text %}
     <p class="event-byline">asked {{ inquiry.created_at.humanize() }}</p>
     <h1 class="event-title">{{ inquiry.name }}</h1>
     <p class="event-copy">{% if inquiry.question %}<i>Question: </i>{{ inquiry.question }}{% else %}<i>No question.</i>{% endif %}</p>
-  </div>
-  <div class="col-md-6 event-decor">
-    <form method="post">
-      <input type="submit" class="button" value="resolve">
-    </form>
-  </div>
-</section>
+{% endblock %}
+{% block decor %}
+  <form method="post">
+    <input type="submit" class="button" value="resolve">
+  </form>
 {% endblock %}

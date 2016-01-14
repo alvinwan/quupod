@@ -306,7 +306,7 @@ main {
   .setting form + form .button,.setting .button + .button {
     margin-left:0.5em;
   }
-  .setting p {
+  .setting p,.queue p {
     font-size:1.2em;
     color:#666;
     font-weight:300;
