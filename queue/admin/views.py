@@ -70,6 +70,7 @@ def help_latest(location=None):
 def help_inquiry(id, location=None):
     """automatically selects next inquiry or reloads inquiry """
     inquiry = get_inquiry(id)
+    link_inquiry(inquiry)
     if request.method == 'POST':
         resolve_inquiry(inquiry)
         if not location:

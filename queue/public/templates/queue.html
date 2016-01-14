@@ -6,13 +6,16 @@
     <p class="queue-note">{{ empty }}</p>
   {% else %}
   <table>
-    <tr><th>Name</th><th>Assignment</th><th>Problem</th><th>Queue Time</th></tr>
+    <tr><th>Name</th><th>Assignment</th><th>Problem</th><th>Queue Time</th>{% if panel == 'Resolving' %}<th>Staff</th>{% endif %}</tr>
     {% for inquiry in inquiries %}
     <tr>
       <td>{{ inquiry.name }}</td>
       <td>{{ inquiry.assignment }}</td>
       <td>{{ inquiry.problem }}</td>
       <td>{{ inquiry.created_at.humanize() }}</td>
+      {% if panel == 'Resolving' %}
+      <td>{% for resolver in inquiry.resolvers %}{{ resolver.name }}, {% endfor %}</td>
+      {% endif %}
     </tr>
     {% endfor %}
   </table>

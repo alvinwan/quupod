@@ -10,7 +10,7 @@
     <!-- custom code -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   </head>
-  <body>
+  <body class="{{ color }}">
     <header>
       <div class="col-md-2 col-sm-4 hidden-xs left">
         <a href="{{ url_for('public.home') }}"><h1 class="name">{{ app_name }}<span>Queue</span></h1></a>

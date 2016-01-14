@@ -28,6 +28,9 @@ header {
   top:0;
   left:0;
 }
+  .blue header {
+    background-color:#1e7896;
+  }
   header a:hover {
     text-decoration:none;
   }
@@ -93,6 +96,9 @@ main {
     float:left;
     z-index:5;
   }
+    .blue .event {
+      background-color:#37a3c6;
+    }
     .event-text {
       padding:3em 0 0 5em;
     }
@@ -180,9 +186,15 @@ main {
       background-color:#C90;
       color:#FFF;
     }
+      .blue .button.color {
+        background-color:#1e7896;
+      }
     .button.color:hover {
       background-color:#a57602;
     }
+      .blue .button.color:hover {
+        background-color:#37a3c6;
+      }
     .module .button {
       width:100%;
       text-align:center;
@@ -291,7 +303,7 @@ main {
     margin:0 0 2em 0;
     padding:0;
   }
-  .setting form + form .button {
+  .setting form + form .button,.setting .button + .button {
     margin-left:0.5em;
   }
   .setting p {

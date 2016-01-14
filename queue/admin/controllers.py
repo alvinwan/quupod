@@ -4,6 +4,7 @@ from queue.controllers import multi2dict
 from queue.models import add_obj, Setting
 from .models import Inquiry
 from sqlalchemy import asc
+import flask_login
 
 
 #############
@@ -53,6 +54,18 @@ def lock_inquiry(inquiry):
     if not inquiry:
         return None
     inquiry.status = 'resolving'
+    return add_obj(inquiry)
+
+def link_inquiry(inquiry):
+    """
+    Link inquiry with current staff member.
+
+    :param Inquiry inquiry: Inquiry object
+    :return: original inquiry object
+    """
+    user = flask_login.current_user
+    if user not in inquiry.resolvers:
+        inquiry.resolvers.append(user)
     return add_obj(inquiry)
 
 def resolve_inquiry(inquiry):
