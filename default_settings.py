@@ -20,7 +20,7 @@ default_settings = [
         'name': 'Inquiry Types',
         'description': 'Comma-separated list of all inquiry types',
         'enabled': False,
-        'enable_description': 'Enable to specify different inquiry types. These types can then be prioritized in the queue or have different restrictions applied.',
+        'enable_description': 'Enable to specify different inquiry types. These types can then have restrictions applied.',
         'value': 'question',
         'toggable': True
     }, {
@@ -32,7 +32,7 @@ default_settings = [
         'toggable': True,
         'input_type': 'textarea'
     }, {
-        'name': 'Location Toggle',
+        'name': 'Location Selection',
         'description': 'Toggle whether or not inquiries will contain location information.',
         'enabled': True,
         'enable_description': 'Enable to give users the option to specify a location for an inquiry.',
@@ -40,11 +40,11 @@ default_settings = [
         'input_type': 'None'
     }, {
         'name': 'Locations',
-        'description': 'Manually specify a comma-separated list of locations. Disable to read list of locations from events or Google Calendar.',
+        'description': 'Manually specify a comma-separated list of locations. Only takes effect if "Location Selection" is enabled',
         'enabled': True,
         'enable_description': 'Enable to manually specify a list of locations.',
         'value': 'Evans B4',
-        'toggable': True
+        'toggable': False
     }
 ]
 

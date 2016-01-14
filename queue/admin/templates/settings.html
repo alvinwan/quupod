@@ -13,7 +13,7 @@
 <section class="queue">
   {% for setting in settings %}
   <div class="setting col-md-12">
-    <h2 class="queue-title">{{ setting.name }}</h2>
+    <h2>{{ setting.name }}</h2>
     <p>{{ setting.description | safe }}{% if setting.toggable %}<br>Enabled: <b>{{ setting.enabled }}</b>{% endif %}</p>
     <form method="POST">
       <input type="hidden" value="{{ setting.name }}" name="name">

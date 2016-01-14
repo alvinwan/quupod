@@ -75,21 +75,3 @@ class Inquiry(db.Model):
     @property
     def owner(self):
         return Owner.query.filter_by(id=self.owner_id).first()
-
-
-class Event(db.Model):
-    """Event"""
-
-    __tablename__ = 'event'
-    id = db.Column(db.Integer, primary_key=True)
-    updated_at = db.Column(ArrowType)
-    updated_by = db.Column(db.Integer, db.ForeignKey('user.id'))
-    created_at = db.Column(ArrowType, default=arrow.utcnow())
-    created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
-
-    google_id = db.Column(db.String(100), unique=True)
-    name = db.Column(db.String(50))
-    description = db.Column(db.Text)
-    start = db.Column(ArrowType)
-    end = db.Column(ArrowType)
-    location = db.Column(db.Text)

@@ -2,7 +2,7 @@ from flask import url_for
 from queue import db
 from queue.controllers import multi2dict
 from queue.models import add_obj, Setting
-from .models import Inquiry, Event
+from .models import Inquiry
 from sqlalchemy import asc
 
 
@@ -33,14 +33,14 @@ def get_inquiry(id):
     """
     return Inquiry.query.filter_by(id=id).first()
 
-def get_latest_inquiry():
+def get_latest_inquiry(**kwargs):
     """
     Retrieve latest unresolved inquiry.
 
-    :param id: id of Inquiry
+    :param kwargs: keyword arguments to filter by
     :return: Inquiry object
     """
-    return Inquiry.query.filter_by(status='unresolved').order_by(
+    return Inquiry.query.filter_by(status='unresolved', **kwargs).order_by(
         asc(Inquiry.created_at)).first()
 
 def lock_inquiry(inquiry):
@@ -67,37 +67,6 @@ def resolve_inquiry(inquiry):
     inquiry.status = 'resolved'
     return add_obj(inquiry)
 
-
-##########
-# EVENTS #
-##########
-
-def create_event(data):
-    """
-    Create a new event for the queue
-
-    :param ImmutableDict data: all data for event
-    :return: new Event object
-    """
-    return add_obj(Event(**multi2dict(data)))
-
-def get_event(**kwargs):
-    """
-    Retrieve event
-
-    :param kwargs: key argument filters
-    :return: Event object
-    """
-    return Event.query.filter_by(**kwargs).first()
-
-def get_events(**kwargs):
-    """
-    Retrieve events
-
-    :param kwargs: key argument filters
-    :return: list of Event objects
-    """
-    return Event.query.filter_by(**kwargs).all()
 
 ############
 # SETTINGS #

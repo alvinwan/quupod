@@ -7,12 +7,14 @@
 <p class="event-copy">Want to get started clearing the queue? Click 'help'.</p>
 {% endblock %}
 {% block decor %}
-<a href="{{ url_for('admin.clear') }}" class="button">Clear Inquiries</a>
 <a href="{{ url_for('admin.help') }}" class="button">Help</a>
 {% endblock %}
 {% block panel %}
 <section class="queue">
-  <h2 class="queue-title">Alerts</h2>
-  <p class="queue-note">All is well.</p>
+  <div class="setting">
+    <h2>Clear</h2>
+    <p>If everyone has left and the day has ended, use this button to clear the queue.</p>
+    <a href="{{ url_for('admin.clear') }}" class="button color">Clear Inquiries</a>
+  </div>
 </section>
 {% endblock %}

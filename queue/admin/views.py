@@ -4,7 +4,6 @@ from queue.views import requires, render
 from queue.public.controllers import unresolved_inquiries, resolving_inquiries
 from .models import User, Inquiry
 from .controllers import *
-from .forms import *
 import flask_login
 from default_settings import load_settings
 
@@ -21,16 +20,14 @@ admin = Blueprint('admin', __name__, url_prefix='/admin',
 @requires('staff')
 def home():
     """admin homepage"""
-    events = get_events()
-    return render('home.html', events=events)
+    return render('home.html')
 
-@admin.route('/events')
+@admin.route('/help')
 @flask_login.login_required
 @requires('staff')
-def events():
-    """admin events page"""
-    events = get_events()
-    return render('events.html', events=events)
+def help():
+    """help start"""
+    return render('help.html')
 
 @admin.route('/clear/<string:location>', methods=['POST', 'GET'])
 @admin.route('/clear', methods=['POST', 'GET'])
@@ -48,12 +45,12 @@ def clear(location=None):
         action='admin home',
         url=url_for('admin.home'))
 
-@admin.route('/help')
+@admin.route('/help/<string:location>')
 @flask_login.login_required
 @requires('staff')
-def help():
+def help_location(location):
     """automatically selects next inquiry"""
-    inquiry = get_latest_inquiry()
+    inquiry = get_latest_inquiry(location=location)
     if not inquiry:
         return render('confirm.html',
             title='All done!',
@@ -63,52 +60,17 @@ def help():
     lock_inquiry(inquiry)
     return redirect(url_for('admin.help_inquiry', id=inquiry.id))
 
+@admin.route('/help/<string:location>/<string:id>', methods=['POST', 'GET'])
 @admin.route('/help/<string:id>', methods=['POST', 'GET'])
 @flask_login.login_required
 @requires('staff')
-def help_inquiry(id):
+def help_inquiry(id, location=None):
     """automatically selects next inquiry or reloads inquiry """
     inquiry = get_inquiry(id)
     if request.method == 'POST':
         resolve_inquiry(inquiry)
-        return redirect(url_for('admin.help'))
-    return render('help.html', inquiry=inquiry)
-
-
-#########
-# EVENT #
-#########
-
-# datetime format %Y-%m-%d %H:%M:%S format: 2016-1-13 12:00:00
-
-@admin.route('/event/create', methods=['POST', 'GET'])
-@flask_login.login_required
-@requires('staff')
-def event_create():
-    """create a new event"""
-    form = EventForm(request.form)
-    if request.method == 'POST' and form.validate():
-        event = create_event(request.form)
-        return redirect(url_for('admin.event_detail', id=event.id))
-    return render('form.html', form=form, title='Create Event', submit='Create')
-
-@admin.route('/event/<string:id>/edit', methods=['POST', 'GET'])
-@flask_login.login_required
-@requires('staff')
-def event_edit(id):
-    event = get_event(id=id)
-    form = EventForm(request.form, obj=event)
-    if request.method == 'POST' and form.validate():
-        event = edit_event(event, request.form)
-        return redirect(url_for('admin.event_detail', id=event.id))
-    return render('form.html', form=form, title='Edit Event', submit='Save')
-
-@admin.route('/event/<string:id>', methods=['POST', 'GET'])
-@flask_login.login_required
-@requires('staff')
-def event_detail(id):
-    event = get_event(id=id)
-    return render('event_detail.html', event=event)
+        return redirect(url_for('admin.help_location', location=location))
+    return render('help_inquiry.html', inquiry=inquiry)
 
 
 ############
