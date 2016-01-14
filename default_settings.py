@@ -15,11 +15,12 @@ default_settings = [
         'toggable': True
     }, {
         'name': 'Assignments',
-        'description': 'Comma-separated list of active assignments e.g., <code>hw0,hw1,proj2</code>. To specify different active assignments for each inquiry type, put each inquiry type on a new line, and prefix the list of assignments with <code>\<inquiry type\>:</code>',
+        'description': 'Comma-separated list of active assignments e.g., <code>hw0,hw1,proj2</code>. To specify different active assignments for each inquiry type, put each inquiry type on a new line, and prefix the list of assignments with <code>[inquiry type]:</code>. For inquiry types that should not have any assignment restrictions, simply leave the inquiry type out, or use <code>*</code>',
         'enabled': False,
         'enable_description': 'Enable to restrict assignments students may place inquiries for.',
         'value': 'hw0,hw1',
-        'toggable': True
+        'toggable': True,
+        'textarea': True
     }, {
         'name': 'Locations',
         'description': 'All locations available on the inquiry form. Leave empty to automatically detect locations from ongoing events.',

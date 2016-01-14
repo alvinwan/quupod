@@ -28,7 +28,7 @@ class InquiryForm(ModelForm):
     name = wtf.StringField('Name',
         description='Your full name', validators=[DataRequired()])
     category = wtf.SelectField('Category',
-        description='What type of inquiry are you submitting?', coerce=str)
+        description='What type of inquiry are you submitting?', coerce=str, validators=[Optional()])
     location = wtf.SelectField('Location',
         description='Help us find you!', coerce=str, validators=[Optional()])
     assignment = wtf.StringField('Assignment',

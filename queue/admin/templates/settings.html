@@ -18,7 +18,12 @@
     <form method="POST">
       <input type="hidden" value="{{ setting.name }}" name="name">
       {% if setting.enabled %}
+        {% if setting.textarea %}
+      <textarea name="value">
+{{ setting.value }}</textarea>
+        {% else %}
       <input type="text" value="{{ setting.value }}" name="value">
+        {% endif %}
       <input type="submit" class="button sm color" value="Save">
       {% else %}
       <p><b>Why enable?</b> {{ setting.enable_description }}</p>

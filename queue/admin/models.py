@@ -66,6 +66,7 @@ class Inquiry(db.Model):
     comments = db.Column(db.Text)
     assignment = db.Column(db.String(25))
     problem = db.Column(db.String(25))
+    location = db.Column(db.String(25))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     resolvers = db.relationship('User', secondary=resolutions,
         backref=db.backref('resolutions', lazy='dynamic'))

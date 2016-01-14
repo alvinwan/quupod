@@ -62,11 +62,11 @@ def allowed_assignment(request, form):
     str2lst = lambda s: (s.strip() for s in lst.split(','))
     assignment, category = request.form['assignment'], request.form['category']
     if ':' in lst:
-        lst = dict(lst.split(':')).get(category, None)
-        if not lst:
+        lst = dict(l.split(':') for l in lst.splitlines()).get(category, '*')
+        if lst == '*':
             return True
     if assignment not in str2lst(lst):
-        form.errors.setdefault('assignment', []).append('Assignment "%s" is not allowed. Only the following assignments are: %s' % (assignment, lst))
+        form.errors.setdefault('assignment', []).append('For "%s" inquiries, assignment "%s" is not allowed. Only the following assignments are: %s' % (category, assignment, lst))
         return False
     return True
 

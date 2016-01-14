@@ -6,6 +6,7 @@ from .models import User, Inquiry
 from .controllers import *
 from .forms import *
 import flask_login
+from default_settings import load_settings
 
 
 admin = Blueprint('admin', __name__, url_prefix='/admin',
@@ -31,9 +32,10 @@ def events():
     events = get_events()
     return render('events.html', events=events)
 
-@requires('staff')
 @admin.route('/clear/<string:location>', methods=['POST', 'GET'])
 @admin.route('/clear', methods=['POST', 'GET'])
+@flask_login.login_required
+@requires('staff')
 def clear(location=None):
     """Clear all inquiries, period. Or, clear all inquiries for a location."""
     if location:
@@ -46,8 +48,9 @@ def clear(location=None):
         action='admin home',
         url=url_for('admin.home'))
 
-@requires('staff')
 @admin.route('/help')
+@flask_login.login_required
+@requires('staff')
 def help():
     """automatically selects next inquiry"""
     inquiry = get_latest_inquiry()
@@ -60,8 +63,9 @@ def help():
     lock_inquiry(inquiry)
     return redirect(url_for('admin.help_inquiry', id=inquiry.id))
 
-@requires('staff')
 @admin.route('/help/<string:id>', methods=['POST', 'GET'])
+@flask_login.login_required
+@requires('staff')
 def help_inquiry(id):
     """automatically selects next inquiry or reloads inquiry """
     inquiry = get_inquiry(id)
@@ -77,8 +81,9 @@ def help_inquiry(id):
 
 # datetime format %Y-%m-%d %H:%M:%S format: 2016-1-13 12:00:00
 
-@requires('staff')
 @admin.route('/event/create', methods=['POST', 'GET'])
+@flask_login.login_required
+@requires('staff')
 def event_create():
     """create a new event"""
     form = EventForm(request.form)
@@ -87,8 +92,9 @@ def event_create():
         return redirect(url_for('admin.event_detail', id=event.id))
     return render('form.html', form=form, title='Create Event', submit='Create')
 
-@requires('/admin')
 @admin.route('/event/<string:id>/edit', methods=['POST', 'GET'])
+@flask_login.login_required
+@requires('staff')
 def event_edit(id):
     event = get_event(id=id)
     form = EventForm(request.form, obj=event)
@@ -97,8 +103,9 @@ def event_edit(id):
         return redirect(url_for('admin.event_detail', id=event.id))
     return render('form.html', form=form, title='Edit Event', submit='Save')
 
-@requires('/admin')
 @admin.route('/event/<string:id>', methods=['POST', 'GET'])
+@flask_login.login_required
+@requires('staff')
 def event_detail(id):
     event = get_event(id=id)
     return render('event_detail.html', event=event)
@@ -108,10 +115,12 @@ def event_detail(id):
 # SETTINGS #
 ############
 
-@requires('staff')
 @admin.route('/settings', methods=['POST', 'GET'])
+@flask_login.login_required
+@requires('staff')
 def settings():
     """settings"""
+    load_settings()
     settings = get_settings()
     if request.method == 'POST':
         setting = Setting.query.filter_by(name=request.form['name']).first()

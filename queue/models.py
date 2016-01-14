@@ -42,3 +42,4 @@ class Setting(db.Model):
     toggable = db.Column(db.Boolean, default=False)
     enabled = db.Column(db.Boolean, default=True)
     enable_description = db.Column(db.Text)
+    textarea = db.Column(db.Boolean, default=False)
