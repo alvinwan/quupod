@@ -50,6 +50,19 @@ def inquiry():
     user, form = flask_login.current_user, InquiryForm(request.form)
     if user.is_authenticated:
         form = InquiryForm(request.form, obj=user)
+    elif get_setting(name='Require Login').enabled:
+        if get_setting(name='Google Login').enabled and not \
+            get_setting(name='Default Login').enabled:
+            return render('confirm.html',
+                title='Login Required',
+                message='Login via Google (in the top navigation bar) to add an inquiry.',
+                action='Home',
+                url=url_for('public.home'))
+        return render('confirm.html',
+            title='Login Required',
+            message='Login to add an inquiry, and start using this queue.',
+            action='Login',
+            url=url_for('public.login'))
     form = add_inquiry_choices(form)
     if request.method == 'POST' and form.validate() and \
         valid_assignment(request, form):
@@ -67,6 +80,11 @@ def inquiry():
 def login():
     """Login"""
     form, message = LoginForm(request.form), ''
+    if not get_setting(name='Default Login').enabled:
+        return render('confirm.html', title='Disabled',
+            message='Default registration and login has been disabled. Authenticate using Google (in the top navigation bar).',
+            action='Home',
+            url=url_for('public.home'))
     if request.method == 'POST' and form.validate():
         user = get_user(username=request.form['username'])
         if user and user.password == request.form['password']:
@@ -80,6 +98,11 @@ def login():
 def register():
     """Register"""
     form = RegisterForm(request.form)
+    if not get_setting(name='Default Login').enabled:
+        return render('confirm.html', title='Disabled',
+            message='Default registration and login has been disabled. Authenticate using Google (in the top navigation bar).',
+            action='Home',
+            url=url_for('public.home'))
     if request.method == 'POST' and form.validate():
         return render('confirm.html', **add_user(request.form))
     return render('form.html', form=form, title='Register',

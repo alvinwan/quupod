@@ -42,6 +42,11 @@
       pollNotification('.queue', {{ refresh }});
       {% endif %}
     });
+
+    /*
+     * Google Authentication
+     * Signin or signout on data load
+     */
     {% if app_google_login %}
     function onSignIn(googleUser) {
       if ({{ logout or 'false' }}) {
@@ -50,6 +55,7 @@
         signIn(googleUser);
       }
     }
+    
     function signIn(googleUser) {
       var id_token = googleUser.getAuthResponse().id_token;
       var xhr = new XMLHttpRequest();
@@ -60,6 +66,7 @@
         window.location.replace(xhr.responseText);
       };
     }
+
     function signOut() {
       var auth2 = gapi.auth2.getAuthInstance();
       auth2.signOut().then(function () {
