@@ -10,6 +10,9 @@ a, b, i {
 body .right {
   float:right;
 }
+html, body {
+  height:100%;
+}
 html, body,section, main {
   width:100%;
   float:left;

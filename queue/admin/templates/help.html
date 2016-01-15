@@ -10,13 +10,19 @@
 {% block panel %}
 <section class="queue">
   <div class="setting">
+    {% if current_inquiry %}
+    <h2>Unfinished Inquiry</h2>
+    <p>You have an unfinished inquiry on your hands!</p>
+    <a class="button color" href="{{ url_for('admin.help_inquiry', id=current_inquiry.id) }}">Resume</a>
+    {% else %}
     <h2>Choose a Location</h2>
     <p>All active locations: {{ app_locations }}</p>
-    {% for location in locations %}
-      <a class="button color" href="{{ url_for('admin.help_latest', location=location[0]) }}">{{ location[0] }}({{ location[1] }})</a>
-    {% endfor %}
-    {% if locations | length == 0 %}
+      {% for location in locations %}
+      <a class="button color" href="{{ url_for('admin.help_latest', location=location[0]) }}">{{ location[0] }} ({{ location[1] }})</a>
+      {% endfor %}
+      {% if locations | length == 0 %}
     <p class="queue-note">No locations have pending requests!</p>
+      {% endif %}
     {% endif %}
   </div>
 </section>

@@ -29,11 +29,12 @@ def help():
     """help start"""
     if not get_setting(name='Location Selection').enabled:
         return redirect(url_for('admin.help_latest'))
-    locations = [(l, len(list(get_inquiries(location=l, status='unresolved'))))
+    locations = [(l, get_inquiries('count', location=l, status='unresolved'))
         for l in setting('Locations').split(',')]
     return render('help.html',
         no_mobile_action=True,
-        locations=[t for t in locations if t[1]])
+        locations=[t for t in locations if t[1]],
+        current_inquiry=get_current_inquiry())
 
 @admin.route('/clear/<string:location>', methods=['POST', 'GET'])
 @admin.route('/clear', methods=['POST', 'GET'])
@@ -51,32 +52,43 @@ def clear(location=None):
         action='admin home',
         url=url_for('admin.home'))
 
-@admin.route('/help/<string:location>/latest')
-@admin.route('/help/latest')
+@admin.route('/help/<string:location>/latest', methods=['POST', 'GET'])
+@admin.route('/help/latest', methods=['POST', 'GET'])
+@admin.route('/help/<string:location>/<int:offset>', methods=['POST', 'GET'])
+@admin.route('/help/<int:offset>', methods=['POST', 'GET'])
 @flask_login.login_required
 @requires('staff')
-def help_latest(location=None):
+def help_latest(location=None, offset=0):
     """automatically selects next inquiry"""
-    inquiry = get_latest_inquiry(location=location)
+    inquiry = get_latest_inquiry(location=location, offset=offset)
     if not inquiry:
         return redirect(url_for('admin.help', notification=NOTIF_HELP_DONE))
+    delayed_id = request.args.get('delayed_id', None)
+    if delayed_id:
+        close_inquiry(get_inquiry(delayed_id), status='unresolved')
     lock_inquiry(inquiry)
+    link_inquiry(inquiry)
     return redirect(url_for('admin.help_inquiry',
         id=inquiry.id, location=location))
 
-@admin.route('/help/<string:location>/<string:id>', methods=['POST', 'GET'])
-@admin.route('/help/<string:id>', methods=['POST', 'GET'])
+@admin.route('/help/<string:location>/inquiry/<string:id>', methods=['POST', 'GET'])
+@admin.route('/help/inquiry/<string:id>', methods=['POST', 'GET'])
 @flask_login.login_required
 @requires('staff')
 def help_inquiry(id, location=None):
     """automatically selects next inquiry or reloads inquiry """
     inquiry = get_inquiry(id)
-    link_inquiry(inquiry)
     if request.method == 'POST':
-        resolve_inquiry(inquiry)
+        delayed_id=None
+        if request.form['status'] == 'unresolved':
+            delayed_id = inquiry.id
+            close_resolution(inquiry)
+        else:
+            close_inquiry(inquiry)
         if not location:
-            return redirect(url_for('admin.help_latest'))
-        return redirect(url_for('admin.help_latest', location=location))
+            return redirect(url_for('admin.help_latest', delayed_id=delayed_id))
+        return redirect(url_for('admin.help_latest',
+            location=location, delayed_id=delayed_id))
     return render('help_inquiry.html', inquiry=inquiry)
 
 

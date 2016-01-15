@@ -34,25 +34,40 @@ def get_inquiry(id):
     """
     return Inquiry.query.filter_by(id=id).first()
 
-def get_inquiries(**kwargs):
+def get_inquiries(f='all', **kwargs):
     """
     Retrieve inquiries
 
     :param kwargs: filters
     :return: Inquiry object
     """
-    return Inquiry.query.filter_by(**kwargs).all()
+    return getattr(Inquiry.query.filter_by(**kwargs), f)()
 
-def get_latest_inquiry(**kwargs):
+def get_current_inquiry():
     """
-    Retrieve latest unresolved inquiry.
+    Return current inquiry if exists.
+
+    :return: Inquiry
+    """
+    user = flask_login.current_user
+    resolution = Resolution.query.filter_by(user_id=user.id, resolved_at=None).first()
+    if resolution:
+        return resolution.inquiry
+
+def get_latest_inquiry(offset=0, **kwargs):
+    """
+    Retrieve latest unresolved inquiry. If there is a current inquiry the
+    current staff member is resolving, that inquiry will be loaded instead.
 
     :param kwargs: keyword arguments to filter by
     :return: Inquiry object
     """
+    user, current_inquiry = flask_login.current_user, get_current_inquiry()
+    if current_inquiry:
+        return current_inquiry
     kwargs = {k:v for k, v in kwargs.items() if v}
     return Inquiry.query.filter_by(status='unresolved', **kwargs).order_by(
-        asc(Inquiry.created_at)).first()
+        asc(Inquiry.created_at)).offset(offset).first()
 
 def lock_inquiry(inquiry):
     """
@@ -75,12 +90,12 @@ def link_inquiry(inquiry):
     """
     user = flask_login.current_user
     resolution = Resolution.query.filter_by(
-        user_id=user.id, inquiry_id=inquiry.id).first()
+        user_id=user.id, inquiry_id=inquiry.id, resolved_at=None).first()
     if not resolution:
         return add_obj(Resolution(user_id=user.id, inquiry_id=inquiry.id))
     return resolution
 
-def resolve_inquiry(inquiry):
+def close_inquiry(inquiry, status='resolved'):
     """
     Mark inquiry as 'resolved'.
 
@@ -90,12 +105,23 @@ def resolve_inquiry(inquiry):
     user = flask_login.current_user
     if not inquiry:
         return None
-    inquiry.status = 'resolved'
-    resolution = Resolution.query.filter_by(
-        user_id=user.id, inquiry_id=inquiry.id).first()
-    resolution.resolved_at = arrow.utcnow()
-    add_obj(resolution)
+    inquiry.status = status
+    if inquiry.resolution:
+        close_resolution(inquiry)
     return add_obj(inquiry)
+
+def close_resolution(inquiry):
+    """
+    Close resolution.
+
+    :param Inquiry inquiry: Inquiry object
+    :return: resolution object
+    """
+    user = flask_login.current_user
+    resolution = Resolution.query.filter_by(
+        user_id=user.id, inquiry_id=inquiry.id, resolved_at=None).first()
+    resolution.resolved_at = arrow.utcnow()
+    return add_obj(resolution)
 
 
 ############

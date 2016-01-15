@@ -10,7 +10,12 @@
 {% block decor %}
 <div class="col-md-6 event-decor">
   <form method="post">
+    <input type="hidden" name="status" value="resolving">
     <input type="submit" class="button" value="resolve">
+  </form>
+  <form method="post">
+    <input type="hidden" name="status" value="unresolved">
+    <input type="submit" class="button" value="release">
   </form>
 </div>
 {% endblock %}
