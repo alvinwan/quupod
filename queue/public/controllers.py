@@ -117,7 +117,7 @@ def get_user(**kwargs):
     """
     return User.query.filter_by(**kwargs).first()
 
-def get_user_url(user):
+def get_user_url(user, **kwargs):
     """
     Get home page URL for user
 
@@ -125,8 +125,8 @@ def get_user_url(user):
     :return: User object or None
     """
     if user and getattr(user, 'role', None) == 'admin':
-        return url_for('admin.home')
-    return url_for('public.home')
+        return url_for('admin.home', **kwargs)
+    return url_for('public.home', **kwargs)
 
 def get_user_home(user):
     """
@@ -148,7 +148,7 @@ def whitelist_promote(user):
         user.role = 'staff'
     return add_obj(user)
 
-def login_and_url(user):
+def login_user(user):
     """
     Login and redirect user
 
@@ -158,7 +158,7 @@ def login_and_url(user):
     flask_login.login_user(user)
     whitelist_promote(user)
     print(' * %s (%s) logged in.' % (user.name, user.email))
-    return get_user_url(user)
+    return user
 
 def present_staff():
     """Fetch all present staff members"""

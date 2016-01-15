@@ -3,7 +3,7 @@ from queue import app
 from queue.views import requires, render
 from queue.public.controllers import unresolved_inquiries, resolving_inquiries
 from .models import User, Inquiry
-from queue.errors import *
+from queue.notifications import *
 from .controllers import *
 import flask_login
 
@@ -29,7 +29,11 @@ def help():
     """help start"""
     if not get_setting(name='Location Selection').enabled:
         return redirect(url_for('admin.help_latest'))
-    return render('help.html', no_mobile_action=True)
+    locations = [(l, len(list(get_inquiries(location=l, status='unresolved'))))
+        for l in setting('Locations').split(',')]
+    return render('help.html',
+        no_mobile_action=True,
+        locations=[t for t in locations if t[1]])
 
 @admin.route('/clear/<string:location>', methods=['POST', 'GET'])
 @admin.route('/clear', methods=['POST', 'GET'])
@@ -58,8 +62,8 @@ def help_latest(location=None):
         return render('admin_confirm.html',
             title='All done!',
             message='No more inquiries to process!',
-            url=url_for('admin.home'),
-            action='admin home')
+            url=url_for('admin.help'),
+            action='back to help screen')
     lock_inquiry(inquiry)
     return redirect(url_for('admin.help_inquiry',
         id=inquiry.id, location=location))
@@ -96,7 +100,7 @@ def settings():
             setattr(setting, k, v)
         if (request.form['name'] == 'Google Login' and request.form['enabled'] == '0' and not get_setting(name='Default Login').enabled) or (
             request.form['name'] == 'Default Login' and request.form['enabled'] == '0' and not get_setting(name='Google Login').enabled):
-            return redirect(url_for('admin.settings', error=ERR_NO_LOGIN))
+            return redirect(url_for('admin.settings',notification=ERR_NO_LOGIN))
         setting = add_obj(setting)
         return redirect(url_for('admin.settings'))
     return render('settings.html', settings=settings)

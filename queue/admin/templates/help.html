@@ -1,6 +1,7 @@
 {% extends "admin.html" %}
 {% set title='%s | %s' % (app_name, 'Help') %}
 {% set panel='Help' %}
+{% set refresh=3000 %}
 {% block text %}
 <p class="event-byline"><a href="{{ url_for('admin.home') }}">Admin</a> &raquo; Help</p>
 <h1 class="event-title">Help</h1>
@@ -9,11 +10,14 @@
 {% block panel %}
 <section class="queue">
   <div class="setting">
-    <h2>Active Locations</h2>
-    <p>Choose one to start.</p>
-    {% for location in app_locations.split(',') %}
-      <a class="button color" href="{{ url_for('admin.help_latest', location=location) }}">{{ location }}</a>
+    <h2>Choose a Location</h2>
+    <p>All active locations: {{ app_locations }}</p>
+    {% for location in locations %}
+      <a class="button color" href="{{ url_for('admin.help_latest', location=location[0]) }}">{{ location[0] }}({{ location[1] }})</a>
     {% endfor %}
+    {% if locations | length == 0 %}
+    <p class="queue-note">No locations have pending requests!</p>
+    {% endif %}
   </div>
 </section>
 {% endblock %}

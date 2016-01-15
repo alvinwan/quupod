@@ -5,6 +5,7 @@ from queue import app, login_manager, whitelist
 from queue.admin.controllers import setting
 from queue.admin.models import User, Inquiry
 from queue.views import anonymous_required, render
+from queue.notifications import *
 import flask_login
 
 public = Blueprint('public', __name__, template_folder='templates')
@@ -87,7 +88,8 @@ def login():
     if request.method == 'POST' and form.validate():
         user = get_user(username=request.form['username'])
         if user and user.password == request.form['password']:
-            return redirect(login_and_url(user))
+            login_user(user)
+            return redirect(get_user_url(user))
         message = 'Login failed.'
     return render('form.html', message=message, form=form,
         title='Login', submit='Login')
@@ -123,7 +125,10 @@ def token_login():
                 email=google_info['email'],
                 google_id=google_id
             ))
-        return login_and_url(user)
+        login_user(user)
+        if user and getattr(user, 'role', None) == 'staff':
+            return url_for('admin.home', notification=NOTIF_LOGIN_STAFF)
+        return url_for('public.home', notification=NOTIF_LOGIN_STUDENT)
     return 'Google token verification failed.'
 
 ######################

@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import url_for, redirect, render_template, request
 import flask_login
-from queue.errors import *
+from queue.notifications import *
 from queue import googleclientID
 from queue.public.controllers import get_user_home
 from queue.admin.controllers import setting, get_setting
@@ -15,8 +15,8 @@ def render(template, **kwargs):
         kwargs.setdefault('app_%s' % k.lower().replace(' ', '_'), value)
     return render_template(template,
         googleclientID=googleclientID,
-        banner_message=error_messages.get(
-            int(request.args.get('error', None) or -1), None),
+        banner_message=notifications.get(
+            int(request.args.get('notification', None) or -1), None),
         **kwargs)
 
 

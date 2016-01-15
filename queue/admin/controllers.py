@@ -34,6 +34,15 @@ def get_inquiry(id):
     """
     return Inquiry.query.filter_by(id=id).first()
 
+def get_inquiries(**kwargs):
+    """
+    Retrieve inquiries
+
+    :param kwargs: filters
+    :return: Inquiry object
+    """
+    return Inquiry.query.filter_by(**kwargs).all()
+
 def get_latest_inquiry(**kwargs):
     """
     Retrieve latest unresolved inquiry.

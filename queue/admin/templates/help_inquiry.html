@@ -1,5 +1,6 @@
 {% extends "admin.html" %}
 {% set title='%s | %s %s' % (app_name, 'Helping', inquiry.name) %}
+{% set no_mobile_action=True %}
 {% set panel='Help' %}
 {% block text %}
     <p class="event-byline">asked {{ inquiry.created_at.humanize() }}</p>
