@@ -28,7 +28,9 @@
       <input type="submit" class="button sm color" value="Save">
         {% endif %}
       {% else %}
+      {% if setting.enable_description %}
       <p><b>Why enable?</b> {{ setting.enable_description }}</p>
+      {% endif %}
       <input type="hidden" value="1" name="enabled">
       <input type="submit" class="button sm color" value="Enable">
       {% endif %}

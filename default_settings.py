@@ -24,10 +24,17 @@ default_settings = [
         'input_type': 'None'
     }, {
         'name': 'Default Login',
-        'description': 'Use the default registration and login system.',
+        'description': 'Allow users to register and login with the built-in system.',
         'enabled': False,
         'toggable': True,
         'input_type': 'None'
+    }, {
+        'name': 'Require Login',
+        'description': 'Require login to place inquiries, or allow anonymous users to create inquiries.',
+        'enabled': False,
+        'enable_description': 'Enable to forbid unregistered users from submitting inquiries.',
+        'toggable': True,
+        'input_type': None
     }, {
         'name': 'Inquiry Types',
         'description': 'Comma-separated list of all inquiry types',

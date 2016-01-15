@@ -23,9 +23,9 @@ config = {
 }
 try:
     lines = filter(bool, open('config.cfg').read().splitlines())
-    config.update(dict(filter(
-        lambda item: item[1],
-        (tuple(map(lambda s: s.strip(), d.split(':'))) for d in lines))))
+    for k, v in (map(lambda s: s.strip(), d.split(':')) for d in lines):
+        if v:
+            config[k.upper()] = v
 except FileNotFoundError:
     print(' * Configuration file not found. Rerun `make install` and \
 update the new config.cfg accordingly.')
