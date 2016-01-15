@@ -17,6 +17,13 @@ default_settings = [
         'value': 'cs70berkeley.com',
         'toggable': False
     }, {
+        'name': 'Large Banner',
+        'description': 'Display a large banner with basic course details and possibly announcements.',
+        'enabled': False,
+        'enable_description': 'Enable to include a section at the top of the queue, for announcements.',
+        'toggable': True,
+        'input_type': 'None'
+    }, {
         'name': 'Google Login',
         'description': 'Allow users to login using Google.',
         'enabled': True,

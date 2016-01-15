@@ -41,10 +41,10 @@ def staff():
         empty='No staff members currently present.',
         ttr=ttr())
 
-@public.route('/inquiry', methods=['POST', 'GET'])
+@public.route('/request', methods=['POST', 'GET'])
 def inquiry():
     """
-    Place a new inquiry, which may be authored by either a system user or an
+    Place a new request, which may be authored by either a system user or an
     anonymous user.
     """
     user, form = flask_login.current_user, InquiryForm(request.form)
@@ -67,8 +67,7 @@ def inquiry():
     if request.method == 'POST' and form.validate() and \
         valid_assignment(request, form):
         return render('confirm.html', **add_inquiry(request.form))
-    print(form.errors)
-    return render('form.html', form=form, title='Add Inquiry',
+    return render('form.html', form=form, title='Request Help',
         submit='Ask')
 
 ###################

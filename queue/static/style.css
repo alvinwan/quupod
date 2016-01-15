@@ -144,7 +144,7 @@ main {
     float:left;
   }
     .event-nav {
-      padding:0 0 0 2em;
+      padding:0.5em 0 0 2em;
     }
     .event-nav ul {
       margin:0;
@@ -153,7 +153,7 @@ main {
       float:left;
       list-style:none;
     }
-    .event-nav a {
+    .event-nav li a {
       padding:1em;
       text-transform:uppercase;
       color:rgba(255,255,255,0.5);
@@ -162,9 +162,14 @@ main {
       border-bottom:0.25em solid transparent;
       text-decoration:none;
     }
-    .event-nav a:hover,.event-nav a.s {
+    .event-nav li a:hover,.event-nav li a.s {
       color:#FFF;
       border-bottom:0.25em solid #FFF;
+    }
+    .event-nav .button {
+      margin-top:0.25em;
+      float:right;
+      margin-right:5em;
     }
   .button {
     border-radius:0.25em;
@@ -378,7 +383,7 @@ footer.authorship {
     padding: 1em 5em 3em 5em;
   }
   .event-nav {
-    padding: 0 0 0 5em;
+    padding: 0.5em 0 0 5em;
   }
   .queue .ttr {
     float:right;
