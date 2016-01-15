@@ -23,6 +23,15 @@ def load_settings(override=False):
             add_obj(Setting(**setting))
 
 
+def run(app):
+    db_create()
+    print('[OK] Database creation complete.')
+    load_settings()
+    print('[OK] Default settings added.')
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=debug)
+
+
 default_settings = [
     {
         'name': 'Name',
@@ -138,9 +147,4 @@ Use 'make run' to launch server.
     Use 'make run' to launch server.
         """)
     else:
-        db_create()
-        print('[OK] Database creation complete.')
-        load_settings()
-        print('[OK] Default settings added.')
-        port = int(os.environ.get('PORT', 5000))
-        app.run(host='0.0.0.0', port=port, debug=debug)
+        run(app)
