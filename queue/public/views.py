@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, render_template
 from .forms import *
 from .controllers import *
 from queue import app, login_manager, whitelist
