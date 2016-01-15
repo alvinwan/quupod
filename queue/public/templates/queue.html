@@ -1,7 +1,7 @@
 {% extends "public.html" %}
 {% block panel %}
 <section class="queue">
-  <p class="queue-note ttr col-xs-12">Estimated Wait: {{ ttr }}</p>
+  <p class="right hidden-lg hidden-md hidden-sm col-xs-12">Estimated wait: {{ ttr }}</p>
   <h2 class="queue-title col-md-6 hidden-xs">{{ panel }} {% if inquiries | length != 0 %}({{ inquiries | length }}){% endif %}</h2>
   <div class="col-md-12 queue-content">
   <table>
