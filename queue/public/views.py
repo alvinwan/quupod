@@ -158,3 +158,26 @@ def logout():
 @login_manager.unauthorized_handler
 def unauthorized_handler():
     return get_user_home(flask_login.current_user)
+
+##################
+# ERROR HANDLERS #
+##################
+
+@app.errorhandler(404)
+def not_found(error):
+    return render('error.html',
+        title='404. Oops.',
+        code=404,
+        message='Oops. This page doesn\'t exist!',
+        url=url_for('public.home'),
+        action='Return to homepage?'), 404
+
+
+@app.errorhandler(500)
+def not_found(error):
+    return render('error.html',
+        title='500. Hurr.',
+        code=500,
+        message='Sorry, try again! Sometimes, our server goes to sleep, which causes our application to crash. If this problem perists, contact a staff member. Otherwise, refresh, and you\'ll be on your way!',
+        url=request.path,
+        action='Reload'), 500
