@@ -25,9 +25,14 @@ Queue calculates estimated time until resolution, and extra statistics are inclu
 
 ## Preview
 
-<img width="1276" alt="screen shot 2016-01-14 at 1 43 15 am" src="https://cloud.githubusercontent.com/assets/2068077/12320929/3febef6a-ba60-11e5-9e4a-77d3b4678b56.png">
+<img width="1278" alt="screen shot 2016-01-14 at 10 10 10 pm" src="https://cloud.githubusercontent.com/assets/2068077/12346697/a462645a-bb0b-11e5-92b8-0f718e63f9a8.png">
 
-<img width="1273" alt="screen shot 2016-01-14 at 1 45 03 am" src="https://cloud.githubusercontent.com/assets/2068077/12320973/7f262aec-ba60-11e5-8cbc-c09be036967b.png">
+<img width="1278" alt="screen shot 2016-01-14 at 10 12 25 pm" src="https://cloud.githubusercontent.com/assets/2068077/12346724/e9708c84-bb0b-11e5-98da-82fef54dd018.png">
+
+<img width="301" alt="screen shot 2016-01-14 at 10 11 03 pm" src="https://cloud.githubusercontent.com/assets/2068077/12346706/c6d38d5c-bb0b-11e5-91e2-98d724884b27.png">
+
+<img width="301" alt="screen shot 2016-01-14 at 10 11 20 pm" src="https://cloud.githubusercontent.com/assets/2068077/12346708/c8756ce8-bb0b-11e5-8afd-c716064f6578.png">
+
 
 ## Installation
 
