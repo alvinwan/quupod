@@ -3,6 +3,7 @@ from queue import app
 from queue.views import requires, render
 from queue.public.controllers import unresolved_inquiries, resolving_inquiries
 from .models import User, Inquiry
+from queue.errors import *
 from .controllers import *
 import flask_login
 from default_settings import load_settings
@@ -94,6 +95,9 @@ def settings():
         setting = Setting.query.filter_by(name=request.form['name']).first()
         for k, v in request.form.items():
             setattr(setting, k, v)
+        if (request.form['name'] == 'Google Login' and request.form['enabled'] == '0' and not get_setting(name='Default Login').enabled) or (
+            request.form['name'] == 'Default Login' and request.form['enabled'] == '0' and not get_setting(name='Google Login').enabled):
+            return redirect(url_for('admin.settings', error=ERR_NO_LOGIN))
         setting = add_obj(setting)
         return redirect(url_for('admin.settings'))
     return render('settings.html', settings=settings)

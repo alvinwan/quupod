@@ -348,6 +348,20 @@ footer.authorship {
     text-decoration:none;
     color:#999;
   }
+.banner p {
+  margin-bottom:0;
+}
+  .banner {
+    padding:2em 5em;
+    color:#FFF;
+    font-size:1.15em;
+    font-weight:300;
+    box-shadow:0 0 1em 0 rgba(0,0,0,0.3);
+  }
+  .blue .banner {
+    background-color:#599bb1;
+    z-index:15;
+  }
 
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {

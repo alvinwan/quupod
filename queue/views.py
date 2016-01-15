@@ -1,6 +1,7 @@
 from functools import wraps
-from flask import url_for, redirect, render_template
+from flask import url_for, redirect, render_template, request
 import flask_login
+from queue.errors import *
 from queue import googleclientID
 from queue.public.controllers import get_user_home
 from queue.admin.controllers import setting, get_setting
@@ -12,7 +13,11 @@ def render(template, **kwargs):
     for k in (s['name'] for s in default_settings):
         value = setting(k) or get_setting(name=k).enabled
         kwargs.setdefault('app_%s' % k.lower().replace(' ', '_'), value)
-    return render_template(template, googleclientID=googleclientID, **kwargs)
+    return render_template(template,
+        googleclientID=googleclientID,
+        banner_message=error_messages.get(
+            int(request.args.get('error', None) or -1), None),
+        **kwargs)
 
 
 def anonymous_required(f):

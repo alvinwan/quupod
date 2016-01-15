@@ -55,7 +55,7 @@
         signIn(googleUser);
       }
     }
-    
+
     function signIn(googleUser) {
       var id_token = googleUser.getAuthResponse().id_token;
       var xhr = new XMLHttpRequest();
@@ -109,6 +109,11 @@
       </div>
     </header>
     <main>
+      <div class="banner-cont">
+      {% if banner_message %}
+      <div class="banner"><p>{{ banner_message | safe}}</p></div>
+      {% endif %}
+      </div>
       {% block main %}
       {% endblock %}
     </main>
