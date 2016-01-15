@@ -325,6 +325,25 @@ main {
     float:left;
     width:100%;
   }
+footer.authorship {
+  background-color:#eee;
+  padding:2em 5em;
+}
+  footer p.author {
+    margin:0;
+    color:#999;
+    padding:0;
+  }
+  footer p a {
+    color:#999;
+    border-bottom:1px dotted #999;
+  }
+  footer p a:hover {
+    border-bottom:1px solid #999;
+    text-decoration:none;
+    color:#999;
+  }
+
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
   header .left {
