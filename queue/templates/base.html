@@ -11,13 +11,40 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <meta name="google-signin-client_id" content="{{ googleclientID }}">
     {% endif %}
+    <script src="http://code.jquery.com/jquery-2.2.0.min.js"></script>
     <!-- custom code -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <!-- inline scripts -->
-    {% if app_google_login %}
     <script>
+    $(document).ready(function() {
+
+      /*
+       * Poller
+       * refreshes an element at a predetermined frequency
+       */
+      function pollNotification(selector, frequency) {
+          setTimeout(function() {
+              reload(selector);
+              pollNotification(selector, frequency);
+          }, frequency);
+      }
+
+      // reload part of page by selector
+      function reload(selector, url) {
+          url = url || window.location.href;
+          $.get(url, function(html) {
+              console.log(' * Reloading "'+selector+'" from "'+url+'"');
+              $(selector).replaceWith($(html).find(selector));
+          })
+      }
+
+      {% if refresh %}
+      pollNotification('.queue', {{ refresh }});
+      {% endif %}
+    });
+    {% if app_google_login %}
     function onSignIn(googleUser) {
-      if ({{ logout }}) {
+      if ({{ logout or 'false' }}) {
         signOut();
       } else {
         signIn(googleUser);
@@ -39,8 +66,8 @@
         window.location.replace('/');
       });
     }
-    </script>
     {% endif %}
+    </script>
   </head>
   <body class="{{ color }}">
     <header>
@@ -73,7 +100,7 @@
       {% block main %}
       {% endblock %}
     </main>
-    <footer class="authorship col-md-12">
+    <footer class="authorship col-md-12 col-xs-12">
       <p class="col-md-12 author">programmed by <a href="http://alvinwan.com">Alvin Wan</a> &middot; project on <a href="http://github.com/CS70/ohquu">Github</a></p>
     </footer>
   </body>
