@@ -279,6 +279,12 @@ main {
       font-size:1.1em;
       padding:1em;
     }
+    .queue p.ttr {
+      font-size:0.9em;
+      padding:0;
+      color:#999;
+      font-weight:700;
+    }
   .sidebar {
     background-color:#C90;
     height:20em;
@@ -477,9 +483,6 @@ footer.authorship {
   }
   .event-nav {
     padding: 0.5em 0 0 5em;
-  }
-  .queue .ttr {
-    float:right;
   }
   .queue-title {
     width:50%;
