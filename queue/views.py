@@ -3,14 +3,15 @@ from flask import url_for, redirect, render_template
 import flask_login
 from queue import googleclientID
 from queue.public.controllers import get_user_home
-from queue.admin.controllers import setting
+from queue.admin.controllers import setting, get_setting
 from default_settings import default_settings
 
 
 def render(template, **kwargs):
     """Render with settings"""
     for k in (s['name'] for s in default_settings):
-        kwargs.setdefault('app_%s' % k.lower(), setting(k))
+        value = setting(k) or get_setting(name=k).enabled
+        kwargs.setdefault('app_%s' % k.lower().replace(' ', '_'), value)
     return render_template(template, googleclientID=googleclientID, **kwargs)
 
 

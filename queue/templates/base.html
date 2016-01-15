@@ -7,11 +7,14 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
+    {% if app_google_login %}
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <meta name="google-signin-client_id" content="{{ googleclientID }}">
+    {% endif %}
     <!-- custom code -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <!-- inline scripts -->
+    {% if app_google_login %}
     <script>
     function onSignIn(googleUser) {
       if ({{ logout }}) {
@@ -37,6 +40,7 @@
       });
     }
     </script>
+    {% endif %}
   </head>
   <body class="{{ color }}">
     <header>
@@ -56,8 +60,12 @@
         <a class="header-action" href="{{ url_for('public.home') }}">Queue</a>
         {% endif %}
         {% else %}
+        {% if app_default_login %}
         <a class="header-action" href="{{ url_for('public.login')}}">sign in</a> <a class="header-action"  href="{{ url_for('public.register') }}">sign up</a>
+        {% endif %}
+        {% if app_google_login %}
         <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        {% endif %}
         {% endif %}
       </div>
     </header>

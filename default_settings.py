@@ -34,7 +34,7 @@ default_settings = [
         'enabled': False,
         'enable_description': 'Enable to forbid unregistered users from submitting inquiries.',
         'toggable': True,
-        'input_type': None
+        'input_type': 'None'
     }, {
         'name': 'Inquiry Types',
         'description': 'Comma-separated list of all inquiry types',
