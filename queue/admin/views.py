@@ -59,11 +59,7 @@ def help_latest(location=None):
     """automatically selects next inquiry"""
     inquiry = get_latest_inquiry(location=location)
     if not inquiry:
-        return render('admin_confirm.html',
-            title='All done!',
-            message='No more inquiries to process!',
-            url=url_for('admin.help'),
-            action='back to help screen')
+        return redirect(url_for('admin.help', notification=NOTIF_HELP_DONE))
     lock_inquiry(inquiry)
     return redirect(url_for('admin.help_inquiry',
         id=inquiry.id, location=location))
@@ -95,12 +91,16 @@ def settings():
     """settings"""
     settings = get_settings()
     if request.method == 'POST':
+        notification = NOTIF_SETTING_UPDATED
         setting = Setting.query.filter_by(name=request.form['name']).first()
         for k, v in request.form.items():
             setattr(setting, k, v)
         if (request.form['name'] == 'Google Login' and request.form['enabled'] == '0' and not get_setting(name='Default Login').enabled) or (
             request.form['name'] == 'Default Login' and request.form['enabled'] == '0' and not get_setting(name='Google Login').enabled):
             return redirect(url_for('admin.settings',notification=ERR_NO_LOGIN))
+        if setting.name == 'Inquiry Types' and len(setting.value.split(',')) == 1:
+            notification = NOTIF_SETTING_ONE_TYPE
         setting = add_obj(setting)
-        return redirect(url_for('admin.settings'))
+        return redirect(url_for('admin.settings',
+            notification=notification))
     return render('settings.html', settings=settings)

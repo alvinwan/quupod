@@ -7,7 +7,7 @@ import os
 def db_refresh():
     """Refresh database"""
     db.drop_all()
-    dbcreate()
+    db_create()
 
 
 def db_create():

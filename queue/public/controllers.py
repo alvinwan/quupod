@@ -22,13 +22,7 @@ def add_inquiry(data):
     data = multi2dict(data)
     if user.is_authenticated:
         data['owner_id'] = user.id
-    add_obj(Inquiry(**data))
-    return {
-        'title': 'Inquiry created',
-        'message': 'Inquiry created! <code>%s</code>' % str(data),
-        'action': 'Back to queue',
-        'url': url_for('public.home')
-    }
+    return add_obj(Inquiry(**data))
 
 def add_inquiry_choices(form):
     """

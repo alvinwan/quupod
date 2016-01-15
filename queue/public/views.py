@@ -67,7 +67,9 @@ def inquiry():
     form = add_inquiry_choices(form)
     if request.method == 'POST' and form.validate() and \
         valid_assignment(request, form):
-        return render('confirm.html', **add_inquiry(request.form))
+        inquiry = add_inquiry(request.form)
+        return redirect(url_for('public.home',
+            notification=NOTIF_INQUIRY_PLACED))
     return render('form.html', form=form, title='Request Help',
         submit='Ask')
 

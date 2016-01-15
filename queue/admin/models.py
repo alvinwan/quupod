@@ -63,11 +63,6 @@ class Inquiry(db.Model):
 
     __tablename__ = 'inquiry'
 
-    CATEGORIES = (
-        ('question', 'question'),
-        ('tutoring', 'tutoring')
-    )
-
     STATUSES = (
         ('unresolved', 'has not yet been addressed'),
         ('resolving', 'being addressed by admin'),
@@ -85,7 +80,7 @@ class Inquiry(db.Model):
     problem = db.Column(db.String(25))
     location = db.Column(db.String(25))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    category = db.Column(ChoiceType(CATEGORIES))
+    category = db.Column(db.String(25))
 
     @property
     def resolution(self):
