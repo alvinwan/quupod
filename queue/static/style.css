@@ -379,10 +379,13 @@ footer.authorship {
     font-size:1.15em;
     font-weight:300;
     box-shadow:0 0 1em 0 rgba(0,0,0,0.3);
+    z-index:15;
   }
   .blue .banner {
     background-color:#599bb1;
-    z-index:15;
+  }
+  .gold .banner {
+    background-color:#e0b42f;
   }
 .mobile-action {
   position:fixed;
