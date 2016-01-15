@@ -42,6 +42,7 @@ header {
     padding:1em 2em;
     color:rgba(255,255,255,0.75);
     font-size:1.5em;
+    margin: 0.15em 0;
   }
   .name span {
     font-weight:300;
