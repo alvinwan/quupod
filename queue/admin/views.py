@@ -6,7 +6,6 @@ from .models import User, Inquiry
 from queue.errors import *
 from .controllers import *
 import flask_login
-from default_settings import load_settings
 
 
 admin = Blueprint('admin', __name__, url_prefix='/admin',
@@ -90,7 +89,6 @@ def help_inquiry(id, location=None):
 @requires('staff')
 def settings():
     """settings"""
-    load_settings()
     settings = get_settings()
     if request.method == 'POST':
         setting = Setting.query.filter_by(name=request.form['name']).first()
