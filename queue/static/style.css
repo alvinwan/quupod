@@ -321,7 +321,7 @@ main {
       width:100%;
       margin-bottom:5em;
       background-color:#FFF;
-      padding:5em;
+      padding:3em 2em;
       box-shadow:0 0 0.5em 0 rgba(0,0,0,0.15);
     }
     .module h3 {
@@ -437,6 +437,9 @@ footer.authorship {
 
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
+  .module {
+    padding:5em;
+  }
   .mobile-action {
     bottom:3em;
     right:5em;

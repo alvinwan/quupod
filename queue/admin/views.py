@@ -30,7 +30,7 @@ def help():
     """help start"""
     if not get_setting(name='Location Selection').enabled:
         return redirect(url_for('admin.help_latest'))
-    return render('help.html')
+    return render('help.html', no_mobile_action=True)
 
 @admin.route('/clear/<string:location>', methods=['POST', 'GET'])
 @admin.route('/clear', methods=['POST', 'GET'])

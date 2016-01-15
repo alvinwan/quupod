@@ -189,8 +189,8 @@ def present_staff():
 def ttr():
     """Compute average time until resolution."""
     resolutions = Resolution.query.filter(
-        Resolution.resolved_at >= arrow.utcnow().replace(hours=-3)).all()
-    ns = [res.resolved_at - res.created_at for res in resolutions]
+        Resolution.created_at >= arrow.utcnow().replace(hours=-3)).all()
+    ns = [res.created_at - res.inquiry.created_at for res in resolutions]
     if ns:
         total = ns[0]
         for n in ns[1:]:

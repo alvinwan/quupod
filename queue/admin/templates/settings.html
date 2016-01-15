@@ -6,9 +6,6 @@
     <h1 class="event-title">Settings</h1>
     <p class="event-copy">Here are the app's basic details and advanced configurations.</p>
 {% endblock %}
-{% block decor %}
-    <a href="{{ url_for('admin.help') }}" class="button">Help</a>
-{% endblock %}
 {% block panel %}
 <section class="queue">
   {% for setting in settings %}

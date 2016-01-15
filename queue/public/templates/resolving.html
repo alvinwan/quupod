@@ -1,16 +1,17 @@
 {% extends "public.html" %}
 {% block panel %}
 <section class="queue">
-  <p class="queue-note ttr">Estimated Time to Resolution: {{ ttr }}</p>
+  <p class="queue-note ttr col-xs-12">Estimated Wait: {{ ttr }}</p>
   <h2 class="queue-title col-md-6 hidden-xs">{{ panel }} {% if inquiries | length != 0 %}({{ inquiries | length }}){% endif %}</h2>
   <div class="col-md-12 queue-content">
   <table>
-    <tr><th>Help Start</th><th>Queue Time</th><th>Staff</th></tr>
+    <tr><th>Name</th><th>Help Start</th><th class="hidden-xs">Queue Time</th><th>Staff</th></tr>
   {% if inquiries | length > 0 %}
     {% for inquiry in inquiries %}
     <tr>
+      <td>{{ inquiry.name.split(' ')[0] }}</td>
       <td>{{ inquiry.resolution.created_at.humanize() }}</td>
-      <td>{{ inquiry.created_at.humanize() }}</td>
+      <td class="hidden-xs">{{ inquiry.created_at.humanize() }}</td>
       <td>{{ inquiry.resolution.staff.name }}</td>
     </tr>
     {% endfor %}
