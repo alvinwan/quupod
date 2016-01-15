@@ -32,9 +32,9 @@
       {% if not app_large_banner %}
         {% if current_user.is_authenticated or not app_require_login %}
           {% if current_user.role != 'staff' %}
-      <a class="sm button" href="{{ url_for('public.inquiry') }}">Request Help</a>
+      <a class="sm button hidden-xs" href="{{ url_for('public.inquiry') }}">Request Help</a>
           {% elif current_user.role == 'staff' %}
-      <a class="sm button" href="{{ url_for('admin.help') }}">Help</a>
+      <a class="sm button hidden-xs" href="{{ url_for('admin.help') }}">Help</a>
           {% endif %}
         {% endif %}
       {% endif %}

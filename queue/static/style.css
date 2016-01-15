@@ -72,10 +72,20 @@ header {
     font-size:1em;
     line-height:1em;
     padding:2em;
-    float:right;
+    float:left;
     margin:0;
     color:#FFF;
   }
+    .header-subtext {
+      position:absolute;
+      top:50%;
+      left:0;
+      margin-top:0.5em;
+      text-transform:capitalize;
+      width:100%;
+      text-align:center;
+      font-size:0.8em;
+    }
   .user-profile {
     width:2.5em;
     height:2.5em;
@@ -338,23 +348,24 @@ main {
   }
 footer.authorship {
   background-color:#eee;
-  padding:2em 5em;
-  margin-top: -5em;
+  padding:1em 2em;
+  margin-top: -3em;
   z-index:15;
+  color:#999;
 }
   footer p.author {
     margin:0;
-    color:#999;
+    color:inherit;
     padding:0;
   }
   footer p a {
-    color:#999;
+    color:inherit;
     border-bottom:1px dotted #999;
   }
   footer p a:hover {
     border-bottom:1px solid #999;
     text-decoration:none;
-    color:#999;
+    color:inherit;
   }
 .banner p {
   margin-bottom:0;
@@ -370,9 +381,70 @@ footer.authorship {
     background-color:#599bb1;
     z-index:15;
   }
+.mobile-action {
+  position:fixed;
+  bottom:5em;
+  right:3em;
+  text-transform:uppercase;
+  color:#FFF;
+  font-size:0.9em;
+  font-weight:400;
+  z-index:50;
+  border-radius:0.25em;
+  padding:1em 3em;
+  box-shadow:0 0 0.25em 0 rgba(0,0,0,0.5);
+}
+  .mobile-action p {
+    margin:0;
+  }
+  .blue .mobile-action {
+    background-color:#37a3c6;
+  }
+    .blue .mobile-action:hover {
+      background-color:#1e7896;
+    }
+  .gold .mobile-action {
+    background-color:#C90;
+  }
+    .gold .mobile-action:hover {
+      background-color:#e0b42f;
+    }
+  .ma-add {
+    position:absolute;
+    bottom:100%;
+    left:100%;
+    margin-left:-2em;
+    margin-bottom:-2em;
+    box-shadow:0 0 0.25em 0 rgba(0,0,0,0.3);
+    width:4em;
+    height:4em;
+    text-align:center;
+    border-radius:50%;
+  }
+    .gold .ma-add {
+      background-color:#e0b42f;
+    }
+    .blue .ma-add {
+      background-color:#1e7896;
+    }
+  .ma-add i {
+    line-height:3em;
+    font-size:1.5em;
+  }
 
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
+  .mobile-action {
+    bottom:3em;
+    right:5em;
+  }
+  .header-text {
+    float:right;
+  }
+  footer.authorship {
+    padding:2em 5em;
+    margin-top:-5em;
+  }
   header .left {
     display:block;
   }

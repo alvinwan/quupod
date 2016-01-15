@@ -26,7 +26,7 @@ def home():
 @public.route('/resolving')
 def resolving():
     """List of all 'resolving' inquiries for the homepage"""
-    return render('queue.html',
+    return render('resolving.html',
         inquiries=resolving_inquiries(),
         panel='Resolving',
         empty='No inquiries currently being resolved.',

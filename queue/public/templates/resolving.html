@@ -5,13 +5,17 @@
   <h2 class="queue-title col-md-6 hidden-xs">{{ panel }} {% if inquiries | length != 0 %}({{ inquiries | length }}){% endif %}</h2>
   <div class="col-md-12 queue-content">
   <table>
-    <tr><th>Assignment</th><th>Problem</th><th>Queue Time</th></tr>
+    <tr><th>Help Start</th><th>Queue Time</th><th>Staff</th></tr>
   {% if inquiries | length > 0 %}
     {% for inquiry in inquiries %}
     <tr>
-      <td>{{ inquiry.assignment }}</td>
-      <td>{{ inquiry.problem }}</td>
+      <td>{{ inquiry.resolution.created_at }}</td>
       <td>{{ inquiry.created_at.humanize() }}</td>
+      <td>
+      {% for resolver in inquiry.resolvers %}
+        {{ resolver.name }},
+      {% endfor %}
+      </td>
     </tr>
     {% endfor %}
   {% endif %}
