@@ -9,7 +9,7 @@ by [Alvin Wan](http://alvinwan.com), with contributions from [Ben Kha](http://gi
 Login with Google, or use the built-in login/registration system.
 
 **Live updates**
-All public pages will silently poll for updates, meaning that the queue will update live, without a page refresh!
+All public pages will silently poll for updates, meaning that the queue and help screens will update live, without a page refresh!
 
 **Ease of use**
 Anonymous users can submit inquiries without creating an account. (may be disabled, requiring registration)
