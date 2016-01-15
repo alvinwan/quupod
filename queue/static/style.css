@@ -301,6 +301,9 @@ main {
         color:#333;
         border-bottom:0.25em solid #C90;
       }
+      .blue input[type="text"]:focus, .blue input[type="password"]:focus, select:focus, .blue input[type="datetime"]:focus, .blue textarea:focus {
+        border-bottom:0.25em solid #37a3c6;
+      }
     .content {
       z-index:3;
     }
