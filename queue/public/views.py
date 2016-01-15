@@ -180,6 +180,6 @@ def not_found(error):
     return render_template('500.html',
         title='500. Hurr.',
         code=500,
-        message='Sorry, try again! Sometimes, our server goes to sleep, which causes our application to crash. If this problem perists, contact a staff member. Otherwise, refresh, and you\'ll be on your way!',
+        message='Sorry, try again! Sometimes, our server goes to sleep, which causes our application to crash. If this problem perists, contact a staff member.',
         url=request.path,
         action='Reload'), 500
