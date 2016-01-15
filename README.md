@@ -68,10 +68,10 @@ installation bash script line by line:
 1. Install all requirements: `pip install -r requirements.txt`.
 1. Make a new configuration file: `cp default-config.cfg config.cfg`.
 1. Add valid MySQL user credentials to `queue.cfg`.
-1. Create the database: `python3 dbcreate.py'`.
+1. Create the database: `python3 run.py -db create'`.
 
 Any model modifications should be followed by the following, which will
-**delete** the old database and replace it with a new one: `python3 dbrefresh.py`
+**delete** the old database and replace it with a new one: `python3 run.py -db refresh`
 
 ### Windows Details
 
@@ -84,7 +84,7 @@ Because of incompatbility issues with the makefile, on Windows you will have to 
 1. Add valid MySQL user credentials to `config.cfg`.
 1. Start the MySQL service using services.msc
 1. Create the database by using `mysql -u root -p`, then entering `create database queue;` in the interactive prompt.
-1. Setup the database using `python dbcreate.py`.
+1. Setup the database using `python3 run.py -db create`.
 
 ## Launch
 

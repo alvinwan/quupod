@@ -5,7 +5,7 @@ from queue.errors import *
 from queue import googleclientID
 from queue.public.controllers import get_user_home
 from queue.admin.controllers import setting, get_setting
-from default_settings import default_settings
+from run import default_settings
 
 
 def render(template, **kwargs):
