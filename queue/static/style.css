@@ -308,14 +308,19 @@ main {
   .setting {
     margin:0 0 2em 0;
     padding:0;
+    float:left;
   }
   .setting form + form .button,.setting .button + .button {
-    margin-left:0.5em;
+    margin-top: 0.5em;
   }
   .setting p,.queue p {
     font-size:1.2em;
     color:#666;
     font-weight:300;
+  }
+  .setting form {
+    float:left;
+    width:100%;
   }
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
