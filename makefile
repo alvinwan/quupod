@@ -10,12 +10,16 @@ run:
 
 db:
 	source activate.sh && \
-		python3 dbcreate.py
+		python3 run.py -db create
 
 refresh: queue/*/models.py
 	source activate.sh && \
-		python3 dbrefresh.py
+		python3 run.py -db refresh
 
-settings:
+default:
 	source activate.sh && \
-		python3 default_settings.py
+		python3 run.py -s default
+
+restore:
+	source activate.sh && \
+		python3 run.py -s override
