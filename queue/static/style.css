@@ -100,10 +100,10 @@ main {
       background-color:#37a3c6;
     }
     .event-text {
-      padding:3em 0 0 5em;
+      padding:3em 0 0 2em;
     }
     .event-decor {
-      padding:1em 5em 3em 5em;
+      padding:1em 2em 3em 2em;
       float:left;
     }
       .event-decor .button {
@@ -139,7 +139,7 @@ main {
     float:left;
   }
     .event-nav {
-      padding:0 0 0 5em;
+      padding:0 0 0 2em;
     }
     .event-nav ul {
       margin:0;
@@ -208,7 +208,7 @@ main {
     }
   .queue {
     width:100%;
-    padding:1em 5em;
+    padding:1em 2em;
     z-index:1;
   }
     .event + .queue {
@@ -220,13 +220,12 @@ main {
     .queue-title {
       padding: 1em 0;
       margin:0;
+      width:100%;
+      float:left;
     }
     .queue-content {
       margin:0;
       padding:0;
-    }
-    .queue .ttr {
-      float:right;
     }
     .queue-list {
     }
@@ -237,7 +236,11 @@ main {
       padding:1em 2em;
       font-size:1.15em;
       float:left;
+      clear:left;
     }
+      table + .queue-note {
+        margin-top:1em;
+      }
     .queue table {
       width:100%;
     }
@@ -326,6 +329,24 @@ main {
 @media (min-width: 768px) {
   header .left {
     display:block;
+  }
+  .queue {
+    padding:1em 5em;
+  }
+  .event-text {
+    padding:3em 0 0 5em;
+  }
+  .event-decor {
+    padding: 1em 5em 3em 5em;
+  }
+  .event-nav {
+    padding: 0 0 0 5em;
+  }
+  .queue .ttr {
+    float:right;
+  }
+  .queue-title {
+    width:50%;
   }
 }
 

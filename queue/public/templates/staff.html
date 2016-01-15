@@ -5,11 +5,9 @@
   <h2 class="queue-title col-md-6">Staff</h2>
   <div class="col-md-12 queue-content">
     <p>All staff members who have been active in the past 3 hours</p>
-  {% if staff | length == 0 %}
-    <p class="queue-note">Staff will be arriving soon.</p>
-  {% else %}
-  <table>
-    <tr><th>Name</th><th>Last Inquiry Resolved</th><th>Last Resolution Location</th><th>Average Resolution Time</th><th>Status</th></tr>
+    <table>
+      <tr><th>Name</th><th>Last Inquiry Resolved</th><th>Last Resolution Location</th><th>Average Resolution Time</th><th>Status</th></tr>
+  {% if staff | length > 0 %}
     {% for member in staff %}
     <tr>
       <td>{{ member.name }}</td>
@@ -19,7 +17,10 @@
       <td>{{ member.status }}</td>
     </tr>
     {% endfor %}
+  {% endif %}
   </table>
+  {% if staff | length == 0 %}
+    <p class="queue-note">Staff will be arriving soon.</p>
   {% endif %}
 </div>
 </section>
