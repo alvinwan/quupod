@@ -165,7 +165,7 @@ def unauthorized_handler():
 
 @app.errorhandler(404)
 def not_found(error):
-    return render('error.html',
+    return render_template('error.html',
         title='404. Oops.',
         code=404,
         message='Oops. This page doesn\'t exist!',
@@ -175,7 +175,7 @@ def not_found(error):
 
 @app.errorhandler(500)
 def not_found(error):
-    return render('error.html',
+    return render_template('error.html',
         title='500. Hurr.',
         code=500,
         message='Sorry, try again! Sometimes, our server goes to sleep, which causes our application to crash. If this problem perists, contact a staff member. Otherwise, refresh, and you\'ll be on your way!',
