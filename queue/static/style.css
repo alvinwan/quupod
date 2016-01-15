@@ -90,7 +90,8 @@ header {
 main {
   width:100%;
   z-index:10;
-  padding:5em 0 3em 0;
+  box-sizing:border-box;
+  padding:5em 0;
   background-color:#f6f6f6;
   min-height:100%;
 }
@@ -338,6 +339,8 @@ main {
 footer.authorship {
   background-color:#eee;
   padding:2em 5em;
+  margin-top: -5em;
+  z-index:15;
 }
   footer p.author {
     margin:0;
