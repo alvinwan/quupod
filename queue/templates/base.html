@@ -117,7 +117,7 @@
       {% block main %}
       {% endblock %}
     </main>
-    {% if current_user.is_authenticated or not app_require_login %}
+    {% if (current_user.is_authenticated or not app_require_login) and not no_mobile_action %}
       {% if current_user.role != 'staff' %}
     <a href="{{ url_for('public.inquiry') }}">
       <div class="mobile-action">

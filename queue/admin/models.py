@@ -29,6 +29,10 @@ class Resolution(db.Model):
     def inquiry(self):
         return Inquiry.query.filter_by(id=self.inquiry_id).first()
 
+    @property
+    def staff(self):
+        return User.query.filter_by(id=self.user_id).first()
+
 
 class User(db.Model, flask_login.UserMixin):
     """queue system user"""
@@ -82,6 +86,11 @@ class Inquiry(db.Model):
     location = db.Column(db.String(25))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     category = db.Column(ChoiceType(CATEGORIES))
+
+    @property
+    def resolution(self):
+        return Resolution.query.filter_by(
+            resolved_at=None, inquiry_id=self.id).first()
 
     @property
     def owner(self):

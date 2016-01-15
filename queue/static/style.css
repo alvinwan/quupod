@@ -282,6 +282,9 @@ main {
     top:0;
     left:0;
   }
+    .blue .sidebar {
+      background-color:#37a3c6;
+    }
     input[type="text"], input[type="password"], input[type="datetime"], select, textarea {
       width:100%;
       color:#999;

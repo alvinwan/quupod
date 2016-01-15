@@ -9,13 +9,9 @@
   {% if inquiries | length > 0 %}
     {% for inquiry in inquiries %}
     <tr>
-      <td>{{ inquiry.resolution.created_at }}</td>
+      <td>{{ inquiry.resolution.created_at.humanize() }}</td>
       <td>{{ inquiry.created_at.humanize() }}</td>
-      <td>
-      {% for resolver in inquiry.resolvers %}
-        {{ resolver.name }},
-      {% endfor %}
-      </td>
+      <td>{{ inquiry.resolution.staff.name }}</td>
     </tr>
     {% endfor %}
   {% endif %}
