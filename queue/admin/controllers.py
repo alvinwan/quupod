@@ -41,6 +41,7 @@ def get_latest_inquiry(**kwargs):
     :param kwargs: keyword arguments to filter by
     :return: Inquiry object
     """
+    kwargs = {k:v for k, v in kwargs.items() if v}
     return Inquiry.query.filter_by(status='unresolved', **kwargs).order_by(
         asc(Inquiry.created_at)).first()
 

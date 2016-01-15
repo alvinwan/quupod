@@ -7,7 +7,9 @@
     <p class="event-copy">{% if inquiry.question %}<i>Question: </i>{{ inquiry.question }}{% else %}<i>No question.</i>{% endif %}</p>
 {% endblock %}
 {% block decor %}
+<div class="col-md-6 event-decor">
   <form method="post">
     <input type="submit" class="button" value="resolve">
   </form>
+</div>
 {% endblock %}

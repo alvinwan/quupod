@@ -4,10 +4,12 @@
 {% set subtitle='Admin' %}
 {% block main %}
 <section class="event">
-  <div class="col-md-12 event-text">
+  <div class="col-md-6 event-text">
     {% block text %}
     {% endblock %}
   </div>
+  {% block decor %}
+  {% endblock %}
   <nav class="event-nav">
     <ul>
       {% for link in (

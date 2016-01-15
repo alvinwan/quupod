@@ -62,7 +62,8 @@ def help_latest(location=None):
             url=url_for('admin.home'),
             action='admin home')
     lock_inquiry(inquiry)
-    return redirect(url_for('admin.help_inquiry', id=inquiry.id))
+    return redirect(url_for('admin.help_inquiry',
+        id=inquiry.id, location=location))
 
 @admin.route('/help/<string:location>/<string:id>', methods=['POST', 'GET'])
 @admin.route('/help/<string:id>', methods=['POST', 'GET'])
@@ -75,7 +76,7 @@ def help_inquiry(id, location=None):
     if request.method == 'POST':
         resolve_inquiry(inquiry)
         if not location:
-            return redirect(url_for('admin.help'))
+            return redirect(url_for('admin.help_latest'))
         return redirect(url_for('admin.help_latest', location=location))
     return render('help_inquiry.html', inquiry=inquiry)
 

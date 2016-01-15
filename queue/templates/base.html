@@ -76,7 +76,7 @@
     {% endif %}
     </script>
   </head>
-  <body class="{{ color }}">
+  <body class="{{ color or 'blue' }}">
     <header>
       <div class="col-md-2 col-xs-6 {% if current_user.role == 'staff' %}hidden-sm hidden-xs{% endif %} left">
         <a href="{{ url_for('public.home') }}"><h1 class="name">{{ app_name }}<span>{{ subtitle }}</span></h1></a>
