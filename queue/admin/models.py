@@ -84,8 +84,11 @@ class Inquiry(db.Model):
 
     @property
     def resolution(self):
-        return Resolution.query.filter_by(
+        if self.status != 'resolved':
+            return Resolution.query.filter_by(
             resolved_at=None, inquiry_id=self.id).first()
+        else:
+            return Resolution.query.filter_by(inquiry_id=self.id).first()
 
     @property
     def owner(self):

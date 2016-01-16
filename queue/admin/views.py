@@ -98,7 +98,10 @@ def help_inquiry(id, location=None):
             return redirect(url_for('admin.help_latest', delayed_id=delayed_id))
         return redirect(url_for('admin.help_latest',
             location=location, delayed_id=delayed_id))
-    return render('help_inquiry.html', inquiry=inquiry)
+    return render('help_inquiry.html',
+        inquiry=inquiry,
+        inquiries=get_inquiries(name=inquiry.name, limit=10),
+        hide_event_nav=True)
 
 
 ############

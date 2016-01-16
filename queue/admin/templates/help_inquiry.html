@@ -19,3 +19,36 @@
   </form>
 </div>
 {% endblock %}
+{% block panel %}
+<section class="queue">
+  <h2 class="queue-title">Request History</h2>
+  <table>
+    <tr><th>Queue Time</th><th class="hidden-xs">Help Time</th><th>Resolution Time</th><th>Staff</th></tr>
+    {% for inquiry in inquiries %}
+    <tr>
+      <td>{{ inquiry.created_at.humanize() }}</td>
+      <td class="hidden-xs">
+        {% if inquiry.resolution %}
+        {{ inquiry.resolution.created_at.humanize() }}
+        {% else %}
+        n/a
+        {% endif %}
+      </td>
+      <td>
+        {% if inquiry.resolution and inquiry.resolution.resolved_at %}
+        {{ inquiry.resolution.resolved_at.humanize() }}
+        {% else %}
+        n/a
+        {% endif %}
+      </td>
+      <td>
+        {% if inquiry.resolution %}
+        {{ inquiry.resolution.staff.name }}
+        {% else %}
+        n/a
+        {% endif %}
+      </td>
+    {% endfor %}
+  </table>
+</section>
+{% endblock %}

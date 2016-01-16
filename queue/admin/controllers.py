@@ -3,7 +3,7 @@ from queue import db
 from queue.controllers import multi2dict
 from queue.models import add_obj, Setting
 from .models import Inquiry, Resolution
-from sqlalchemy import asc
+from sqlalchemy import asc, desc
 import flask_login, arrow
 
 
@@ -34,14 +34,17 @@ def get_inquiry(id):
     """
     return Inquiry.query.filter_by(id=id).first()
 
-def get_inquiries(f='all', **kwargs):
+def get_inquiries(f='all', limit=None, **kwargs):
     """
     Retrieve inquiries
 
     :param kwargs: filters
     :return: Inquiry object
     """
-    return getattr(Inquiry.query.filter_by(**kwargs), f)()
+    query = Inquiry.query.filter_by(**kwargs).order_by(desc(Inquiry.id))
+    if limit:
+        query = query.limit(limit)
+    return getattr(query, f)()
 
 def get_current_inquiry():
     """

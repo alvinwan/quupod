@@ -9,6 +9,7 @@
   </div>
   {% block decor %}
   {% endblock %}
+  {% if not hide_event_nav %}
   <nav class="event-nav">
     <ul>
       {% for link in (
@@ -19,6 +20,7 @@
       {% endfor %}
     </ul>
   </nav>
+  {% endif %}
 </section>
 {% block panel %}
 {% endblock %}
