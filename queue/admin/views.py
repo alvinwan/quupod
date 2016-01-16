@@ -52,17 +52,26 @@ def clear(location=None):
         action='admin home',
         url=url_for('admin.home'))
 
-@admin.route('/help/<string:location>/latest', methods=['POST', 'GET'])
-@admin.route('/help/latest', methods=['POST', 'GET'])
-@admin.route('/help/<string:location>/<int:offset>', methods=['POST', 'GET'])
-@admin.route('/help/<int:offset>', methods=['POST', 'GET'])
+@admin.route('/help/<string:location>/<string:category>/latest', methods=['POST', 'GET'])
+@admin.route('/help/<string:location>/latest')
+@admin.route('/help/latest')
 @flask_login.login_required
 @requires('staff')
-def help_latest(location=None, offset=0):
+def help_latest(location=None, category=None):
     """automatically selects next inquiry"""
-    inquiry = get_latest_inquiry(location=location, offset=offset)
+    inquiry = get_latest_inquiry(location=location, category=category)
     if not inquiry:
         return redirect(url_for('admin.help', notification=NOTIF_HELP_DONE))
+    if get_setting(name='Inquiry Types').enabled and not category:
+        categories = [(cat, get_inquiries('count',
+            category=cat, status='unresolved'))
+            for cat in setting('Inquiry Types').split(',')]
+        categories = [c for c in categories if c[1]]
+        if len(categories) > 1:
+            return render('categories.html',
+                title='Request Type',
+                location=location,
+                categories=categories)
     delayed_id = request.args.get('delayed_id', None)
     if delayed_id:
         close_inquiry(get_inquiry(delayed_id), status='unresolved')
@@ -71,7 +80,7 @@ def help_latest(location=None, offset=0):
     return redirect(url_for('admin.help_inquiry',
         id=inquiry.id, location=location))
 
-@admin.route('/help/<string:location>/inquiry/<string:id>', methods=['POST', 'GET'])
+@admin.route('/help/inquiry/<string:location>/<string:id>', methods=['POST', 'GET'])
 @admin.route('/help/inquiry/<string:id>', methods=['POST', 'GET'])
 @flask_login.login_required
 @requires('staff')

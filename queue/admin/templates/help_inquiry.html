@@ -5,7 +5,7 @@
 {% block text %}
     <p class="event-byline">asked {{ inquiry.created_at.humanize() }}</p>
     <h1 class="event-title">{{ inquiry.name }}</h1>
-    <p class="event-copy">{% if inquiry.question %}<i>Question: </i>{{ inquiry.question }}{% else %}<i>No question.</i>{% endif %}</p>
+    <p class="event-copy">Category: {{ inquiry.category }}</p>
 {% endblock %}
 {% block decor %}
 <div class="col-md-6 event-decor">

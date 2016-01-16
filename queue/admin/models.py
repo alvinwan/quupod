@@ -80,7 +80,7 @@ class Inquiry(db.Model):
     problem = db.Column(db.String(25))
     location = db.Column(db.String(25))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    category = db.Column(db.String(25))
+    category = db.Column(db.String(25), default='question')
 
     @property
     def resolution(self):

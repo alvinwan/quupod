@@ -9,7 +9,9 @@
     <h2 class="content-title">{{ title }}</h2>
     <div class="module">
       <div class="content-copy">{{ message | safe }}</div>
+      {% if url %}
       <a href="{{ url }}" class="button color">{{ action }}</a>
+      {% endif %}
     </form>
   </div>
 </section>
