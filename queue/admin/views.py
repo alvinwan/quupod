@@ -64,7 +64,7 @@ def help_latest(location=None, category=None):
         return redirect(url_for('admin.help', notification=NOTIF_HELP_DONE))
     if get_setting(name='Inquiry Types').enabled and not category:
         categories = [(cat, get_inquiries('count',
-            category=cat, status='unresolved'))
+            category=cat, status='unresolved', location=location))
             for cat in setting('Inquiry Types').split(',')]
         categories = [c for c in categories if c[1]]
         if len(categories) > 1:

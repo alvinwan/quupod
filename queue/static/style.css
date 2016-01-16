@@ -17,12 +17,12 @@ html, body,section, main {
   width:100%;
   float:left;
 }
-/*input[type="text"], input[type="password"], input[type="datetime"], textarea {
-  transition:         0.3s ease;
-  -webkit-transition: 0.3s ease;
-  -moz-transition:    0.3s ease;
-  -o-transition:      0.3s ease;
-}*/
+.refresh {
+  transition:         0.2s ease;
+  -webkit-transition: 0.2s ease;
+  -moz-transition:    0.2s ease;
+  -o-transition:      0.2s ease;
+}
 header {
   background-color:#a57602;
   width:100%;
@@ -42,7 +42,7 @@ header {
   }
   header .name {
     margin:0;
-    padding:1em 2em;
+    padding:1em 1.5em;
     color:rgba(255,255,255,0.75);
     font-size:1.5em;
     margin: 0.15em 0;
@@ -109,6 +109,24 @@ main {
   background-color:#f6f6f6;
   min-height:100%;
 }
+  .refresh {
+    color:rgba(255,255,255,0.5);
+    position:absolute;
+    left:100%;
+    top:50%;
+    margin-top:-0.5em;
+    font-size:1em;
+    opacity:0;
+  }
+    .refresh.dark {
+      color:#999;
+    }
+    .event-refresh {
+      margin-top:3em;
+      top:100%;
+      right:5em;
+      left:auto;
+    }
   .event {
     width:100%;
     background-color:#C90;
@@ -358,6 +376,9 @@ main {
   .setting form + form .button,.setting .button + .button {
     margin-top: 0.5em;
   }
+    .help.queue .button + .button {
+      margin:0 0 0 0.5em;
+    }
   .setting p,.queue p {
     font-size:1.2em;
     color:#666;
@@ -458,6 +479,9 @@ footer.authorship {
 
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
+  header .name {
+    padding:1em 2em;
+  }
   .module {
     padding:5em;
   }
