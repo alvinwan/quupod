@@ -24,7 +24,7 @@ def add_obj(obj):
         return obj
     except:
         db.session.rollback()
-        add_obj(obj)
+        raise
 
 ##########
 # MODELS #
