@@ -18,9 +18,13 @@ def add_obj(obj):
     :param obj: any instance of a Model
     :return: information regarding database add
     """
-    db.session.add(obj)
-    db.session.commit()
-    return obj
+    try:
+        db.session.add(obj)
+        db.session.commit()
+        return obj
+    except:
+        db.session.rollback()
+        add_obj(obj)
 
 ##########
 # MODELS #
