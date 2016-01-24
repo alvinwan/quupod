@@ -1,11 +1,11 @@
 from flask import Blueprint, request, render_template
 from .forms import *
 from .controllers import *
-from queue import app, login_manager, whitelist
-from queue.admin.controllers import setting
-from queue.admin.models import User, Inquiry
-from queue.views import anonymous_required, render
-from queue.notifications import *
+from quuupod import app, login_manager, whitelist
+from quuupod.admin.controllers import setting
+from quuupod.admin.models import User, Inquiry
+from quuupod.views import anonymous_required, render
+from quuupod.notifications import *
 import flask_login
 
 public = Blueprint('public', __name__, template_folder='templates')
@@ -182,7 +182,7 @@ def not_found(error):
 
 @app.errorhandler(500)
 def not_found(error):
-    from queue import db
+    from quuupod import db
     db.session.rollback()
     return render_template('500.html',
         title='500. Hurr.',

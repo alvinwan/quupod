@@ -1,10 +1,10 @@
-from queue import db, whitelist, googleclientID
-from queue.controllers import multi2dict
+from quuupod import db, whitelist, googleclientID
+from quuupod.controllers import multi2dict
 from flask import redirect, url_for
-from queue.admin.models import User, Inquiry, Resolution
-from queue.admin.controllers import get_setting, setting
+from quuupod.admin.models import User, Inquiry, Resolution
+from quuupod.admin.controllers import get_setting, setting
 import flask_login, arrow
-from queue.models import add_obj
+from quuupod.models import add_obj
 from oauth2client import client, crypt
 
 ###############

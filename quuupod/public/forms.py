@@ -2,8 +2,8 @@ from wtforms_alchemy import ModelForm, ModelFieldList
 from wtforms.fields import FormField
 from wtforms.validators import InputRequired, DataRequired, Optional
 import wtforms as wtf
-from queue.admin.models import Inquiry, User
-from queue.admin.controllers import setting, get_setting
+from quuupod.admin.models import Inquiry, User
+from quuupod.admin.controllers import setting, get_setting
 import flask_login
 
 

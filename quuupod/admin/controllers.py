@@ -1,7 +1,7 @@
 from flask import url_for
-from queue import db
-from queue.controllers import multi2dict
-from queue.models import add_obj, Setting
+from quuupod import db
+from quuupod.controllers import multi2dict
+from quuupod.models import add_obj, Setting
 from .models import Inquiry, Resolution
 from sqlalchemy import asc, desc
 import flask_login, arrow

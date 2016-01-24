@@ -2,7 +2,7 @@
 Important: Changes here need to be followed by `make refresh`.
 """
 
-from queue import db
+from quuupod import db
 from sqlalchemy import types
 from sqlalchemy_utils import ArrowType
 import flask_login, arrow

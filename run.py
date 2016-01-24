@@ -1,5 +1,5 @@
-from queue import app, debug, db
-from queue.models import Setting, add_obj
+from quuupod import app, debug, db
+from quuupod.models import Setting, add_obj
 import argparse
 import os
 

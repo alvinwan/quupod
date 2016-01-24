@@ -1,9 +1,9 @@
 from flask import Blueprint, request, redirect, url_for
-from queue import app
-from queue.views import requires, render
-from queue.public.controllers import unresolved_inquiries, resolving_inquiries
+from quuupod import app
+from quuupod.views import requires, render
+from quuupod.public.controllers import unresolved_inquiries, resolving_inquiries
 from .models import User, Inquiry
-from queue.notifications import *
+from quuupod.notifications import *
 from .controllers import *
 import flask_login
 
