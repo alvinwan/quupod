@@ -23,13 +23,28 @@ def load_settings(override=False):
             add_obj(Setting(**setting))
 
 
-def run(app):
+def run(app, with_tornado=False):
+    from tornado.wsgi import WSGIContainer
+    from tornado.httpserver import HTTPServer
+    from tornado.ioloop import IOLoop
+
+    # create database
     db_create()
     print('[OK] Database creation complete.')
+
+    # load all default settings
     load_settings()
     print('[OK] Default settings added.')
+
+    # get application port
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=debug)
+
+    if with_tornado:
+        http_server = HTTPServer(WSGIContainer(app))
+        http_server.listen(port)
+        IOLoop.instance().start()
+    else:
+        app.run(host='0.0.0.0', port=port, debug=debug)
 
 
 default_settings = [
@@ -114,6 +129,8 @@ parser.add_argument('-s', '--settings', type=str,
 parser.add_argument('-db', '--database', type=str,
                    help='The database script to run',
                    choices=('create', 'refresh'))
+parser.add_argument('-t', '--tornado', action='store_const', const=True,
+                    default=False, help='launch with tornado')
 
 
 if __name__ == "__main__":
@@ -146,5 +163,7 @@ Use 'make run' to launch server.
     [OK] Default settings loaded.
     Use 'make run' to launch server.
         """)
+    elif args.tornado:
+        run(app, with_tornado=True)
     else:
         run(app)
