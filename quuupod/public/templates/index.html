@@ -2,6 +2,7 @@
 {% block main %}
 <div class="queue">
   <h1>Welcome!</h1>
+  <p>Here are all of the people using Quuupod today. {% if not current_user.is_authenticated %}Click "Sign in" in the top right to get started.{% else %}<a href="{{ url_for('dashboard.create_queue') }}">Create a queue</a> to get started! {% endif %}</p>
   <table>
     <tr><th>Name</th><th class="hidden-xs">Description</th><th>Category</th></tr>
     {% for queue in queues %}

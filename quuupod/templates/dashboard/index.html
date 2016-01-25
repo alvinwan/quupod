@@ -2,12 +2,18 @@
 {% block main %}
 <section class="queue">
   <div class="col-md-12 queue-content">
+    <h1>Hello!</h1>
+    <p>The queues that you participate in are below. {% if current_user.is_authenticated %}<a href="{{ url_for('dashboard.create_queue') }}">Create a queue</a> to get started!{% endif %}</p>
   <table>
-    <tr><th>Name</th></tr>
+    <tr><th>Name</th><th class="hidden-xs">Description</th><th>Category</th></tr>
   {% if queues | length > 0 %}
     {% for queue in queues %}
     <tr>
-      <td><a href="{{ url_for('queue.home', queue_url=queue.url) }}">{{ queue.name }}</a></td>
+      <td>
+        <a href="{{ url_for('queue.home', queue_url=queue.url) }}">{{ queue.name }}</a>
+      </td>
+      <td class="hidden-xs">{{ queue.description[:20]}}</td>
+      <td>{{ queue.category }}</td>
     </tr>
     {% endfor %}
   {% endif %}
