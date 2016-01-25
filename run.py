@@ -3,17 +3,13 @@ from quuupod.models import Setting, add_obj
 import argparse
 import os
 
-
-def db_refresh():
-    """Refresh database"""
-    db.drop_all()
-    db_create()
-
-
 def db_create():
     """Create database"""
     db.create_all()
+    print('[OK] Database creation complete.')
+
     load_settings()
+    print('[OK] Default settings added.')
 
 
 def load_settings(override=False):
@@ -30,11 +26,6 @@ def run(app, with_tornado=False):
 
     # create database
     db_create()
-    print('[OK] Database creation complete.')
-
-    # load all default settings
-    load_settings()
-    print('[OK] Default settings added.')
 
     # get application port
     port = int(os.environ.get('PORT', 5000))
@@ -126,12 +117,11 @@ parser = argparse.ArgumentParser(description='Small manager for this queue appli
 parser.add_argument('-s', '--settings', type=str,
                    help='Whether or not to override default settings',
                    choices=('default', 'override'))
-parser.add_argument('-db', '--database', type=str,
-                   help='The database script to run',
-                   choices=('create', 'refresh'))
+parser.add_argument('-d', '--database', type=str,
+                   help='Database operation',
+                   choices=('default', 'override'))
 parser.add_argument('-t', '--tornado', action='store_const', const=True,
                     default=False, help='launch with tornado')
-
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -140,13 +130,6 @@ if __name__ == "__main__":
         print("""---
 
 [OK] Database creation complete.
-Use 'make run' to launch server.
-    """)
-    elif args.database == 'refresh':
-        db_refresh()
-        print("""---
-
-[OK] Database refresh complete.
 Use 'make run' to launch server.
     """)
     elif args.settings == 'default':

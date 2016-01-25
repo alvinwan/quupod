@@ -10,11 +10,12 @@ run:
 
 db:
 	source activate.sh && \
-		python3 run.py -db create
+		python migrate.py db init
 
-refresh: queue/*/models.py
+migrate:
 	source activate.sh && \
-		python3 run.py -db refresh
+		python migrate.py db migrate && \
+		python migrate.py db upgrade
 
 default:
 	source activate.sh && \

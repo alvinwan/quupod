@@ -2,6 +2,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from urllib.parse import urlparse
 import flask_login
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
 import os
 
 # Extract information from environment.
@@ -60,6 +62,10 @@ db = SQLAlchemy(app)
 app.secret_key = secret_key
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
+
+# Database migration management
+migrate = Migrate(app, db)
+migration_manager = Manager(app)
 
 # Configuration for app views
 from .public.views import public

@@ -54,9 +54,7 @@ of what each script does.
 During development, you may additionally want to remember the following:
 
 - In the future, use `source activate.sh` to activate the virtual environment.
-- Any model modifications, in the **development** environment, should be
-followed by `make refresh`, which will **delete** the old database and replace
-it with a new one.
+- Any model modifications should be followed by `make migrate`.
 
 ### Unix and Mac OSX Details
 
