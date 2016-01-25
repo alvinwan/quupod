@@ -13,10 +13,12 @@
     <input type="hidden" name="status" value="resolving">
     <input type="submit" class="button" value="resolve">
   </form>
+  {% if delayable %}
   <form method="post">
     <input type="hidden" name="status" value="unresolved">
     <input type="submit" class="button" value="delay">
   </form>
+  {% endif %}
 </div>
 {% endblock %}
 {% block panel %}

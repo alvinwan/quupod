@@ -90,6 +90,7 @@ def clear(location=None):
 def help_latest(location=None, category=None):
     """automatically selects next inquiry"""
     inquiry = Inquiry.latest(location=location, category=category)
+    delayed_id, delayed = request.args.get('delayed_id', None), None
     if not inquiry:
         return redirect(url_for('admin.help', notification=NOTIF_HELP_DONE))
     if g.queue.setting('inquiry_types').enabled and not category:
@@ -102,9 +103,9 @@ def help_latest(location=None, category=None):
                 title='Request Type',
                 location=location,
                 categories=categories)
-    delayed_id = request.args.get('delayed_id', None)
     if delayed_id:
-        Inquiry.query.get(delayed_id).unlock()
+        delayed = Inquiry.query.get(delayed_id)
+        delayed.unlock()
     inquiry.lock()
     inquiry.link(g.user)
     return redirect(url_for('admin.help_inquiry',
@@ -119,9 +120,9 @@ def help_inquiry(id, location=None):
     inquiry = Inquiry.query.get(id)
     if request.method == 'POST':
         delayed_id=None
+        inquiry.resolution.close()
         if request.form['status'] == 'unresolved':
             delayed_id = inquiry.id
-            inquiry.resolution.close()
         else:
             inquiry.close()
         if not location:
@@ -131,7 +132,10 @@ def help_inquiry(id, location=None):
     return render_admin('help_inquiry.html',
         inquiry=inquiry,
         inquiries=Inquiry.query.filter_by(name=inquiry.name).limit(10).all(),
-        hide_event_nav=True)
+        hide_event_nav=True,
+        delayable=bool(Inquiry.query.filter_by(
+            location=location,
+            status='unresolved').count()))
 
 
 ############

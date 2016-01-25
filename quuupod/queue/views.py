@@ -85,14 +85,7 @@ def inquiry():
     user, form = flask_login.current_user, InquiryForm(request.form)
     if user.is_authenticated:
         form = InquiryForm(request.form, obj=user)
-    elif get_setting(name='Require Login').enabled:
-        if get_setting(name='Google Login').enabled and not \
-            get_setting(name='Default Login').enabled:
-            return render_queue('confirm.html',
-                title='Login Required',
-                message='Login via Google (in the top navigation bar) to add an inquiry.',
-                action='Home',
-                url=url_for('queue.home'))
+    elif g.queue.setting(name='require_login').enabled:
         return render_queue('confirm.html',
             title='Login Required',
             message='Login to add an inquiry, and start using this queue.',

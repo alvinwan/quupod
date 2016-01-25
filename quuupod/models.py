@@ -412,7 +412,8 @@ class Inquiry(Base):
     def link(self, user):
         """link inquiry to a user."""
         if not Resolution.query.filter_by(
-            user_id=user.id, inquiry_id=self.id, resolved_at=None).first():
+            user_id=user.id, inquiry_id=self.id,
+        resolved_at=None).one_or_none():
             return Resolution(user_id=user.id, inquiry_id=self.id).save()
 
 
