@@ -1,11 +1,10 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, url_for, redirect
 from .forms import *
-from .controllers import *
-from quuupod import app, login_manager, whitelist
-from quuupod.admin.controllers import setting
-from quuupod.admin.models import User, Inquiry
+from quuupod import app, login_manager, whitelist, googleclientID
+from quuupod.models import User, Inquiry
 from quuupod.views import anonymous_required, render
 from quuupod.notifications import *
+from oauth2client import client, crypt
 import flask_login
 
 public = Blueprint('public', __name__, template_folder='templates')
@@ -17,99 +16,12 @@ public = Blueprint('public', __name__, template_folder='templates')
 @public.route('/')
 def home():
     """List of all 'unresolved' inquiries for the homepage"""
-    return render('queue.html',
-        inquiries=unresolved_inquiries(),
-        panel='Unresolved',
-        empty='No unaddressed inquiries!',
-        ttr=ttr(),
-        logout=request.args.get('logout', 'false'))
-
-@public.route('/resolving')
-def resolving():
-    """List of all 'resolving' inquiries for the homepage"""
-    return render('resolving.html',
-        inquiries=resolving_inquiries(),
-        panel='Resolving',
-        empty='No inquiries currently being resolved.',
-        ttr=ttr())
-
-@public.route('/staff')
-def staff():
-    """Lists all staff present at the current event."""
-    return render('staff.html',
-        staff=present_staff(),
-        panel='Staff',
-        empty='No staff members currently present.',
-        ttr=ttr())
-
-@public.route('/request', methods=['POST', 'GET'])
-def inquiry():
-    """
-    Place a new request, which may be authored by either a system user or an
-    anonymous user.
-    """
-    user, form = flask_login.current_user, InquiryForm(request.form)
-    if user.is_authenticated:
-        form = InquiryForm(request.form, obj=user)
-    elif get_setting(name='Require Login').enabled:
-        if get_setting(name='Google Login').enabled and not \
-            get_setting(name='Default Login').enabled:
-            return render('confirm.html',
-                title='Login Required',
-                message='Login via Google (in the top navigation bar) to add an inquiry.',
-                action='Home',
-                url=url_for('public.home'))
-        return render('confirm.html',
-            title='Login Required',
-            message='Login to add an inquiry, and start using this queue.',
-            action='Login',
-            url=url_for('public.login'))
-    form = add_inquiry_choices(form)
-    if request.method == 'POST' and form.validate() and \
-        valid_assignment(request, form):
-        inquiry = add_inquiry(request.form)
-        return redirect(url_for('public.home',
-            notification=NOTIF_INQUIRY_PLACED))
-    return render('form.html', form=form, title='Request Help',
-        submit='Ask')
+    return render('index.html')
 
 ###################
 # SIGN IN/SIGN UP #
 ###################
 
-@public.route('/login', methods=['POST', 'GET'])
-@anonymous_required
-def login():
-    """Login"""
-    form, message = LoginForm(request.form), ''
-    if not get_setting(name='Default Login').enabled:
-        return render('confirm.html', title='Disabled',
-            message='Default registration and login has been disabled. Authenticate using Google (in the top navigation bar).',
-            action='Home',
-            url=url_for('public.home'))
-    if request.method == 'POST' and form.validate():
-        user = get_user(username=request.form['username'])
-        if user and user.password == request.form['password']:
-            login_user(user)
-            return redirect(get_user_url(user))
-        message = 'Login failed.'
-    return render('form.html', message=message, form=form,
-        title='Login', submit='Login')
-
-@public.route('/register', methods=['GET', 'POST'])
-@anonymous_required
-def register():
-    """Register"""
-    form = RegisterForm(request.form)
-    if not get_setting(name='Default Login').enabled:
-        return render('confirm.html', title='Disabled',
-            message='Default registration and login has been disabled. Authenticate using Google (in the top navigation bar).',
-            action='Home',
-            url=url_for('public.home'))
-    if request.method == 'POST' and form.validate():
-        return render('confirm.html', **add_user(request.form))
-    return render('form.html', form=form, title='Register',
-        submit='Register')
 
 @public.route('/tokenlogin', methods=['POST'])
 @anonymous_required
@@ -122,16 +34,41 @@ def token_login():
         user = User.query.filter_by(google_id=google_id).first()
         if not user:
             print(' * Registering user using Google token...')
-            user = add_obj(User(
+            user = User(
                 name=google_info['name'],
                 email=google_info['email'],
                 google_id=google_id
-            ))
-        login_user(user)
+            ).save()
+            # if user.email in g.queue.setting('whitelist').value.split(','):
+            #     user.set_role('staff')
+        flask_login.login_user(user)
         if user and getattr(user, 'role', None) == 'staff':
             return url_for('admin.home', notification=NOTIF_LOGIN_STAFF)
         return url_for('public.home', notification=NOTIF_LOGIN_STUDENT)
     return 'Google token verification failed.'
+
+
+def verify_google_token(token):
+    """
+    Verify a google token
+
+    :param token str: token
+    :return: token information if valid or None
+    """
+    try:
+        idinfo = client.verify_id_token(token, googleclientID)
+        #If multiple clients access the backend server:
+        if idinfo['aud'] not in [googleclientID]:
+            raise crypt.AppIdentityError("Unrecognized client.")
+        if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+            raise crypt.AppIdentityError("Wrong issuer.")
+        # Is this needed?
+        # if idinfo['hd'] != url_for('public.home'):
+        #     raise crypt.AppIdentityError("Wrong hosted domain.")
+    except crypt.AppIdentityError:
+        return
+    return idinfo
+
 
 ######################
 # SESSION UTILIITIES #
@@ -141,13 +78,13 @@ def token_login():
 def user_loader(id):
     """Load user by id"""
     print(' * Reloading user with id "%s", from user_loader' % id)
-    return get_user(id=id)
+    return User.query.get(id)
 
 @login_manager.request_loader
 def request_loader(request):
     """Loads user by Flask Request object"""
     id = request.form.get('id')
-    user = get_user(id=id)
+    user = User.query.get(id)
     if not user:
         print(' * Anonymous user found.')
         return
@@ -164,7 +101,7 @@ def logout():
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
-    return get_user_home(flask_login.current_user)
+    return redirect(User.get_home(flask_login.current_user))
 
 ##################
 # ERROR HANDLERS #

@@ -1,22 +1,21 @@
 from functools import wraps
 from flask import url_for, redirect, render_template, request
 import flask_login
+from quuupod.defaults import default_queue_settings
 from quuupod.notifications import *
-from quuupod import googleclientID
-from quuupod.public.controllers import get_user_home
-from quuupod.admin.controllers import setting, get_setting
-from run import default_settings
+from quuupod import googleclientID, config
+from flask_login import login_required
+
+
+def current_user():
+    """Returns currently-logged-in user"""
+    return flask_login.current_user
 
 
 def render(template, **kwargs):
     """Render with settings"""
-    for k in (s['name'] for s in default_settings):
-        is_enabled = get_setting(name=k).enabled
-        if is_enabled:
-            value = setting(k) or is_enabled
-        else:
-            value = False
-        kwargs.setdefault('app_%s' % k.lower().replace(' ', '_'), value)
+    for k, v in config.items():
+        kwargs.setdefault('cfg_%s' % k, v)
     return render_template(template,
         googleclientID=googleclientID,
         banner_message=notifications.get(

@@ -1,0 +1,20 @@
+{% extends "base_public.html" %}
+{% block main %}
+<section class="queue">
+  <div class="col-md-12 queue-content">
+  <table>
+    <tr><th>Name</th></tr>
+  {% if queues | length > 0 %}
+    {% for queue in queues %}
+    <tr>
+      <td><a href="{{ url_for('queue.home', queue_url=queue.url) }}">{{ queue.name }}</a></td>
+    </tr>
+    {% endfor %}
+  {% endif %}
+  </table>
+  {% if queues | length == 0 %}
+    <p class="queue-note col-xs-12">{{ empty }}</p>
+  {% endif %}
+  </div>
+</section>
+{% endblock %}

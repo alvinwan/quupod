@@ -1,0 +1,56 @@
+{% extends "base_queue.html" %}
+{% set refresh=3000 %}
+{% set color='blue' %}
+{% set title='%s | %s' % (queue.name, 'Queue') %}
+{% set subtitle='Queue' %}
+{% block main %}
+<section class="event">
+  {% if q_large_banner %}
+  <div class="col-md-6 event-text">
+    <p class="event-byline"><a href="{{ q_url}}">{{ q_url }}</a></p>
+    <h1 class="event-title">{{ queue.name }}</h1>
+    <p class="event-copy">{{ queue.description }}<br>Current Locations: {{ q_locations }}</p>
+  </div>
+  <div class="col-md-6 event-decor">
+    {% if current_user.is_authenticated or not q_require_login %}
+      {% if current_user.role != 'staff' %}
+    <a class="button" href="{{ url_for('queue.inquiry') }}">Request Help</a>
+      {% elif current_user.role == 'staff' %}
+    <a class="button" href="{{ url_for('admin.help') }}">Help</a>
+      {% endif %}
+    {% endif %}
+  </div>
+  {% endif %}
+  <nav class="event-nav">
+    <ul>
+      {% for link in (
+          (url_for('queue.home'), 'Unresolved'),
+          (url_for('queue.resolving'), 'Resolving'),
+          (url_for('queue.staff'), 'Staff')) %}
+      <li><a class="{% if link[1] == panel %}s{% endif %}" href="{% if link[1] != panel %}{{ link[0] }}{% else %}#{% endif %}">{{ link[1] }}</a></li>
+      {% endfor %}
+      <p class="right nav-text hidden-xs">Estimated wait: {{ ttr }}</p>
+    </ul>
+  </nav>
+  <i class="hidden-lg refresh dark event-refresh fa fa-refresh fa-spin"></i>
+</section>
+{% if (current_user.is_authenticated or not q_require_login) and not no_mobile_action %}
+  {% if current_user.role != 'staff' %}
+<a href="{{ url_for('queue.inquiry') }}">
+  <div class="mobile-action">
+    <span class="ma-add"><i class="fa fa-plus"></i></span>
+    <p>Request Help</p>
+  </div>
+</a>
+  {% elif current_user.role == 'staff' %}
+<a href="{{ url_for('admin.help') }}">
+  <div class="mobile-action">
+    <span class="ma-add"><i class="fa fa-medkit"></i></span>
+    <p>Start Helping</p>
+  </div>
+</a>
+  {% endif %}
+{% endif %}
+{% block panel %}
+{% endblock %}
+{% endblock %}
