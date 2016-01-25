@@ -186,7 +186,7 @@ class Queue(Base):
             Resolution.resolved_at >= arrow.utcnow().replace(hours=-3)).all()
         staff = set()
         for resolution in resolutions:
-            user = User.query.get(user_id)
+            user = User.query.get(resolution.user_id)
             user.resolution = resolution
             ns = [res.resolved_at - res.created_at for res in Resolution.query.filter(
                 Resolution.resolved_at >= arrow.utcnow().replace(hours=-6),
