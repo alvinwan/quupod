@@ -6,7 +6,7 @@ from flask_login import AnonymousUserMixin
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 import os
-from .config import config, secret_key, debug, whitelist, googleclientID
+from .config import config, secret_key, debug, whitelist, googleclientID, port
 
 print(' * Running in DEBUG mode.' if debug else
       ' * Running in PRODUCTION mode.')
