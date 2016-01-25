@@ -11,7 +11,7 @@ config = {
     'USERNAME': url.username,
     'PASSWORD': url.password,
     'HOST': url.hostname,
-    'PORT': url.port,
+    'PORT': int(os.environ.get('PORT', url.port)),
     'DATABASE': database_url.split('/')[3].split('?')[0],
     'SECRET_KEY': get('SECRET_KEY', 'dEf@u1t$eCRE+KEY'),
     'DEBUG': get('DEBUG', 'False'),
@@ -39,3 +39,4 @@ secret_key = config['SECRET_KEY']
 debug = config['DEBUG'].lower() == 'true'
 whitelist = config['WHITELIST'].split(',')
 googleclientID = config['GOOGLECLIENTID']
+port = config['PORT']

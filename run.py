@@ -1,4 +1,4 @@
-from quuupod import app, debug, db
+from quuupod import app, debug, db, port
 from quuupod.models import Setting
 import argparse
 import os
@@ -12,9 +12,6 @@ def run(app, with_tornado=False):
     # create database
     db.create_all()
     print('[OK] Database creation complete.')
-
-    # get application port
-    port = int(os.environ.get('PORT', 5000))
 
     if with_tornado:
         http_server = HTTPServer(WSGIContainer(app))

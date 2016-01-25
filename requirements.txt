@@ -14,3 +14,4 @@ google-api-python-client==1.4.2
 pycrypto==2.6.1
 tornado==4.3
 Flask-Migrate==1.7.0
+flask_script

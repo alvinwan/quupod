@@ -234,7 +234,7 @@ class Queue(Base):
         :param InquiryForm form: form to check
         :return: list of assignment names
         """
-        lst = self.setting('assignments')
+        lst = self.setting('assignments').value
         str2lst = lambda s: (s.strip() for s in lst.split(','))
         assignment, category = request.form['assignment'], request.form['category']
         if ':' in lst:
