@@ -51,7 +51,7 @@ default_queue_settings = {
     },
     'whitelist': {
         'label': 'Admin Whitelist',
-        'description': 'Whitelist for admins',
+        'description': 'Whitelist for admins. Include users as email1@berkeley.edu(Position1), email2@berkeley.edu(Position2)',
         'enabled': True,
         'toggable': False
     }

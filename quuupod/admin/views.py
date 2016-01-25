@@ -145,6 +145,10 @@ def settings():
     """settings"""
     settings = QueueSetting.query.join(Queue).filter_by(
         id=g.queue.id).all()
+    for setting in settings:
+        default_description =default_queue_settings[setting.name]['description']
+        if default_description != setting.description:
+            setting.description = default_description
     if request.method == 'POST':
         notification = NOTIF_SETTING_UPDATED
         setting = QueueSetting.query.filter_by(
