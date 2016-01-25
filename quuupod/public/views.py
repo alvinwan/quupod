@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, url_for, redirect
 from .forms import *
 from quuupod import app, login_manager, whitelist, googleclientID
-from quuupod.models import User, Inquiry
+from quuupod.models import User, Inquiry, Queue
 from quuupod.views import anonymous_required, render
 from quuupod.notifications import *
 from oauth2client import client, crypt
@@ -16,7 +16,7 @@ public = Blueprint('public', __name__, template_folder='templates')
 @public.route('/')
 def home():
     """List of all 'unresolved' inquiries for the homepage"""
-    return render('index.html')
+    return render('index.html', queues=Queue.query.all())
 
 ###################
 # SIGN IN/SIGN UP #
@@ -43,8 +43,6 @@ def token_login():
                 email=google_info['email'],
                 google_id=google_id
             ).save()
-            # if user.email in g.queue.setting('whitelist').value.split(','):
-            #     user.set_role('staff')
         flask_login.login_user(user)
         # if user and user.can('help'):
         #     path, notification = 'admin.home', NOTIF_LOGIN_STAFF

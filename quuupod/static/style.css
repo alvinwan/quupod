@@ -296,6 +296,9 @@ main {
       color:#ccc;
       border-bottom:0.2em solid #eee;
     }
+    .queue td {
+      border-bottom:1px solid #e3e3e3;
+    }
     .queue td,.queue th {
       font-size:1.1em;
       padding:1em;

@@ -147,7 +147,9 @@ def settings():
         id=g.queue.id).all()
     if request.method == 'POST':
         notification = NOTIF_SETTING_UPDATED
-        setting = Setting.query.filter_by(name=request.form['name']).first()
+        setting = QueueSetting.query.filter_by(
+            queue_id=g.queue.id,
+            name=request.form['name']).first()
         for k, v in request.form.items():
             setattr(setting, k, v)
         setting.save()

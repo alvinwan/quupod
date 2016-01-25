@@ -1,4 +1,12 @@
 {% extends "base_public.html" %}
 {% block main %}
-<h1>Welcome!</h1>
+<div class="queue">
+  <h1>Welcome!</h1>
+  <table>
+    <tr><th>Name</th><th class="hidden-xs">Description</th><th>Category</th></tr>
+    {% for queue in queues %}
+    <tr><td><a href="{{ url_for('queue.home', queue_url=queue.url) }}">{{ queue.name }}</a></td><td class="hidden-xs">{{ queue.description[:20]}}</td><td>{{ queue.category }}</td></tr>
+    {% endfor %}
+  </table>
+</div>
 {% endblock %}
