@@ -1,8 +1,9 @@
 from flask import Blueprint, request, redirect, url_for, g
 from quuupod import app
 from quuupod.views import requires, render
-from quuupod.models import User, Inquiry, Queue
+from quuupod.models import User, Inquiry, Queue, QueueSetting
 from quuupod.notifications import *
+from quuupod.defaults import default_queue_settings
 import flask_login
 
 
@@ -22,6 +23,15 @@ def pull_queue_url(endpoint, values):
     g.queue = Queue.query.filter_by(url=g.queue_url).one()
 
 
+def render_admin(template, *args, **kwargs):
+    """Special rendering for queue admin"""
+    for k in default_queue_settings:
+        setting = g.queue.setting(k)
+        kwargs.update({'q_%s' % k: setting.value or setting.enabled})
+    kwargs.setdefault('queue', g.queue)
+    return render(template, *args, **kwargs)
+
+
 #########
 # ADMIN #
 #########
@@ -31,7 +41,7 @@ def pull_queue_url(endpoint, values):
 @requires('staff')
 def home():
     """admin homepage"""
-    return render('home.html')
+    return render_admin('home.html')
 
 @admin.route('/help')
 @flask_login.login_required
@@ -43,7 +53,7 @@ def help():
     locations = [(l,
         Inquiry.query.filter_by(location=l, status='unresolved').count())
         for l in g.queue.setting('locations').value.split(',')]
-    return render('help.html',
+    return render_admin('help.html',
         no_mobile_action=True,
         locations=[t for t in locations if t[1]],
         current_inquiry=Inquiry.current())
@@ -62,11 +72,11 @@ def clear(location=None):
         Inquiry.query.filter_by(status='resolving').update(
             {'status': 'closed'})
         db.session.commit()
-        return render('admin_confirm.html',
+        return render_admin('admin_confirm.html',
             message='All Cleared',
             action='Admin Home',
             url=url_for('admin.home'))
-    return render('admin_confirm.html',
+    return render_admin('admin_confirm.html',
         message='Are you sure? This will clear all resolving and unresolved. \
         <form method="POST"><input type="submit" value="clear"></form>',
         action='admin home',
@@ -88,7 +98,7 @@ def help_latest(location=None, category=None):
             for cat in g.queue.setting('inquiry_types').split(',')]
         categories = [c for c in categories if c[1]]
         if len(categories) > 1:
-            return render('categories.html',
+            return render_admin('categories.html',
                 title='Request Type',
                 location=location,
                 categories=categories)
@@ -118,7 +128,7 @@ def help_inquiry(id, location=None):
             return redirect(url_for('admin.help_latest', delayed_id=delayed_id))
         return redirect(url_for('admin.help_latest',
             location=location, delayed_id=delayed_id))
-    return render('help_inquiry.html',
+    return render_admin('help_inquiry.html',
         inquiry=inquiry,
         inquiries=Inquiry.query.filter_by(name=inquiry.name).limit(10).all(),
         hide_event_nav=True)
@@ -133,7 +143,8 @@ def help_inquiry(id, location=None):
 @requires('staff')
 def settings():
     """settings"""
-    settings = get_settings()
+    settings = QueueSetting.query.join(Queue).filter_by(
+        id=g.queue.id).all()
     if request.method == 'POST':
         notification = NOTIF_SETTING_UPDATED
         setting = Setting.query.filter_by(name=request.form['name']).first()
@@ -142,4 +153,4 @@ def settings():
         setting.save()
         return redirect(url_for('admin.settings',
             notification=notification))
-    return render('settings.html', settings=settings)
+    return render_admin('settings.html', settings=settings)

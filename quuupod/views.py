@@ -34,13 +34,18 @@ def anonymous_required(f):
     return decorator
 
 
-def requires(*roles):
+def requires(*permissions):
     """Decorator for views, restricting access to the roles listed"""
+    from quuupod.queue.views import render_queue
     def wrap(f):
         @wraps(f)
         def decorator(*args, **kwargs):
-            if getattr(flask_login.current_user, 'role', None) not in roles:
-                return 'Permission denied.'
+            user = flask_login.current_user
+            if not all(user.can(perm) for perm in permissions):
+                return render_queue('error.html',
+                    message='Permission Denied.',
+                    action='Home',
+                    url=url_for('queue.home'))
             return f(*args, **kwargs)
         return decorator
     return wrap

@@ -333,6 +333,12 @@ class User(Base, flask_login.UserMixin):
         """returns all queues for this user"""
         return Queue.query.join(Participant).filter_by(user_id=self.id).all()
 
+    def can(self, permission):
+        role = self.role
+        if role.permissions == '*' or permission in role.permissions.split(','):
+            return True
+        return False
+
 
 class Inquiry(Base):
     """inquiry placed in queue"""
@@ -404,8 +410,8 @@ class Inquiry(Base):
     def link(self, user):
         """link inquiry to a user."""
         if not Resolution.query.filter_by(
-            user_id=user.id, inquiry_id=inquiry.id, resolved_at=None).first():
-            return Resolution(user_id=user.id, inquiry_id=inquiry.id).save()
+            user_id=user.id, inquiry_id=self.id, resolved_at=None).first():
+            return Resolution(user_id=user.id, inquiry_id=self.id).save()
 
 
 ##############################

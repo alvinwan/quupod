@@ -2,10 +2,10 @@
 {% block body %}
   <body class="{{ color or 'blue' }}">
     <header>
-      <div class="col-md-2 col-xs-6 {% if current_user.role == 'staff' %}hidden-sm hidden-xs{% endif %} left">
+      <div class="col-md-2 col-xs-6 {% if current_user.role.name == 'staff' %}hidden-sm hidden-xs{% endif %} left">
         <a href="{{ url_for('queue.home') }}"><h1 class="name">{{ queue.name }}<span>{{ subtitle }}</span><i class="hidden-xs refresh fa fa-refresh fa-spin"></i></h1></a>
       </div>
-      <div class="col-md-10 {% if current_user.role == 'staff' %}col-sm-12 col-xs-12{% else %}col-sm-6 col-xs-6{% endif %} right">
+      <div class="col-md-10 {% if current_user.role.name == 'staff' %}col-sm-12 col-xs-12{% else %}col-sm-6 col-xs-6{% endif %} right">
         {% if current_user.is_authenticated %}
         <p class="header-text hidden-xs">Hi, {{ current_user.name }}
           <span class="user-profile">
@@ -13,10 +13,10 @@
           </span>
         </p>
         <a class="header-action" href="{{ url_for('logout') }}">logout<span class="header-subtext hidden-md hidden-lg hidden-sm">{{ current_user.name }}</span></a>
-          {% if current_user.role == 'staff' %}
+          {% if current_user.can('admin') %}
             {% if subtitle == 'Admin' %}
         <a class="header-action s" href="#">Admin</a>
-        <a class="header-action" href="{{ url_for('public.home') }}">Queue</a>
+        <a class="header-action" href="{{ url_for('queue.home') }}">Queue</a>
           {% else %}
         <a class="header-action" href="{{ url_for('admin.home') }}">Admin</a>
         <a class="header-action s" href="#">Queue</a>
@@ -37,24 +37,22 @@
       {% endblock %}
     </main>
     {% if (current_user.is_authenticated or not app_require_login) and not no_mobile_action %}
-      {% if current_user.role != 'staff' %}
-    <a href="{{ url_for('queue.inquiry') }}">
-      <div class="mobile-action">
-        <span class="ma-add"><i class="fa fa-plus"></i></span>
-        <p>Request Help</p>
-      </div>
-    </a>
-      {% elif current_user.role == 'staff' %}
+      {% if current_user.can('help') %}
     <a href="{{ url_for('admin.help') }}">
       <div class="mobile-action">
         <span class="ma-add"><i class="fa fa-medkit"></i></span>
         <p>Start Helping</p>
       </div>
     </a>
+      {% else %}
+    <a href="{{ url_for('queue.inquiry') }}">
+      <div class="mobile-action">
+        <span class="ma-add"><i class="fa fa-plus"></i></span>
+        <p>Request Help</p>
+      </div>
+    </a>
       {% endif %}
     {% endif %}
-    <footer class="authorship col-md-12 col-xs-12">
-      <p class="col-md-12 author">created by <a href="http://alvinwan.com">Alvin Wan</a> &middot; project on <a href="http://github.com/CS70/ohquu">Github</a></p>
-    </footer>
+    {% include "footer.html" %}
   </body>
 {% endblock %}
