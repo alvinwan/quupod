@@ -26,8 +26,9 @@ def pull_queue_url(endpoint, values):
 
 def render_queue(template, *args, **kwargs):
     """Special rendering for queue"""
-    if g.user.is_authenticated and \
-        g.user.email in g.queue.setting('whitelist').value.split(','):
+    whitelist = g.queue.setting('whitelist').value
+    if g.user.is_authenticated and whitelist and \
+        g.user.email in whitelist.split(','):
         g.user.set_role('Admin')
     for k in default_queue_settings:
         setting = g.queue.setting(k)
