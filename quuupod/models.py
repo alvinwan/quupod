@@ -186,7 +186,7 @@ class Queue(Base):
             Resolution.resolved_at >= arrow.utcnow().replace(hours=-3)).all()
         staff = set()
         for resolution in resolutions:
-            user = get_user(id=resolution.user_id)
+            user = User.query.get(user_id)
             user.resolution = resolution
             ns = [res.resolved_at - res.created_at for res in Resolution.query.filter(
                 Resolution.resolved_at >= arrow.utcnow().replace(hours=-6),
@@ -288,13 +288,13 @@ class User(Base, flask_login.UserMixin):
         return QueueRole.query.join(Participant).filter_by(
             queue_id=g.queue.id,
             user_id=self.id,
-            is_active=True).one()
+            is_active=True).one_or_none()
 
     @staticmethod
     def get_home(user, **kwargs):
         """Return home URL for given user"""
         if getattr(g, 'queue', None):
-            if user and user.role.name == 'admin':
+            if user and user.can('admin'):
                 return url_for('admin.home', **kwargs)
             return url_for('queue.home', **kwargs)
         return url_for('dashboard.home')
@@ -335,7 +335,9 @@ class User(Base, flask_login.UserMixin):
 
     def can(self, permission):
         role = self.role
-        if role.permissions == '*' or permission in role.permissions.split(','):
+        if role and \
+            (role.permissions == '*' or \
+            permission in role.permissions.split(',')):
             return True
         return False
 

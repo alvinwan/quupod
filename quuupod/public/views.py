@@ -27,7 +27,11 @@ def home():
 @anonymous_required
 def token_login():
     """Login via Google token"""
+    redirect = request.form.get('return', None)
+    if flask_login.current_user.is_authenticated:
+        return redirect or url_for('dashboard.home')
     google_info = verify_google_token(request.form['token'])
+
     if google_info:
         print(' * Google Token verified!')
         google_id = google_info['sub']
@@ -42,9 +46,14 @@ def token_login():
             # if user.email in g.queue.setting('whitelist').value.split(','):
             #     user.set_role('staff')
         flask_login.login_user(user)
-        if user and getattr(user, 'role', None) == 'staff':
-            return url_for('admin.home', notification=NOTIF_LOGIN_STAFF)
-        return url_for('public.home', notification=NOTIF_LOGIN_STUDENT)
+        # if user and user.can('help'):
+        #     path, notification = 'admin.home', NOTIF_LOGIN_STAFF
+        # else:
+            # path, notification = 'public.home', NOTIF_LOGIN_STUDENT
+        path, notification = 'dashboard.home', NOTIF_LOGIN_STUDENT
+        if redirect:
+            return redirect + '?notification=%s' % notification
+        return url_for(path, notification=notification)
     return 'Google token verification failed.'
 
 
@@ -83,7 +92,7 @@ def user_loader(id):
 @login_manager.request_loader
 def request_loader(request):
     """Loads user by Flask Request object"""
-    id = request.form.get('id')
+    id = int(request.form.get('id') or 0)
     user = User.query.get(id)
     if not user:
         print(' * Anonymous user found.')
@@ -97,7 +106,7 @@ def request_loader(request):
 @app.route('/logout')
 def logout():
     flask_login.logout_user()
-    return redirect(url_for('public.home', logout='true'))
+    return redirect(request.args.get('redirect') + '?logout=true')
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():

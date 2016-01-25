@@ -16,6 +16,8 @@ def render(template, **kwargs):
     """Render with settings"""
     for k, v in config.items():
         kwargs.setdefault('cfg_%s' % k, v)
+    kwargs.setdefault('request', request)
+    kwargs.setdefault('logout', request.args.get('logout', False))
     return render_template(template,
         googleclientID=googleclientID,
         banner_message=notifications.get(
@@ -29,7 +31,7 @@ def anonymous_required(f):
     def decorator(*args, **kwargs):
         user = flask_login.current_user
         if user.is_authenticated:
-            return get_user_home(user)
+            return User.get_home(user)
         return f(*args, **kwargs)
     return decorator
 

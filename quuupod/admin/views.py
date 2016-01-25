@@ -1,5 +1,5 @@
 from flask import Blueprint, request, redirect, url_for, g
-from quuupod import app
+from quuupod import app, db
 from quuupod.views import requires, render
 from quuupod.models import User, Inquiry, Queue, QueueSetting
 from quuupod.notifications import *

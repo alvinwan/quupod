@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from urllib.parse import urlparse
 import flask_login
+from flask_login import AnonymousUserMixin
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 import os
@@ -40,3 +41,11 @@ blueprints = (public, admin, queue, dashboard)
 for blueprint in blueprints:
     print(' * Registering blueprint "%s"' % blueprint.name)
     app.register_blueprint(blueprint)
+
+# Anonymous User definition
+class Anonymous(AnonymousUserMixin):
+
+    def can(self, permission):
+        return False
+
+login_manager.anonymous_user = Anonymous
