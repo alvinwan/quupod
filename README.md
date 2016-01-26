@@ -1,7 +1,7 @@
 # [Office Hours Queue](http://ohquu.herokuapp.com)
 in-session questions queue management ([demo](http://ohquu.herokuapp.com))
 
-by [Alvin Wan](http://alvinwan.com), with contributions from [Ben Kha](http://github.com/benkha)
+by [Alvin Wan](http://alvinwan.com), with contributions from [Ben Kha](http://github.com/benkha) and a huge help from [Sumukh Sridhara](http://sumukh.me) for deploying to production.
 
 ## Features
 

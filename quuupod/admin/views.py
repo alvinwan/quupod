@@ -51,7 +51,8 @@ def help():
     if not g.queue.setting('location_selection').enabled:
         return redirect(url_for('admin.help_latest'))
     locations = [(l,
-        Inquiry.query.filter_by(location=l, status='unresolved').count())
+        Inquiry.query.filter_by(
+            location=l, status='unresolved', queue_id=g.queue.id).count())
         for l in g.queue.setting('locations').value.split(',')]
     return render_admin('help.html',
         no_mobile_action=True,
@@ -67,10 +68,12 @@ def clear(location=None):
     if location:
         return 'Not yet implemented.'
     if request.method == 'POST':
-        Inquiry.query.filter_by(status='unresolved').update(
-            {'status': 'closed'})
-        Inquiry.query.filter_by(status='resolving').update(
-            {'status': 'closed'})
+        Inquiry.query.filter_by(
+            status='unresolved',
+            queue_id=g.queue.id).update({'status': 'closed'})
+        Inquiry.query.filter_by(
+            status='resolving',
+            queue_id=g.queue.id).update({'status': 'closed'})
         db.session.commit()
         return render_admin('admin_confirm.html',
             message='All Cleared',
@@ -95,7 +98,10 @@ def help_latest(location=None, category=None):
         return redirect(url_for('admin.help', notification=NOTIF_HELP_DONE))
     if g.queue.setting('inquiry_types').enabled and not category:
         categories = [(cat, Inquiry.query.filter_by(
-            category=cat, status='unresolved', location=location).count())
+            category=cat,
+            status='unresolved',
+            location=location,
+            queue_id=g.queue.id).count())
             for cat in g.queue.setting('inquiry_types').split(',')]
         categories = [c for c in categories if c[1]]
         if len(categories) > 1:

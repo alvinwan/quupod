@@ -56,7 +56,9 @@ def render_queue(template, *args, **kwargs):
 def home():
     """list all unresolved inquiries for the homepage"""
     return render_queue('unresolved.html',
-        inquiries=Inquiry.query.filter_by(status='unresolved').all(),
+        inquiries=Inquiry.query.filter_by(
+            status='unresolved',
+            queue_id=g.queue.id).all(),
         panel='Unresolved',
         empty='No inquiries have been unaddressed!',
         ttr=g.queue.ttr())
@@ -65,7 +67,9 @@ def home():
 def resolving():
     """List of all 'resolving' inquiries for the homepage"""
     return render_queue('resolving.html',
-        inquiries=Inquiry.query.filter_by(status='resolving').all(),
+        inquiries=Inquiry.query.filter_by(
+            status='resolving',
+            queue_id=g.queue.id).all(),
         panel='Resolving',
         empty='No inquiries currently being resolved.',
         ttr=g.queue.ttr())
@@ -101,6 +105,7 @@ def inquiry():
     if request.method == 'POST' and form.validate() and \
         g.queue.is_valid_assignment(request, form):
         inquiry = Inquiry(**request.form)
+        inquiry.queue_id = g.queue.id
         if g.user.is_authenticated:
             inquiry.owner_id = g.user.id
         inquiry.save()

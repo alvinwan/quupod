@@ -182,8 +182,9 @@ class Queue(Base):
 
     def present_staff(self):
         """Fetch all present staff members"""
-        resolutions = Resolution.query.filter(
-            Resolution.resolved_at >= arrow.utcnow().replace(hours=-3)).all()
+        resolutions = Resolution.query.join(Inquiry).filter(
+            Resolution.resolved_at >= arrow.utcnow().replace(hours=-3),
+            Inquiry.queue_id == self.id).all()
         staff = set()
         for resolution in resolutions:
             user = User.query.get(resolution.user_id)
@@ -362,6 +363,7 @@ class Inquiry(Base):
     location = db.Column(db.String(25))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     category = db.Column(db.String(25), default='question')
+    queue_id = db.Column(db.Integer, db.ForeignKey('queue.id'))
 
     @staticmethod
     def current():
@@ -377,8 +379,10 @@ class Inquiry(Base):
         if current_inquiry:
             return current_inquiry
         kwargs = {k:v for k, v in kwargs.items() if v}
-        return Inquiry.query.filter_by(status='unresolved', **kwargs).order_by(
-            asc(Inquiry.created_at)).first()
+        return Inquiry.query.filter_by(
+            status='unresolved',
+            queue_id=g.queue.id,
+            **kwargs).order_by(asc(Inquiry.created_at)).first()
 
     @property
     def resolution(self):
