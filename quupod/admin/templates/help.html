@@ -5,7 +5,7 @@
 {% block text %}
 <p class="event-byline"><a href="{{ the_url('admin.home') }}">Admin</a> &raquo; Help</p>
 <h1 class="event-title">Help</h1>
-<p class="event-copy">Select your current location below, to start helping.</p>
+<p class="event-copy">{% if locations_disabled %}Click "start helping" below to get started.{% else %}Select your current location below, to start helping.{% endif %}</p>
 {% endblock %}
 {% block panel %}
 <section class="queue help">
@@ -14,6 +14,12 @@
     <h2>Unfinished Inquiry</h2>
     <p>You have an unfinished inquiry on your hands!</p>
     <a class="button color" href="{{ the_url('admin.help_inquiry', id=current_inquiry.id) }}">Resume</a>
+    {% elif locations_disabled %}
+      {% if not latest_inquiry %}
+      <p class="queue-note">No pending requests!</p>
+      {% else %}
+      <a href="{{ url_for('admin.help_latest') }}" class="button color">Start Helping</a>
+      {% endif %}
     {% else %}
     <h2>Choose a Location</h2>
     <p>All active locations: {{ app_locations }}</p>

@@ -51,7 +51,11 @@ def home():
 def help():
     """help start"""
     if not g.queue.setting('location_selection').enabled:
-        return redirect(url_for('admin.help_latest'))
+        return render_admin('help.html',
+            no_mobile_action=True,
+            locations_disabled=True,
+            latest_inquiry=Inquiry.latest(),
+            current_inquiry=Inquiry.current())
     locations = [(l,
         Inquiry.query.filter_by(
             location=l, status='unresolved', queue_id=g.queue.id).count())
@@ -104,7 +108,7 @@ def help_latest(location=None, category=None):
             status='unresolved',
             location=location,
             queue_id=g.queue.id).count())
-            for cat in g.queue.setting('inquiry_types').split(',')]
+            for cat in g.queue.setting('inquiry_types').value.split(',')]
         categories = [c for c in categories if c[1]]
         if len(categories) > 1:
             return render_admin('categories.html',
