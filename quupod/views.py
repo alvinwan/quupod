@@ -61,7 +61,11 @@ def strip_subdomain(string, n=1):
     """Strip subdomain prefix if applicable"""
     if '/subdomain/' not in request.path:
         return string
-    return '/' + '/'.join([s for s in string.split('/') if s][n:])
+    url = '/' + '/'.join([s for s in string.split('/') if s][n:])
+    # hack fix TODO: more legit fix
+    if url.endswith('admin'):
+        return url + '/'
+    return url
 
 
 def current_url():
