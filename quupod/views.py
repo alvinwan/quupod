@@ -1,9 +1,9 @@
 from functools import wraps
 from flask import url_for, redirect, render_template, request
 import flask_login
-from quuupod.defaults import default_queue_settings
-from quuupod.notifications import *
-from quuupod import googleclientID, config, debug, domain
+from quupod.defaults import default_queue_settings
+from quupod.notifications import *
+from quupod import googleclientID, config, debug, domain
 from flask_login import login_required
 
 
@@ -40,7 +40,7 @@ def anonymous_required(f):
 
 def requires(*permissions):
     """Decorator for views, restricting access to the roles listed"""
-    from quuupod.queue.views import render_queue
+    from quupod.queue.views import render_queue
     def wrap(f):
         @wraps(f)
         def decorator(*args, **kwargs):

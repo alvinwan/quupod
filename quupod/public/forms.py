@@ -2,7 +2,7 @@ from wtforms_alchemy import ModelForm, ModelFieldList
 from wtforms.fields import FormField
 from flask import g
 import wtforms as wtf
-from quuupod.models import Inquiry, User
+from quupod.models import Inquiry, User
 import flask_login
 
 

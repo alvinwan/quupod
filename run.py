@@ -1,5 +1,5 @@
-from quuupod import app, debug, db, port
-from quuupod.models import Setting
+from quupod import app, debug, db, port
+from quupod.models import Setting
 import argparse
 import os
 

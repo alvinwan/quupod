@@ -1,9 +1,9 @@
 from wtforms_alchemy import ModelForm, ModelFieldList
 import wtforms as wtf
-from quuupod.models import Queue
-from quuupod.defaults import default_queue_roles
+from quupod.models import Queue
+from quupod.defaults import default_queue_roles
 from wtforms.validators import InputRequired, DataRequired, Optional
-from quuupod.forms import choicify
+from quupod.forms import choicify
 from flask import g
 
 

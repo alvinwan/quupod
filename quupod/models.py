@@ -2,12 +2,12 @@
 Important: Changes here need to be followed by `make refresh`.
 """
 
-from quuupod import db
+from quupod import db
 from sqlalchemy import types, asc
 from sqlalchemy_utils import EncryptedType, PasswordType, ArrowType
 from sqlalchemy_utils.types.choice import ChoiceType
 from passlib.context import CryptContext
-from quuupod.defaults import default_queue_settings
+from quupod.defaults import default_queue_settings
 import flask_login, arrow
 from flask import g, request, url_for
 

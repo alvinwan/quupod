@@ -1,9 +1,9 @@
 from flask import Blueprint, request, render_template, url_for, redirect
 from .forms import *
-from quuupod import app, login_manager, whitelist, googleclientID
-from quuupod.models import User, Inquiry, Queue
-from quuupod.views import anonymous_required, render
-from quuupod.notifications import *
+from quupod import app, login_manager, whitelist, googleclientID
+from quupod.models import User, Inquiry, Queue
+from quupod.views import anonymous_required, render
+from quupod.notifications import *
 from oauth2client import client, crypt
 import flask_login
 
@@ -128,7 +128,7 @@ def not_found(error):
 
 @app.errorhandler(500)
 def not_found(error):
-    from quuupod import db
+    from quupod import db
     db.session.rollback()
     return render_template('500.html',
         title='500. Hurr.',

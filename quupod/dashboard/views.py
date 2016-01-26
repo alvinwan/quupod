@@ -1,8 +1,8 @@
 from flask import Blueprint, request, redirect, url_for, g
-from quuupod.views import current_user, login_required
-from quuupod.queue.forms import QueueForm
-from quuupod.models import Queue
-from quuupod.defaults import default_queue_roles
+from quupod.views import current_user, login_required
+from quupod.queue.forms import QueueForm
+from quupod.models import Queue
+from quupod.defaults import default_queue_roles
 
 
 dashboard = Blueprint('dashboard', __name__, url_prefix='/dashboard')
@@ -15,7 +15,7 @@ def load_current_user(_, __):
 
 def render_dashboard(f, *args, **kwargs):
     """custom render for dashboard"""
-    from quuupod.views import render
+    from quupod.views import render
     return render(f, *args, **kwargs)
 
 

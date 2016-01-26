@@ -1,4 +1,4 @@
-from quuupod import migration_manager, MigrateCommand
+from quupod import migration_manager, MigrateCommand
 
 migration_manager.add_command('db', MigrateCommand)
 

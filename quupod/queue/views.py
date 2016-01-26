@@ -1,12 +1,12 @@
 from flask import Blueprint, request, render_template, g, redirect, url_for,\
     abort
 from .forms import *
-from quuupod import app, login_manager, whitelist
-from quuupod.models import User, Inquiry
-from quuupod.views import anonymous_required, render, current_user
-from quuupod.forms import choicify
-from quuupod.defaults import default_queue_settings
-from quuupod.notifications import *
+from quupod import app, login_manager, whitelist
+from quupod.models import User, Inquiry
+from quupod.views import anonymous_required, render, current_user
+from quupod.forms import choicify
+from quupod.defaults import default_queue_settings
+from quupod.notifications import *
 import flask_login
 
 queue = Blueprint('queue', __name__, url_prefix='/<string:queue_url>',
