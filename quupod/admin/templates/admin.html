@@ -13,9 +13,9 @@
   <nav class="event-nav">
     <ul>
       {% for link in (
-          (url_for('admin.home'), 'Home'),
-          (url_for('admin.help'), 'Help'),
-          (url_for('admin.settings'), 'Settings')) %}
+          (the_url('admin.home'), 'Home'),
+          (the_url('admin.help'), 'Help'),
+          (the_url('admin.settings'), 'Settings')) %}
       <li><a class="{% if link[1] == panel %}s{% endif %}" href="{% if link[1] != panel %}{{ link[0] }}{% else %}#{% endif %}">{{ link[1] }}</a></li>
       {% endfor %}
     </ul>

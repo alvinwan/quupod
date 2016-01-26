@@ -3,7 +3,7 @@
 {% set panel='Help' %}
 {% set refresh=3000 %}
 {% block text %}
-<p class="event-byline"><a href="{{ url_for('admin.home') }}">Admin</a> &raquo; Help</p>
+<p class="event-byline"><a href="{{ the_url('admin.home') }}">Admin</a> &raquo; Help</p>
 <h1 class="event-title">Help</h1>
 <p class="event-copy">Select your current location below, to start helping.</p>
 {% endblock %}
@@ -13,12 +13,12 @@
     {% if current_inquiry %}
     <h2>Unfinished Inquiry</h2>
     <p>You have an unfinished inquiry on your hands!</p>
-    <a class="button color" href="{{ url_for('admin.help_inquiry', id=current_inquiry.id) }}">Resume</a>
+    <a class="button color" href="{{ the_url('admin.help_inquiry', id=current_inquiry.id) }}">Resume</a>
     {% else %}
     <h2>Choose a Location</h2>
     <p>All active locations: {{ app_locations }}</p>
       {% for location in locations %}
-      <a class="button color" href="{{ url_for('admin.help_latest', location=location[0]) }}">{{ location[0] }} ({{ location[1] }})</a>
+      <a class="button color" href="{{ the_url('admin.help_latest', location=location[0]) }}">{{ location[0] }} ({{ location[1] }})</a>
       {% endfor %}
       {% if locations | length == 0 %}
     <p class="queue-note">No locations have pending requests!</p>

@@ -11,7 +11,7 @@
       <div class="content-copy">The following request types have pending requests:
       </div>
       {% for category, count in categories %}
-      <a href="{{ url_for('admin.help_latest', location=location, category=category) }}" class="button color">{{ category }} ({{ count }})</a>
+      <a href="{{ the_url('admin.help_latest', location=location, category=category) }}" class="button color">{{ category }} ({{ count }})</a>
       {% endfor %}
     </form>
   </div>
