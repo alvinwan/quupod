@@ -113,3 +113,19 @@ def inquiry():
             notification=NOTIF_INQUIRY_PLACED))
     return render_queue('form.html', form=form, title='Request Help',
         submit='Ask')
+
+
+################
+# LOGIN/LOGOUT #
+################
+
+@queue.route('/logout')
+def logout():
+    from quupod.public.views import logout
+    return logout()
+
+
+@queue.route('/tokenlogin', methods=['POST'])
+def token_login():
+    from quupod.public.views import token_login
+    return token_login()
