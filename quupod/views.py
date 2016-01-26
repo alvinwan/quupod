@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import url_for, redirect, render_template, request, g
+from flask import url_for as flask_url_for, redirect, render_template, request, g
 import flask_login
 from quupod.defaults import default_queue_settings
 from quupod.notifications import *
@@ -24,7 +24,7 @@ def render(template, **kwargs):
             int(request.args.get('notification', None) or -1), None),
         request=request,
         logout=request.args.get('logout', False),
-        the_url=the_url,
+        the_url=url_for,
         current_url=current_url,
         **kwargs)
 
@@ -69,6 +69,6 @@ def current_url():
     return strip_subdomain(request.path, n=2)
 
 
-def the_url(*args, **kwargs):
+def url_for(*args, **kwargs):
     """Special url function for subdomain websites"""
-    return strip_subdomain(url_for(*args, **kwargs))
+    return strip_subdomain(flask_url_for(*args, **kwargs))

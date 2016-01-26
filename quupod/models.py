@@ -9,7 +9,8 @@ from sqlalchemy_utils.types.choice import ChoiceType
 from passlib.context import CryptContext
 from quupod.defaults import default_queue_settings
 import flask_login, arrow
-from flask import g, request, url_for
+from flask import g, request
+from quupod.views import url_for
 
 #################
 # PARENT MODELS #

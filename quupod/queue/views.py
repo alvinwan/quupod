@@ -1,9 +1,9 @@
 from flask import Blueprint, request, render_template, g, redirect,\
-    abort, url_for
+    abort
 from .forms import *
 from quupod import app, login_manager, whitelist
 from quupod.models import User, Inquiry
-from quupod.views import anonymous_required, render, current_user, the_url
+from quupod.views import anonymous_required, render, current_user, url_for
 from quupod.forms import choicify
 from quupod.defaults import default_queue_settings
 from quupod.notifications import *

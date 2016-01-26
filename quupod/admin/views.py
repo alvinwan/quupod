@@ -1,6 +1,6 @@
-from flask import Blueprint, request, redirect, g, abort, url_for
+from flask import Blueprint, request, redirect, g, abort
 from quupod import app, db
-from quupod.views import requires, render, the_url
+from quupod.views import requires, render, url_for
 from quupod.models import User, Inquiry, Queue, QueueSetting
 from quupod.notifications import *
 from quupod.defaults import default_queue_settings
