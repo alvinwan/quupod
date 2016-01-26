@@ -13,7 +13,7 @@
     {% endif %}
     <script src="http://code.jquery.com/jquery-2.2.0.min.js"></script>
     <!-- custom code -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ domain }}{{ url_for('static', filename='style.css') }}">
     </script>
   </head>
   <body class="{{ color or 'blue' }}">
