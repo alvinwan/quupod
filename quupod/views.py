@@ -57,16 +57,16 @@ def requires(*permissions):
     return wrap
 
 
-def strip_subdomain(string):
+def strip_subdomain(string, n=1):
     """Strip subdomain prefix if applicable"""
     if '/subdomain/' not in request.path:
         return string
-    return '/' + '/'.join(list(filter(bool, string.split('/')))[2:])
+    return '/' + '/'.join([s for s in string.split('/') if s][n:])
 
 
 def current_url():
     """Return current URL"""
-    return strip_subdomain(request.path)
+    return strip_subdomain(request.path, n=2)
 
 
 def the_url(*args, **kwargs):
