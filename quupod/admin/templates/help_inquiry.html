@@ -9,12 +9,12 @@
 {% endblock %}
 {% block decor %}
 <div class="col-md-6 event-decor">
-  <form method="post">
+  <form method="post" action="{{ current_url() }}">
     <input type="hidden" name="status" value="resolving">
     <input type="submit" class="button" value="resolve">
   </form>
   {% if delayable %}
-  <form method="post">
+  <form method="post" action="{{ current_url() }}">
     <input type="hidden" name="status" value="unresolved">
     <input type="submit" class="button" value="delay">
   </form>

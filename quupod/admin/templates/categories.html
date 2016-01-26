@@ -13,7 +13,7 @@
       {% for category, count in categories %}
       <a href="{{ the_url('admin.help_latest', location=location, category=category) }}" class="button color">{{ category }} ({{ count }})</a>
       {% endfor %}
-    </form>
+    </div>
   </div>
 </section>
 {% endblock %}

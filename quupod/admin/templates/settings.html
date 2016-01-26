@@ -12,7 +12,7 @@
   <div class="setting col-md-12 col-xs-12">
     <h2>{{ setting.label }}</h2>
     <p>{{ setting.description | safe }}{% if setting.toggable %}<br>Enabled: <b>{{ setting.enabled }}</b>{% endif %}</p>
-    <form method="POST">
+    <form method="POST" action="{{ current_url() }}">
       <input type="hidden" value="{{ setting.name }}" name="name">
       {% if setting.enabled %}
         {% if setting.input_type != 'None' %}
