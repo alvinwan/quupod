@@ -22,7 +22,9 @@ config = {
 }
 try:
     lines = filter(bool, open('config.cfg').read().splitlines())
-    for k, v in (map(lambda s: s.strip(), d.split(':')) for d in lines):
+    for k in (tuple(d.split(':')) for d in lines):
+        v = ':'.join(k[1:])
+        k = k[0]
         if v:
             config[k.upper()] = v
 except FileNotFoundError:
