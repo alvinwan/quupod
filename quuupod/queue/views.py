@@ -1,4 +1,5 @@
-from flask import Blueprint, request, render_template, g, redirect, url_for
+from flask import Blueprint, request, render_template, g, redirect, url_for,\
+    abort
 from .forms import *
 from quuupod import app, login_manager, whitelist
 from quuupod.models import User, Inquiry
@@ -21,7 +22,9 @@ def add_queue_url(endpoint, values):
 def pull_queue_url(endpoint, values):
     g.user = current_user()
     g.queue_url = values.pop('queue_url')
-    g.queue = Queue.query.filter_by(url=g.queue_url).one()
+    g.queue = Queue.query.filter_by(url=g.queue_url).one_or_none()
+    if not g.queue:
+        abort(404)
 
 
 def render_queue(template, *args, **kwargs):
