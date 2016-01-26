@@ -25,6 +25,7 @@ def render(template, **kwargs):
         request=request,
         logout=request.args.get('logout', False),
         the_url=the_url,
+        current_url=current_url,
         **kwargs)
 
 
@@ -56,8 +57,18 @@ def requires(*permissions):
     return wrap
 
 
+def strip_subdomain(string):
+    """Strip subdomain prefix if applicable"""
+    if '/subdomain/' not in request.path:
+        return string
+    return '/' + '/'.join(list(filter(bool, string.split('/')))[2:])
+
+
+def current_url():
+    """Return current URL"""
+    return strip_subdomain(request.path)
+
+
 def the_url(*args, **kwargs):
     """Special url function for subdomain websites"""
-    if '/subdomain/' not in request.path:
-        return url_for(*args, **kwargs)
-    return '/' + '/'.join(url_for(*args, **kwargs).split('/')[2:])
+    return strip_subdomain(url_for(*args, **kwargs))
