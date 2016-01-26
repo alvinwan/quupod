@@ -102,6 +102,7 @@ def request_loader(request):
         print(' * Reloaded user with id "%s", from request_loader' % id)
     return user
 
+@app.route('/<path:random>/logout')
 @app.route('/logout')
 def logout():
     flask_login.logout_user()

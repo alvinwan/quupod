@@ -1,7 +1,7 @@
 # [Office Hours Queue](http://quupod.com)
 in-session questions queue management ([demo](http://quupod.com))
 
-by [Alvin Wan](http://alvinwan.com), with contributions from [Ben Kha](http://github.com/benkha) and a huge help from [Sumukh Sridhara](http://sumukh.me) for deploying to production.
+by [Alvin Wan](http://alvinwan.com), with contributions from [Ben Kha](http://github.com/benkha) and a huge help from [Sumukh Sridhara](http://sumukh.me) for production deployment and hosting.
 
 ## Features
 
