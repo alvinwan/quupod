@@ -24,6 +24,7 @@ def home():
 
 
 @public.route('/tokenlogin', methods=['POST'])
+@public.route('/<path:random>/tokenlogin', methods=['POST'])
 @anonymous_required
 def token_login():
     """Login via Google token"""
