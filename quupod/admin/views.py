@@ -172,3 +172,19 @@ def settings():
         return redirect(url_for('admin.settings',
             notification=notification))
     return render_admin('settings.html', settings=settings)
+
+
+################
+# LOGIN/LOGOUT #
+################
+
+@app.route('/logout')
+def logout():
+    from quupod.public.views import logout
+    return logout()
+
+
+@app.route('/tokenlogin', methods=['POST'])
+def token_login():
+    from quupod.public.views import token_login
+    return token_login()

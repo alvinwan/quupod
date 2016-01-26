@@ -24,7 +24,6 @@ def home():
 
 
 @public.route('/tokenlogin', methods=['POST'])
-@public.route('/subdomain/<string:queue_url>/tokenlogin', methods=['POST'])
 @anonymous_required
 def token_login():
     """Login via Google token"""
@@ -102,7 +101,6 @@ def request_loader(request):
         print(' * Reloaded user with id "%s", from request_loader' % id)
     return user
 
-@app.route('/subdomain/<string:queue_url>/logout')
 @app.route('/logout')
 def logout():
     flask_login.logout_user()
