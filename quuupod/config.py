@@ -17,7 +17,8 @@ config = {
     'DEBUG': get('DEBUG', 'False'),
     'WHITELIST': get('WHITELIST', ''),
     'GOOGLECLIENTID': get('GOOGLECLIENTID', None),
-    'ALLOWED_NETLOCS': get('ALLOWED_NETLOCS', 'ohquu.herokuapp.com')
+    'ALLOWED_NETLOCS': get('ALLOWED_NETLOCS', 'quupod.com'),
+    'DOMAIN': get('DOMAIN', 'quupod.com')
 }
 try:
     lines = filter(bool, open('config.cfg').read().splitlines())
@@ -40,3 +41,4 @@ debug = config['DEBUG'].lower() == 'true'
 whitelist = config['WHITELIST'].split(',')
 googleclientID = config['GOOGLECLIENTID']
 port = config['PORT']
+domain = config['DOMAIN']

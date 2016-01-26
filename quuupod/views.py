@@ -3,7 +3,7 @@ from flask import url_for, redirect, render_template, request
 import flask_login
 from quuupod.defaults import default_queue_settings
 from quuupod.notifications import *
-from quuupod import googleclientID, config
+from quuupod import googleclientID, config, debug, domain
 from flask_login import login_required
 
 
@@ -18,6 +18,8 @@ def render(template, **kwargs):
         kwargs.setdefault('cfg_%s' % k, v)
     kwargs.setdefault('request', request)
     kwargs.setdefault('logout', request.args.get('logout', False))
+    if not debug: # if on production
+        kwargs.setdefault('domain', domain)
     return render_template(template,
         googleclientID=googleclientID,
         banner_message=notifications.get(
