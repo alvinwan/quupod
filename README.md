@@ -1,11 +1,11 @@
 # [Quupod](http://quupod.com)
-by [Alvin Wan](http://alvinwan.com)
+In-session questions queue management, with a one-click Google sign in; now being used by ~2900 students across three courses - CS61A, CS61B, CS70 - at UC Berkeley.
 
-Quupod offers in-session questions queue management, complete with a one-click Google sign in; it is now being used by ~2900 students across three courses - CS61A, CS61B, CS70 - at UC Berkeley.
+created by [Alvin Wan](http://alvinwan.com), Spring 2016
 
 To get started, see [quupod.com](http://quupod.com).
 
-See the Contributors section below for people I owe thanks to.
+See the [Contributors](https://github.com/alvinwan/quupod#contributors) section below for important contributors like Sumukh Sridhara, who spent many hours helping deploy and debug Quupod.
 
 ## Features
 
