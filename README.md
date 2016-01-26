@@ -1,7 +1,11 @@
-# [Office Hours Queue](http://quupod.com)
-in-session questions queue management ([demo](http://quupod.com))
+# [Quupod](http://quupod.com)
+by [Alvin Wan](http://alvinwan.com)
 
-by [Alvin Wan](http://alvinwan.com), with contributions from [Ben Kha](http://github.com/benkha) and a huge help from [Sumukh Sridhara](http://sumukh.me) for production deployment and hosting.
+Quupod offers in-session questions queue management, complete with a one-click Google sign in; it is now being used by ~2900 students across three courses - CS61A, CS61B, CS70 - at UC Berkeley.
+
+To get started, see [quupod.com](http://quupod.com).
+
+See the Contributors section below for people I owe thanks to.
 
 ## Features
 
@@ -36,20 +40,11 @@ Queue calculates estimated time until resolution, and extra statistics are inclu
 
 ## Installation
 
-> These instructions assume the mySQL server has been started. See MySQL below.
-
-### Dependencies
-
 Check that Python3 and MySQL are installed using `make check`.
-
-### Getting Started
 
 1. Run the installation using `make install`.
 1. Add valid mysql user credentials to `config.cfg`.
 1. Create the database using `make db`.
-
-> If the bash scripts do not work, see the Details section below for an outline
-of what each script does.
 
 During development, you may additionally want to remember the following:
 
@@ -73,7 +68,7 @@ Any model modifications should be followed by the following, which will
 
 ### Windows Details
 
-Because of incompatbility issues with the makefile, on Windows you will have to manually run the installation instructions.
+Because of incompatibility issues with the makefile, on Windows you will have to manually run the installation instructions.
 
 1. Setup a new virtual environment by calling `python -m virtualenv env`.
 1. Start the virtual environment by calling `env/Scripts/activate.bat` in cmd.
@@ -87,9 +82,6 @@ Because of incompatbility issues with the makefile, on Windows you will have to 
 ## Launch
 
 Use `make run`.
-
-> If the bash script does not work, see the Details section below for an outline
-of `make run`.
 
 ### Unix and Mac OSX Details
 
@@ -107,3 +99,8 @@ of `make run`.
 `mysql.server start`. For other Linux-based operating systems, use
 `sudo service mysql start`.
 - For Windows, just start the server using `services.msc`.
+
+## Contributors
+
+- [Sumukh Sridhara](http://sumukh.me) - production deployment and hosting
+- [Ben Kha](http://github.com/benkha) - Windows setup
