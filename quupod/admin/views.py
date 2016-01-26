@@ -168,6 +168,8 @@ def settings():
             name=request.form['name']).first()
         for k, v in request.form.items():
             setattr(setting, k, v)
+        if setting.name == 'locations':
+            setting.value = setting.value.replace(' ','')
         setting.save()
         return redirect(url_for('admin.settings',
             notification=notification))

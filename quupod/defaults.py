@@ -43,7 +43,7 @@ default_queue_settings = {
     },
     'locations': {
         'label': 'Locations',
-        'description': 'Manually specify a comma-separated list of locations. Only takes effect if "Location Selection" is enabled',
+        'description': 'Manually specify a comma-separated list of locations. Only takes effect if "Location Selection" is enabled. <b>No spaces!</b> All spaces will be removed upon save.',
         'enabled': True,
         'enable_description': 'Enable to manually specify a list of locations.',
         'value': 'Evans B4',
