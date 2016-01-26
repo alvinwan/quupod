@@ -14,9 +14,9 @@
   <div class="col-md-6 event-decor">
     {% if current_user.is_authenticated or not q_require_login %}
       {% if current_user.role != 'staff' %}
-    <a class="button" href="{{ url_for('queue.inquiry') }}">Request Help</a>
+    <a class="button" href="{{ the_url('queue.inquiry') }}">Request Help</a>
       {% elif current_user.role == 'staff' %}
-    <a class="button" href="{{ url_for('admin.help') }}">Help</a>
+    <a class="button" href="{{ the_url('admin.help') }}">Help</a>
       {% endif %}
     {% endif %}
   </div>
@@ -24,9 +24,9 @@
   <nav class="event-nav">
     <ul>
       {% for link in (
-          (url_for('queue.home'), 'Unresolved'),
-          (url_for('queue.resolving'), 'Resolving'),
-          (url_for('queue.staff'), 'Staff')) %}
+          (the_url('queue.home'), 'Unresolved'),
+          (the_url('queue.resolving'), 'Resolving'),
+          (the_url('queue.staff'), 'Staff')) %}
       <li><a class="{% if link[1] == panel %}s{% endif %}" href="{% if link[1] != panel %}{{ link[0] }}{% else %}#{% endif %}">{{ link[1] }}</a></li>
       {% endfor %}
       <p class="right nav-text hidden-xs">Estimated wait: {{ ttr }}</p>
@@ -36,14 +36,14 @@
 </section>
 {% if (current_user.is_authenticated or not q_require_login) and not no_mobile_action %}
   {% if current_user.role != 'staff' %}
-<a href="{{ url_for('queue.inquiry') }}">
+<a href="{{ the_url('queue.inquiry') }}">
   <div class="mobile-action">
     <span class="ma-add"><i class="fa fa-plus"></i></span>
     <p>Request Help</p>
   </div>
 </a>
   {% elif current_user.role == 'staff' %}
-<a href="{{ url_for('admin.help') }}">
+<a href="{{ the_url('admin.help') }}">
   <div class="mobile-action">
     <span class="ma-add"><i class="fa fa-medkit"></i></span>
     <p>Start Helping</p>

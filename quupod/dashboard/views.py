@@ -1,5 +1,5 @@
-from flask import Blueprint, request, redirect, url_for, g
-from quupod.views import current_user, login_required
+from flask import Blueprint, request, redirect, g, url_for
+from quupod.views import current_user, login_required, the_url
 from quupod.queue.forms import QueueForm
 from quupod.models import Queue
 from quupod.defaults import default_queue_roles

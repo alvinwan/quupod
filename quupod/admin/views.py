@@ -1,6 +1,6 @@
-from flask import Blueprint, request, redirect, url_for, g
+from flask import Blueprint, request, redirect, g, abort, url_for
 from quupod import app, db
-from quupod.views import requires, render
+from quupod.views import requires, render, the_url
 from quupod.models import User, Inquiry, Queue, QueueSetting
 from quupod.notifications import *
 from quupod.defaults import default_queue_settings
@@ -20,7 +20,9 @@ def add_queue_url(endpoint, values):
 def pull_queue_url(endpoint, values):
     g.user = flask_login.current_user
     g.queue_url = values.pop('queue_url')
-    g.queue = Queue.query.filter_by(url=g.queue_url).one()
+    g.queue = Queue.query.filter_by(url=g.queue_url).one_or_none()
+    if not g.queue:
+        abort(404)
 
 
 def render_admin(template, *args, **kwargs):

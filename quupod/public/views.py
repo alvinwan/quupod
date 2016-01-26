@@ -1,8 +1,8 @@
-from flask import Blueprint, request, render_template, url_for, redirect
+from flask import Blueprint, request, render_template, redirect, url_for
 from .forms import *
 from quupod import app, login_manager, whitelist, googleclientID
 from quupod.models import User, Inquiry, Queue
-from quupod.views import anonymous_required, render
+from quupod.views import anonymous_required, render, the_url
 from quupod.notifications import *
 from oauth2client import client, crypt
 import flask_login

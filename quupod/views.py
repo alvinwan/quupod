@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import url_for, redirect, render_template, request
+from flask import url_for, redirect, render_template, request, g
 import flask_login
 from quupod.defaults import default_queue_settings
 from quupod.notifications import *
@@ -16,14 +16,15 @@ def render(template, **kwargs):
     """Render with settings"""
     for k, v in config.items():
         kwargs.setdefault('cfg_%s' % k, v)
-    kwargs.setdefault('request', request)
-    kwargs.setdefault('logout', request.args.get('logout', False))
     if not debug: # if on production
         kwargs.setdefault('domain', domain)
     return render_template(template,
         googleclientID=googleclientID,
         banner_message=notifications.get(
             int(request.args.get('notification', None) or -1), None),
+        request=request,
+        logout=request.args.get('logout', False),
+        the_url=the_url,
         **kwargs)
 
 
@@ -53,3 +54,10 @@ def requires(*permissions):
             return f(*args, **kwargs)
         return decorator
     return wrap
+
+
+def the_url(*args, **kwargs):
+    """Special url function for subdomain websites"""
+    if '/subdomain/' not in request.path:
+        return url_for(*args, **kwargs)
+    return '/' + '/'.join(url_for(*args, **kwargs).split('/')[2:])
