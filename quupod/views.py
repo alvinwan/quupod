@@ -57,20 +57,24 @@ def requires(*permissions):
     return wrap
 
 
-def strip_subdomain(string, n=1):
+def strip_subdomain(string):
     """Strip subdomain prefix if applicable"""
-    if '/subdomain/' not in request.path:
+    if '/subdomain/' not in request.path or not getattr(g, 'queue', None):
         return string
-    url = '/' + '/'.join([s for s in string.split('/') if s][n:])
-    # hack fix TODO: more legit fix
-    if url.endswith('admin'):
-        return url + '/'
+    parts = string.replace('subdomain', '').split('/');
+    if not parts:
+        pass
+    if parts[1] == g.queue.url:
+        parts = parts[2:]
+    elif parts[2] == g.queue.url:
+        parts = parts[3:]
+    url = '/' + '/'.join(parts)
     return url
 
 
 def current_url():
     """Return current URL"""
-    return strip_subdomain(request.path, n=2)
+    return strip_subdomain(request.path)
 
 
 def url_for(*args, **kwargs):
