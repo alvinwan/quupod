@@ -12,7 +12,7 @@
             <i class="fa fa-user fa-stack-1x"></i>
           </span>
         </p>
-        <a class="header-action" href="{{ the_url('logout', redirect=request.path) }}">logout<span class="header-subtext hidden-md hidden-lg hidden-sm">{{ current_user.name }}</span></a>
+        <a class="header-action" href="/logout?redirect={{ current_url() }}">logout<span class="header-subtext hidden-md hidden-lg hidden-sm">{{ current_user.name }}</span></a>
           {% if current_user.can('admin') %}
             {% if subtitle == 'Admin' %}
         <a class="header-action s" href="#">Admin</a>
