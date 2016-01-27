@@ -43,6 +43,7 @@ for blueprint in blueprints:
     print(' * Registering blueprint "%s"' % blueprint.name)
     app.register_blueprint(blueprint)
 
+# subdomain routes with special urls
 app.register_blueprint(admin, url_prefix='/subdomain/<string:queue_url>/admin')
 app.register_blueprint(queue, url_prefix='/subdomain/<string:queue_url>')
 

@@ -17,14 +17,6 @@ migrate:
 		python migrate.py db migrate && \
 		python migrate.py db upgrade
 
-default:
-	source activate.sh && \
-		python3 run.py -s default
-
-restore:
-	source activate.sh && \
-		python3 run.py -s override
-
 tornado:
 	source activate.sh && \
 		python3 run.py --tornado
