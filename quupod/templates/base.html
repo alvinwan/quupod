@@ -47,8 +47,9 @@
      * Google Authentication
      * Signin or signout on data load
      */
+    var forceSignOut = {{ logout or 'false' }};
     function onSignIn(googleUser) {
-      if ({{ logout or 'false' }}) {
+      if (forceSignOut) {
         signOut();
       } else {
         signIn(googleUser);
@@ -60,12 +61,16 @@
       var xhr = new XMLHttpRequest();
       xhr.open('POST', "/tokenlogin");
       xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      xhr.send('token=' + id_token + '&return=/');
+      xhr.send('token=' + id_token + '&return={{ current_url() }}');
       xhr.onload = function() {
         if (xhr.status == 200) {
-          window.location.replace(xhr.responseText + '#refresh');
+          url = xhr.responseText;
+          if (url == '{{ current_url() }}') {
+            window.location.reload();
+          }
+          window.location.replace(url);
         } else {
-          alert('Login failed.')
+          alert('Login failed.');
         }
       };
     }
@@ -73,7 +78,7 @@
     function signOut() {
       var auth2 = gapi.auth2.getAuthInstance();
       auth2.signOut().then(function () {
-        window.location.replace('{{ current_url() }}');
+        forceSignOut = false;
       });
     }
     </script>
