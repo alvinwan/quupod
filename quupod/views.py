@@ -59,15 +59,12 @@ def requires(*permissions):
 
 def strip_subdomain(string):
     """Strip subdomain prefix if applicable"""
-    if '/subdomain/' not in request.path or not getattr(g, 'queue', None):
+    if '/subdomain' not in request.path or not getattr(g, 'group', None):
         return string
-    parts = string.replace('subdomain', '').split('/');
-    if len(parts) > 1 and parts[1] == g.queue.url:
-        parts = parts[2:]
-    elif len(parts) > 2 and parts[2] == g.queue.url:
-        parts = parts[3:]
-    url = '/' + '/'.join(parts)
-    return url
+    string = string.replace('/subdomain', '')
+    if string.startswith('/%s' % g.group.url):
+        string = string.replace('/%s' % g.group.url, '')
+    return string
 
 
 def current_url():
