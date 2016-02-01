@@ -43,6 +43,7 @@ def token_login():
                 google_id=google_id
             ).save()
         flask_login.login_user(user)
+        print('* %s logged in (%s)' % (user.name, user.email))
         # if user and user.can('help'):
         #     path, notification = 'admin.home', NOTIF_LOGIN_STAFF
         # else:

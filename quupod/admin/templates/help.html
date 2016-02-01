@@ -3,7 +3,11 @@
 {% set panel='Help' %}
 {% set refresh=3000 %}
 {% block text %}
-<p class="event-byline"><a href="{{ the_url('admin.home') }}">Admin</a> &raquo; Help</p>
+<p class="event-byline">
+  {% if g.user.can('admin') %}
+  <a href="{{ the_url('admin.home') }}">Admin</a> &raquo;
+  {% endif %}
+  Help</p>
 <h1 class="event-title">Help</h1>
 <p class="event-copy">{% if locations_disabled %}Click "start helping" below to get started.{% else %}Select your current location below, to start helping.{% endif %}</p>
 {% endblock %}

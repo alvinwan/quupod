@@ -431,3 +431,7 @@ class Participant(Base):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     queue_id = db.Column(db.Integer, db.ForeignKey('queue.id'))
     role_id = db.Column(db.Integer, db.ForeignKey('queue_role.id'))
+
+    @property
+    def role(self):
+        return QueueRole.query.get(self.role_id)

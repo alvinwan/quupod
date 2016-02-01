@@ -37,7 +37,7 @@ def render_queue(template, *args, **kwargs):
             if len(entry) == 2:
                 entries[entry[0]] = entry[1][:-1]
             else:
-                entries[entry[0]] = 'Admin'
+                entries[entry[0]] = 'Staff'
         if g.user.is_authenticated and \
             g.user.email in entries:
             g.user.set_role(entries[g.user.email])

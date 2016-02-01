@@ -1,7 +1,7 @@
 from flask import Blueprint, request, redirect, g, abort
 from quupod import app, db
 from quupod.views import requires, render, url_for
-from quupod.models import User, Inquiry, Queue, QueueSetting
+from quupod.models import User, Inquiry, Queue, QueueSetting, Participant
 from quupod.notifications import *
 from quupod.defaults import default_queue_settings
 import flask_login
@@ -23,6 +23,8 @@ def pull_queue_url(endpoint, values):
     g.queue = Queue.query.filter_by(url=g.queue_url).one_or_none()
     if not g.queue:
         abort(404)
+    if g.user.is_authenticated:
+        g.participant = Participant.query.filter_by(user_id=g.user.id, queue_id=g.queue.id).one_or_none()
 
 
 def render_admin(template, *args, **kwargs):
@@ -47,7 +49,7 @@ def home():
 
 @admin.route('/help')
 @flask_login.login_required
-@requires('staff')
+@requires('help')
 def help():
     """help start"""
     if not g.queue.setting('location_selection').enabled:
@@ -156,11 +158,13 @@ def help_inquiry(id, location=None):
 
 @admin.route('/settings', methods=['POST', 'GET'])
 @flask_login.login_required
-@requires('staff')
+@requires('edit_settings')
 def settings():
     """settings"""
     settings = QueueSetting.query.join(Queue).filter_by(
         id=g.queue.id).all()
+    if g.participant.role.name.lower() != 'owner':
+        settings = [s for s in settings if s.name != 'whitelist']
     for setting in settings:
         default_description =default_queue_settings[setting.name]['description']
         if default_description != setting.description:
