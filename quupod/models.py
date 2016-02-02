@@ -238,13 +238,16 @@ class Queue(Base):
         """
         lst = self.setting('assignments').value
         str2lst = lambda s: (s.strip() for s in lst.split(','))
-        assignment, category = request.form['assignment'], request.form['category']
+        assignment, category = request.form['assignment'], request.form.get('category', None)
         if ':' in lst:
             lst = dict(l.split(':') for l in lst.splitlines()).get(category, '*')
             if lst == '*':
                 return True
         if assignment not in str2lst(lst):
-            form.errors.setdefault('assignment', []).append('For "%s" inquiries, assignment "%s" is not allowed. Only the following assignments are: %s' % (category, assignment, lst))
+            prefix = 'Assignment'
+            if category:
+                prefix = 'For "%s" inquiries, assignment' % category
+            form.errors.setdefault('assignment', []).append('%s "%s" is not allowed. Only the following assignments are: %s' % (prefix, assignment, lst))
             return False
         return True
 
