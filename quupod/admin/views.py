@@ -139,6 +139,11 @@ def help_inquiry(id, location=None):
             delayed_id = inquiry.id
         else:
             inquiry.close()
+        if request.form['load_next'] != 'y':
+            if delayed_id:
+                delayed = Inquiry.query.get(delayed_id)
+                delayed.unlock()
+            return redirect(url_for('admin.help'))
         if not location:
             return redirect(url_for('admin.help_latest', delayed_id=delayed_id))
         return redirect(url_for('admin.help_latest',

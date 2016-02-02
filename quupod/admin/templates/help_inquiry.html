@@ -10,11 +10,23 @@
 {% block decor %}
 <div class="col-md-6 event-decor">
   <form method="post" action="{{ current_url() }}">
-    <input type="hidden" name="status" value="resolving">
+    <input type="hidden" name="load_next" value="y">
+    <input type="hidden" name="status" value="resolved">
+    <input type="submit" class="button" value="resolve and next">
+  </form>
+  <form method="post" action="{{ current_url() }}">
+    <input type="hidden" name="load_next" value="n">
+    <input type="hidden" name="status" value="resolved">
     <input type="submit" class="button" value="resolve">
   </form>
   {% if delayable %}
   <form method="post" action="{{ current_url() }}">
+    <input type="hidden" name="load_next" value="y">
+    <input type="hidden" name="status" value="unresolved">
+    <input type="submit" class="button" value="delay and next">
+  </form>
+  <form method="post" action="{{ current_url() }}">
+    <input type="hidden" name="load_next" value="n">
     <input type="hidden" name="status" value="unresolved">
     <input type="submit" class="button" value="delay">
   </form>
