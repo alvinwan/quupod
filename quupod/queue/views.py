@@ -20,7 +20,7 @@ def add_queue_url(endpoint, values):
 
 @queue.url_value_preprocessor
 def pull_queue_url(endpoint, values):
-    g.user = current_user()
+    current_user() = current_user()
     g.queue_url = values.pop('queue_url')
     g.queue = Queue.query.filter_by(url=g.queue_url).one_or_none()
     if not g.queue:
@@ -38,9 +38,9 @@ def render_queue(template, *args, **kwargs):
                 entries[entry[0]] = entry[1][:-1]
             else:
                 entries[entry[0]] = 'Staff'
-        if g.user.is_authenticated and \
-            g.user.email in entries:
-            g.user.set_role(entries[g.user.email])
+        if current_user().is_authenticated and \
+            current_user().email in entries:
+            current_user().set_role(entries[current_user().email])
     for k in default_queue_settings:
         setting = g.queue.setting(k)
         kwargs.update({'q_%s' % k: setting.value or setting.enabled})
@@ -106,8 +106,8 @@ def inquiry():
         g.queue.is_valid_assignment(request, form):
         inquiry = Inquiry(**request.form)
         inquiry.queue_id = g.queue.id
-        if g.user.is_authenticated:
-            inquiry.owner_id = g.user.id
+        if current_user().is_authenticated:
+            inquiry.owner_id = current_user().id
         inquiry.save()
         return redirect(url_for('queue.home',
             notification=NOTIF_INQUIRY_PLACED))

@@ -18,13 +18,13 @@ def add_queue_url(endpoint, values):
 
 @admin.url_value_preprocessor
 def pull_queue_url(endpoint, values):
-    g.user = flask_login.current_user
+    current_user() = flask_login.current_user
     g.queue_url = values.pop('queue_url')
     g.queue = Queue.query.filter_by(url=g.queue_url).one_or_none()
     if not g.queue:
         abort(404)
-    if g.user.is_authenticated:
-        g.participant = Participant.query.filter_by(user_id=g.user.id, queue_id=g.queue.id).one_or_none()
+    if current_user().is_authenticated:
+        g.participant = Participant.query.filter_by(user_id=current_user().id, queue_id=g.queue.id).one_or_none()
 
 
 def render_admin(template, *args, **kwargs):
@@ -121,7 +121,7 @@ def help_latest(location=None, category=None):
         delayed = Inquiry.query.get(delayed_id)
         delayed.unlock()
     inquiry.lock()
-    inquiry.link(g.user)
+    inquiry.link(current_user())
     return redirect(url_for('admin.help_inquiry',
         id=inquiry.id, location=location))
 

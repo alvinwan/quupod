@@ -10,7 +10,7 @@ dashboard = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 
 @dashboard.url_value_preprocessor
 def load_current_user(_, __):
-    g.user = current_user()
+    current_user() = current_user()
 
 
 def render_dashboard(f, *args, **kwargs):
@@ -28,7 +28,7 @@ def render_dashboard(f, *args, **kwargs):
 @login_required
 def home():
     """user dashboard"""
-    return render_dashboard('dashboard/index.html', queues=g.user.queues(),
+    return render_dashboard('dashboard/index.html', queues=current_user().queues(),
         empty='You aren\'t participating in any queues!')
 
 
@@ -40,7 +40,7 @@ def create_queue():
     if request.method == 'POST' and form.validate():
         queue = Queue.from_request().save().load_roles(
             default_queue_roles[request.form['category']]).save()
-        g.user.join(queue, role='Owner')
+        current_user().join(queue, role='Owner')
         queue.load_settings('whitelist')
         return redirect(url_for('queue.home', queue_url=queue.url))
     return render_dashboard('form_public.html',

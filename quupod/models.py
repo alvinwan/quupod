@@ -372,7 +372,7 @@ class Inquiry(Base):
     @staticmethod
     def current():
         resolution = Resolution.query.filter_by(
-            user_id=g.user.id,
+            user_id=current_user().id,
             resolved_at=None).first()
         if resolution:
             return resolution.inquiry
