@@ -10,7 +10,7 @@ dashboard = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 
 @dashboard.url_value_preprocessor
 def load_current_user(_, __):
-    current_user() = current_user()
+    pass
 
 
 def render_dashboard(f, *args, **kwargs):
