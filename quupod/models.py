@@ -2,7 +2,7 @@
 Important: Changes here need to be followed by `make refresh`.
 """
 
-from quupod import db
+from quupod import db, tz
 from sqlalchemy import types, asc
 from sqlalchemy_utils import EncryptedType, PasswordType, ArrowType
 from sqlalchemy_utils.types.choice import ChoiceType

@@ -45,3 +45,4 @@ whitelist = config['WHITELIST'].split(',')
 googleclientID = config['GOOGLECLIENTID']
 port = config['PORT']
 domain = config['DOMAIN']
+tz = config.get('TIMEZONE', None)

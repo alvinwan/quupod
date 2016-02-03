@@ -7,7 +7,7 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 import os
 from .config import config, secret_key, debug, whitelist, googleclientID, port,\
-    domain
+    domain, tz
 
 print(' * Running in DEBUG mode.' if debug else
       ' * Running in PRODUCTION mode.')
