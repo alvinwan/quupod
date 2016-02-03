@@ -54,6 +54,30 @@ class Base(db.Model):
         """Create object from request"""
         return cls(**dict(request.form.items())).save()
 
+    def modify_time(self, *fields, act=lambda t: t):
+        """Modify times"""
+        for field in fields:
+            setattr(self, field, act(getattr(self, field)))
+        return self
+
+    def to_local(self, *fields):
+        """Convert all to local times"""
+        return self.modify_time(*fields, act=lambda t: t.to(tz or 'local'))
+
+    def to_utc(self, *fields):
+        """Convert all to UTC times"""
+        return self.modify_time(*fields, act=lambda t: t.to('utc'))
+
+    def set_tz(self, *fields, tz):
+        """Set timezones of current times to be a specific tz"""
+        return self.modify_time(*fields,
+            act=lambda t: t.replace(tzinfo=tz))
+
+    def set_local(self, *fields):
+        """Set timezones of current times to be local time"""
+        from dateutil import tz as t
+        return self.set_tz(*fields, tz=t.gettz(tz) if tz else t.tzlocal())
+
     def update(self, **kwargs):
         """Update object with kwargs"""
         for k, v in kwargs.items():

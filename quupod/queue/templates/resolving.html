@@ -9,9 +9,9 @@
   {% if inquiries | length > 0 %}
     {% for inquiry in inquiries %}
     <tr>
-      <td>{{ inquiry.name.split(' ')[0] }}</td>
-      <td>{{ inquiry.resolution.created_at.to('local').humanize() }}</td>
-      <td class="hidden-xs">{{ inquiry.created_at.to('local').humanize() }}</td>
+      <td>{{ inquiry.to_local('created_at').name.split(' ')[0] }}</td>
+      <td>{{ inquiry.resolution.created_at.humanize() }}</td>
+      <td class="hidden-xs">{{ inquiry.created_at.humanize() }}</td>
       {% if app_inquiry_types %}<td class="hidden-xs">{{ inquiry.category }}</td>{% endif %}
       <td>{{ inquiry.resolution.staff.name }}</td>
     </tr>
