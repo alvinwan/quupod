@@ -70,7 +70,7 @@ def help():
 @admin.route('/clear/<string:location>', methods=['POST', 'GET'])
 @admin.route('/clear', methods=['POST', 'GET'])
 @flask_login.login_required
-@requires('staff')
+@requires('help')
 def clear(location=None):
     """Clear all inquiries, period. Or, clear all inquiries for a location."""
     if location:
@@ -97,7 +97,7 @@ def clear(location=None):
 @admin.route('/help/<string:location>/latest')
 @admin.route('/help/latest')
 @flask_login.login_required
-@requires('staff')
+@requires('help')
 def help_latest(location=None, category=None):
     """automatically selects next inquiry"""
     inquiry = Inquiry.latest(location=location, category=category)
@@ -128,7 +128,7 @@ def help_latest(location=None, category=None):
 @admin.route('/help/inquiry/<string:location>/<string:id>', methods=['POST', 'GET'])
 @admin.route('/help/inquiry/<string:id>', methods=['POST', 'GET'])
 @flask_login.login_required
-@requires('staff')
+@requires('help')
 def help_inquiry(id, location=None):
     """automatically selects next inquiry or reloads inquiry """
     inquiry = Inquiry.query.get(id)
