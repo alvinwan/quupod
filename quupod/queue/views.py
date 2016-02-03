@@ -20,7 +20,6 @@ def add_queue_url(endpoint, values):
 
 @queue.url_value_preprocessor
 def pull_queue_url(endpoint, values):
-    current_user() = current_user()
     g.queue_url = values.pop('queue_url')
     g.queue = Queue.query.filter_by(url=g.queue_url).one_or_none()
     if not g.queue:
