@@ -13,8 +13,8 @@
       <td>{{ inquiry.assignment }}</td>
       <td class="hidden-xs">{{ inquiry.problem }}</td>
       {% if app_inquiry_types %}<td>{{ inquiry.category }}</td>{% endif %}
-      <td class="hidden-xs">{{ inquiry.created_at.humanize() }}</td>
-      <td class="hidden-sm hidden-md hidden-lg">{{ inquiry.created_at.humanize()[:-4] }}</td>
+      <td class="hidden-xs">{{ inquiry.created_at.to('local').humanize() }}</td>
+      <td class="hidden-sm hidden-md hidden-lg">{{ inquiry.created_at.to('local').humanize()[:-4] }}</td>
     </tr>
     {% endfor %}
   {% endif %}

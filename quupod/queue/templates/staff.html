@@ -11,7 +11,7 @@
     {% for member in staff %}
     <tr>
       <td>{{ member.name }}</td>
-      <td>{{ member.resolution.resolved_at.humanize() }}</td>
+      <td>{{ member.resolution.resolved_at.to('local').humanize() }}</td>
       <td>{{ member.resolution.inquiry.location }}</td>
       <td class="hidden-xs">{{ member.average }}</td>
       <td class="hidden-xs">{{ member.status }}</td>
