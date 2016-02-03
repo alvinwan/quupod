@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, redirect
 from .forms import *
 from quupod import app, login_manager, whitelist, googleclientID
 from quupod.models import User, Inquiry, Queue
-from quupod.views import anonymous_required, render, url_for, current_url
+from quupod.views import anonymous_required, render, url_for, current_url, current_user
 from quupod.notifications import *
 from oauth2client import client, crypt
 import flask_login
