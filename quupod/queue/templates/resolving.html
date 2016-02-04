@@ -5,7 +5,7 @@
   <h2 class="queue-title col-md-6 hidden-xs">{{ panel }} {% if inquiries | length != 0 %}({{ inquiries | length }}){% endif %}</h2>
   <div class="col-md-12 queue-content">
   <table>
-    <tr><th>Name</th><th>Help Time</th><th class="hidden-xs">Queue Time</th>{% if app_inquiry_types %}<th class="hidden-xs">Category</th>{% endif %}<th>Staff</th><th>Action</th></tr>
+    <tr><th>Name</th><th>Help Time</th><th class="hidden-xs">Queue Time</th>{% if app_inquiry_types %}<th class="hidden-xs">Category</th>{% endif %}<th>Staff</th></tr>
   {% if inquiries | length > 0 %}
     {% for inquiry in inquiries %}
     <tr>
@@ -14,7 +14,6 @@
       <td class="hidden-xs">{{ inquiry.created_at.humanize() }}</td>
       {% if app_inquiry_types %}<td class="hidden-xs">{{ inquiry.category }}</td>{% endif %}
       <td>{% if inquiry.resolution %}{{ inquiry.resolution.staff.name }}{% else %}n/a{% endif %}</td>
-      <td><a href="{{ the_url('queue.requeue', inquiry_id=inquiry.id) }}" class="button xs color">Requeue</a></td>
     </tr>
     {% endfor %}
   {% endif %}
