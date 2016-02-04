@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, g, redirect,\
+from flask import Blueprint, request, g, redirect,\
     abort
 from .forms import *
 from quupod import app, login_manager, whitelist

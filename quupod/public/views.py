@@ -117,7 +117,7 @@ def unauthorized_handler():
 
 @app.errorhandler(404)
 def not_found(error):
-    return render_template('error.html',
+    return render('error.html',
         title='404. Oops.',
         code=404,
         message='Oops. This page doesn\'t exist!',
