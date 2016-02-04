@@ -5,7 +5,7 @@
   <h2 class="queue-title col-md-6 hidden-xs">{{ panel }} {% if inquiries | length != 0 %}({{ inquiries | length }}){% endif %}</h2>
   <div class="col-md-12 queue-content">
   <table>
-    <tr><th>Name</th><th>Closed At</th>{% if app_inquiry_types %}<th class="hidden-xs">Category</th>{% endif %}<th>Staff</th><th>Action</th></tr>
+    <tr><th>Name</th><th class="hidden-xs">Closed At</th>{% if app_inquiry_types %}<th class="hidden-xs">Category</th>{% endif %}<th>Staff</th><th>Action</th></tr>
   {% if inquiries | length > 0 %}
     {% for inquiry in inquiries %}
     <tr>
