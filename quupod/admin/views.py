@@ -150,10 +150,7 @@ def help_inquiry(id, location=None):
     return render_admin('help_inquiry.html',
         inquiry=inquiry,
         inquiries=Inquiry.query.filter_by(name=inquiry.name).limit(10).all(),
-        hide_event_nav=True,
-        delayable=bool(Inquiry.query.filter_by(
-            location=location,
-            status='unresolved').count()))
+        hide_event_nav=True)
 
 
 ############

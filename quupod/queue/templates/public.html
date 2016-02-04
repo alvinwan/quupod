@@ -26,8 +26,11 @@
       {% for link in (
           (the_url('queue.home'), 'Unresolved'),
           (the_url('queue.resolving'), 'Resolving'),
-          (the_url('queue.staff'), 'Staff')) %}
+          (the_url('queue.staff'), 'Staff'),
+          (the_url('queue.resolved'), 'Resolved', 'help')) %}
+      {% if not link[2] or current_user.can(link[2]) %}
       <li><a class="{% if link[1] == panel %}s{% endif %}" href="{% if link[1] != panel %}{{ link[0] }}{% else %}#{% endif %}">{{ link[1] }}</a></li>
+      {% endif %}
       {% endfor %}
       <p class="right nav-text hidden-xs">Estimated wait: {{ ttr }}</p>
     </ul>

@@ -3,7 +3,7 @@ from flask import Blueprint, request, render_template, g, redirect,\
 from .forms import *
 from quupod import app, login_manager, whitelist
 from quupod.models import User, Inquiry
-from quupod.views import anonymous_required, render, current_user, url_for, current_user
+from quupod.views import anonymous_required, render, current_user, url_for, current_user, requires
 from quupod.forms import choicify
 from quupod.defaults import default_queue_settings
 from quupod.notifications import *
@@ -73,6 +73,17 @@ def resolving():
         empty='No inquiries currently being resolved.',
         ttr=g.queue.ttr())
 
+@queue.route('/resolved')
+def resolved():
+    """List of all 'resoled' inquiries for the homepage"""
+    return render_queue('resolved.html',
+        inquiries=Inquiry.query.filter_by(
+            status='resolved',
+            queue_id=g.queue.id).limit(20).all(),
+        panel='Resolved',
+        empty='No inquiries resolved.',
+        ttr=g.queue.ttr())
+
 @queue.route('/staff')
 def staff():
     """Lists all staff present at the current event."""
@@ -112,6 +123,13 @@ def inquiry():
             notification=NOTIF_INQUIRY_PLACED))
     return render_queue('form.html', form=form, title='Request Help',
         submit='Ask')
+
+@queue.route('/requeue/<int:inquiry_id>', methods=['POST', 'GET'])
+@requires('help')
+def requeue(inquiry_id):
+    delayed = Inquiry.query.get(inquiry_id)
+    delayed.unlock()
+    return redirect(url_for('queue.resolved'))
 
 
 ################
