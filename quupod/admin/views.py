@@ -131,6 +131,9 @@ def help_latest(location=None, category=None):
 def help_inquiry(id, location=None):
     """automatically selects next inquiry or reloads inquiry """
     inquiry = Inquiry.query.get(id)
+    if not inquiry.resolution:
+        inquiry.lock()
+        inquiry.link(current_user())
     if request.method == 'POST':
         delayed_id=None
         inquiry.resolution.close()

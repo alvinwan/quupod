@@ -7,6 +7,7 @@ from quupod.views import anonymous_required, render, current_user, url_for, curr
 from quupod.forms import choicify
 from quupod.defaults import default_queue_settings
 from quupod.notifications import *
+from sqlalchemy import desc
 import flask_login
 
 queue = Blueprint('queue', __name__, url_prefix='/<string:queue_url>',
@@ -79,7 +80,7 @@ def resolved():
     return render_queue('resolved.html',
         inquiries=Inquiry.query.filter_by(
             status='resolved',
-            queue_id=g.queue.id).orderby(desc(Inquiry.id)).limit(20).all(),
+            queue_id=g.queue.id).order_by(desc(Inquiry.id)).limit(20).all(),
         panel='Resolved',
         empty='No inquiries resolved.',
         ttr=g.queue.ttr())
