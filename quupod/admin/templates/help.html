@@ -22,7 +22,7 @@
       {% if not latest_inquiry %}
       <p class="queue-note">No pending requests!</p>
       {% else %}
-      <a href="{{ url_for('admin.help_latest') }}" class="button color">Start Helping</a>
+      <a href="{{ the_url('admin.help_latest') }}" class="button color">Start Helping</a>
       {% endif %}
     {% else %}
     <h2>Choose a Location</h2>

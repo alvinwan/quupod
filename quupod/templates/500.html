@@ -13,13 +13,13 @@
     {% endif %}
     <script src="http://code.jquery.com/jquery-2.2.0.min.js"></script>
     <!-- custom code -->
-    <link rel="stylesheet" href="{{ domain }}{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ domain }}{{ the_url('static', filename='style.css') }}">
     </script>
   </head>
   <body class="{{ color or 'blue' }}">
     <header>
       <div class="col-md-2 col-xs-6 left">
-        <a href="{{ url_for('public.home') }}"><h1 class="name">Course<span>Queue</span></h1></a>
+        <a href="{{ the_url('public.home') }}"><h1 class="name">Course<span>Queue</span></h1></a>
       </div>
     </header>
     <main>
