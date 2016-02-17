@@ -106,9 +106,18 @@ def inquiry():
     elif g.queue.setting(name='require_login').enabled:
         return render_queue('confirm.html',
             title='Login Required',
-            message='Login to add an inquiry, and start using this queue.',
-            action='Login',
-            url=url_for('queue.login'))
+            message='Login to add an inquiry, and start using this queue.')
+    n = int(g.queue.setting(name='max_requests').value)
+    if Inquiry.query.join(User).filter(
+        User.email==current_user().email,
+        Inquiry.status=='unresolved',
+        Inquiry.queue_id==g.queue.id
+        ).count() >= n:
+        return render_queue('confirm.html',
+            title='Oops',
+            message='Looks like you\'ve reached the maximum number of times you can add yourself to the queue at once (<code>%d</code>).' % n,
+            action='Back',
+            url=url_for('queue.home'))
     form.location.choices = choicify(
         g.queue.setting('locations').value.split(','))
     form.category.choices = choicify(

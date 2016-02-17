@@ -54,6 +54,13 @@ default_queue_settings = {
         'description': 'Whitelist for admins. Include users as email1@berkeley.edu(Position1), email2@berkeley.edu(Position2)',
         'enabled': True,
         'toggable': False
+    },
+    'max_requests': {
+        'label': 'Maximum Concurrent Requests',
+        'description': 'Maximum number of times users can place a request on the queue, concurrently',
+        'value': '1',
+        'enabled': True,
+        'toggable': True
     }
 }
 

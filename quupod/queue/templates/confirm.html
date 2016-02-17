@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_queue.html" %}
 {% set color='blue' %}
 {% set no_mobile_action=True %}
 {% block main %}
@@ -10,7 +10,9 @@
     <h2 class="content-title">{{ title }}</h2>
     <div class="module">
       <div class="content-copy">{{ message | safe }}</div>
+      {% if url and action %}
       <a href="{{ url }}" class="button color">{{ action }}</a>
+      {% endif %}
     </form>
   </div>
 </section>
