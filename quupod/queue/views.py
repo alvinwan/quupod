@@ -108,14 +108,18 @@ def inquiry():
             title='Login Required',
             message='Login to add an inquiry, and start using this queue.')
     n = int(g.queue.setting(name='max_requests').value)
+    filter_id = User.email == current_user().email if \
+        current_user().is_authenticated else User.name == request.form.get('name', None)
     if Inquiry.query.join(User).filter(
-        User.email==current_user().email,
+        filter_id,
         Inquiry.status=='unresolved',
         Inquiry.queue_id==g.queue.id
         ).count() >= n:
+        if not current_user().is_authenticated:
+            not_logged_in_max = 'If you haven\'t submitted a request, try logging in and re-requesting.'
         return render_queue('confirm.html',
             title='Oops',
-            message='Looks like you\'ve reached the maximum number of times you can add yourself to the queue at once (<code>%d</code>).' % n,
+            message='Looks like you\'ve reached the maximum number of times you can add yourself to the queue at once (<code>%d</code>). %s' % (n, not_logged_in_max),
             action='Back',
             url=url_for('queue.home'))
     form.location.choices = choicify(

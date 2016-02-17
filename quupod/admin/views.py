@@ -170,9 +170,11 @@ def settings():
     if g.participant.role.name.lower() != 'owner':
         settings = [s for s in settings if s.name != 'whitelist']
     for setting in settings:
-        default_description =default_queue_settings[setting.name]['description']
-        if default_description != setting.description:
-            setting.description = default_description
+        if setting.name in default_queue_settings:
+            # NOTE: this will filter out settings not in the default settings list
+            default_description = default_queue_settings[setting.name]['description']
+            if default_description != setting.description:
+                setting.description = default_description
     if request.method == 'POST':
         notification = NOTIF_SETTING_UPDATED
         setting = QueueSetting.query.filter_by(
