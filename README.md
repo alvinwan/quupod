@@ -18,11 +18,14 @@ All public pages will silently poll for updates, meaning that the queue and help
 **Ease of use**
 Anonymous users can submit inquiries without creating an account. (may be disabled, requiring registration)
 
+**Concurrent Enqueue Restrictions**
+Restrict the number of times users can enqueue themselves at once
+
 **Mutex Lock**
 Only one staff member can be assigned to an inquiry at a time.
 
 **Staff Approval**
-Add staff emails to the whitelist to auto-promote staff.
+Add staff emails to the whitelist to auto-promote staff, or give staff members a link to auto-promote themselves (optionally add a codeword)
 
 **Basic Statistics**
 Queue calculates estimated time until resolution, and extra statistics are included for each active staff member.
