@@ -64,7 +64,7 @@ default_queue_settings = {
     },
     'self_promotion': {
         'label': 'Self-promoting via URL',
-        'description': 'Allow users to promote themselves to admin or staff via <code>/promote</code>. Optionally, specify codewords below for each position. Use the asterisk <code>*</code> to denote "no codeword required". Any role not included below does not allow self-promotion.',
+        'description': 'Allow users to promote themselves to admin or staff via <code>/promote</code>. Optionally, specify codewords below for each position. Use the asterisk <code>*</code> to denote "no codeword required". Any role not included below does not allow self-promotion. Each line should contain <code>[role]:[password]</code>. Put each role on a new line.',
         'enabled': True,
         'enable_description': 'Enable to allow staff members to promote themselves to staff.',
         'value': 'role1:codeword1\nrole2:codeword2',
