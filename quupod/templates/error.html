@@ -11,7 +11,9 @@
     <h2 class="content-title">{{ code }}</h2>
     <div class="module">
       <p class="content-copy">{{ message }}</p>
+      {% if url and action %}
       <a href="{{ url }}" class="button color">{{ action }}</a>
+      {% endif %}
     </div>
   </div>
 </section>

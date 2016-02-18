@@ -46,3 +46,8 @@ class InquiryForm(ModelForm):
             else:
                 fields.append(v)
         return iter(fields)
+
+
+class PromotionForm(wtf.Form):
+
+    code = wtf.PasswordField('Promotion Code')

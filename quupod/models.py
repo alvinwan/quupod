@@ -16,6 +16,8 @@ from quupod.views import url_for
 # PARENT MODELS #
 #################
 
+_blank = lambda x:x
+
 class Base(db.Model):
     """Base Model for all other models"""
 
@@ -94,18 +96,18 @@ class Base(db.Model):
             db.session.rollback()
             return self.save()
 
-    def setting(self, name):
+    def setting(self, name, dynamic=False, default=_blank):
         """Get Setting by name"""
-        assert name in self.__defaultsettings__, 'Not a valid setting'
+        assert name in self.__defaultsettings__ or dynamic, 'Not a valid setting'
         key = {'%s_id' % self.entity: self.id}
         setting = self.__settingclass__.query.filter_by(
             name=name,
             **key).one_or_none()
         if not setting:
-            setting = self.load_setting(name)
+            setting = self.load_setting(name, default)
         return setting
 
-    def load_setting(self, name):
+    def load_setting(self, name, default=_blank):
         """load a setting"""
         try:
             key = {'%s_id' % self.entity: self.id}
@@ -114,7 +116,9 @@ class Base(db.Model):
             return self.__settingclass__(
                 **key).save()
         except KeyError:
-            raise UserWarning('No such setting "%s"' % name)
+            if default == _blank:
+                raise UserWarning('No such setting "%s"' % name)
+            return default
 
     def load_settings(self, *names):
         """load a series of settings"""
@@ -274,6 +278,13 @@ class Queue(Base):
             form.errors.setdefault('assignment', []).append('%s "%s" is not allowed. Only the following assignments are: %s' % (prefix, assignment, lst))
             return False
         return True
+
+    @property
+    def roles(self):
+        """Returns all available roles for this queue"""
+        if not getattr(self, '__role', None):
+            self.__role = QueueRole.query.filter_by(queue_id=self.id).all()
+        return self.__role
 
 class Resolution(Base):
 

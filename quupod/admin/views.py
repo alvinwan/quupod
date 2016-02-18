@@ -165,8 +165,8 @@ def help_inquiry(id, location=None):
 @requires('edit_settings')
 def settings():
     """settings"""
-    settings = QueueSetting.query.join(Queue).filter_by(
-        id=g.queue.id).all()
+    settings = sorted(QueueSetting.query.join(Queue).filter_by(
+        id=g.queue.id).all(), key=lambda s: s.name)
     if g.participant.role.name.lower() != 'owner':
         settings = [s for s in settings if s.name != 'whitelist']
     for setting in settings:
