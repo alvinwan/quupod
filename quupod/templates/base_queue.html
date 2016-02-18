@@ -17,10 +17,12 @@
             {% if subtitle == 'Admin' %}
         <a class="header-action s" href="#">Admin</a>
         <a class="header-action" href="{{ the_url('queue.home') }}">Queue</a>
-          {% else %}
+            {% else %}
         <a class="header-action" href="{{ the_url('admin.home') }}">Admin</a>
         <a class="header-action s" href="#">Queue</a>
             {% endif %}
+          {% else %}
+        <a class="header-action" href="{{ the_url('queue.promote') }}">Staff?</a>
           {% endif %}
         {% else %}
         <div class="g-signin2" data-onsuccess="onSignIn"></div>
