@@ -22,7 +22,9 @@
         <a class="header-action s" href="#">Queue</a>
             {% endif %}
           {% else %}
+        {% if g.queue.setting(name='self_promotion').enabled %}
         <a class="header-action" href="{{ the_url('queue.promote') }}">Staff?</a>
+        {% endif %}
           {% endif %}
         {% else %}
         <div class="g-signin2" data-onsuccess="onSignIn"></div>
