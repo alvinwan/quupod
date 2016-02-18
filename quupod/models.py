@@ -291,8 +291,8 @@ class Resolution(Base):
     __tablename__ = 'resolution'
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    inquiry_id = db.Column(db.Integer, db.ForeignKey('inquiry.id'))
-    resolved_at = db.Column(ArrowType)
+    inquiry_id = db.Column(db.Integer, db.ForeignKey('inquiry.id'), index=True)
+    resolved_at = db.Column(ArrowType, index=True)
     comment = db.Column(db.Text)
 
     @property
