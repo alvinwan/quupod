@@ -6,6 +6,7 @@ from quupod.views import anonymous_required, render, url_for, current_url, curre
 from quupod.notifications import *
 from oauth2client import client, crypt
 import flask_login
+from quupod.config import config
 
 public = Blueprint('public', __name__, template_folder='templates')
 
@@ -130,6 +131,7 @@ def not_found(error):
     from quupod import db
     db.session.rollback()
     return render_template('500.html',
+        domain=config['DOMAIN'],
         title='500. Hurr.',
         code=500,
         message='Sorry. Here is the error: <br><code>%s</code><br> Please file an issue on the <a href="https://github.com/CS70/ohquu/issues">Github issues page</a>, with the above code if it has not already been submitted.' % str(error)), 500
