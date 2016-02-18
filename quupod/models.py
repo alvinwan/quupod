@@ -394,7 +394,7 @@ class Inquiry(Base):
         ('closed', 'closed without resolution - end of session, MIA etc.')
     )
 
-    status = db.Column(ChoiceType(STATUSES), default='unresolved')
+    status = db.Column(ChoiceType(STATUSES), default='unresolved', index=True)
     name = db.Column(db.String(50))
     comments = db.Column(db.Text)
     assignment = db.Column(db.String(25))
@@ -402,7 +402,7 @@ class Inquiry(Base):
     location = db.Column(db.String(25))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     category = db.Column(db.String(25), default='question')
-    queue_id = db.Column(db.Integer, db.ForeignKey('queue.id'))
+    queue_id = db.Column(db.Integer, db.ForeignKey('queue.id'), index=True)
 
     @staticmethod
     def current():
