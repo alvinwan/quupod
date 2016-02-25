@@ -70,6 +70,14 @@ default_queue_settings = {
         'value': 'role1:codeword1\nrole2:codeword2',
         'toggable': True,
         'input_type': 'textarea'
+    },
+    'inquiry_type_selection': {
+        'label': 'Inquiry Type Priorities',
+        'description': 'This allows staff members to resolve some inquiry types first.',
+        'enabled': False,
+        'enable_description': 'Enable to show a list of inquiry types, if there are requests of different types. Staff can then select a category to finish resolving first.',
+        'toggable': True,
+        'input_type': 'None'
     }
 }
 

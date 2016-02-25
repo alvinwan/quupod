@@ -103,7 +103,7 @@ def help_latest(location=None, category=None):
     delayed_id, delayed = request.args.get('delayed_id', None), None
     if not inquiry:
         return redirect(url_for('admin.help', notification=NOTIF_HELP_DONE))
-    if g.queue.setting('inquiry_types').enabled and not category:
+    if g.queue.setting('inquiry_types').enabled and not category and g.queue.setting('inquiry_type_selection').enabled:
         categories = [(cat, Inquiry.query.filter_by(
             category=cat,
             status='unresolved',
