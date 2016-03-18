@@ -1,0 +1,112 @@
+body * {
+  font-family:'Work Sans';
+
+}
+html,body,section,main,footer,header {
+  display:block;
+  float:left;
+  width:100%;
+}
+html,body {
+  min-height:100%;
+}
+
+.button {
+  display:inline-block;
+  border:2px solid #000;
+  color:#000;
+  text-transform:uppercase;
+  padding:1.5em 3em;
+  font-size:0.8em;
+  letter-spacing:0.25em;
+}
+  .button:hover {
+    color:#FFF;
+    background-color:#000;
+    text-decoration:none;
+  }
+.small-button {
+  text-transform:uppercase;
+  font-size:0.8em;
+  letter-spacing:0.1em;
+  color:#666;
+  padding:1em 1.75em;
+  float:right;
+  border:2px solid #C90;
+  color:#C90;
+}
+  .small-button:hover {
+    color:#FFF;
+    background-color:#c90;
+    text-decoration:none;
+  }
+header {
+  padding:2em 3em 0 3em;
+  position:fixed;
+  top:0;
+  left:0;
+}
+  header nav,header ul {
+    float:right;
+  }
+    header li {
+      list-style:none;
+    }
+footer {
+  margin-top:-5em;
+  padding:2em 0;
+  background-color:#eee;
+  color:#999;
+  text-transform:uppercase;
+  font-size:0.9em;
+}
+  footer p {
+    margin-bottom:0;
+  }
+.link {
+  text-transform:uppercase;
+  font-size:0.85em;
+  letter-spacing:0.1em;
+  color:#666;
+  float:right;
+}
+  .link:hover {
+
+  }
+
+/* -- student public page -- */
+.student-public {
+  text-align:center;
+}
+.sp-main {
+  display:inline-block;
+  padding-top:12em;
+  min-height:100%;
+}
+.sp-background {
+  overflow:hidden;
+  width:100%;
+  z-index:-1;
+  position:absolute;
+  top:5em;
+  left:0;
+}
+.sp-course {
+  font-family:'Allura';
+  font-size:30em;
+  text-align:center;
+  width:100%;
+  color:rgba(0,0,0,0.05);
+}
+.sp-title {
+  color:#666;
+  font-weight:300;
+  font-size:5em;
+  margin-bottom:0.25em;
+}
+.sp-byline {
+  color:#999;
+  margin-bottom:2em;
+  font-size:1.1em;
+}
+/* -- end student public page -- */
