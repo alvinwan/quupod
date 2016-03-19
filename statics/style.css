@@ -10,13 +10,22 @@ html,body,section,main,footer,header {
 html,body {
   min-height:100%;
 }
+a:hover {
+  text-decoration:none;
+}
+.sf-input-text,.sf-back-arr,.button {
+  -webkit-transition: 0.2s ease;
+  -moz-transition:    0.2s ease;
+  -o-transition:      0.2s ease;
+  transition:         0.2s ease;
+}
 
 .button {
   display:inline-block;
   border:2px solid #000;
   color:#000;
   text-transform:uppercase;
-  padding:1.5em 3em;
+  padding:2em 3.5em;
   font-size:0.8em;
   letter-spacing:0.25em;
 }
@@ -40,6 +49,26 @@ html,body {
     background-color:#c90;
     text-decoration:none;
   }
+.form-button {
+  display:inline-block;
+  background-color:#555;
+  color:#FFF;
+  text-transform:uppercase;
+  padding:1.5em 0;
+  width:100%;
+  border-radius:0.2em;
+  font-size:0.8em;
+  letter-spacing:0.1em;
+  -webkit-appearance:none;
+  outline:none;
+  box-shadow:none;
+  border:none;
+}
+  .form-button:hover {
+    color:#FFF;
+    background-color:#333;
+    text-decoration:none;
+  }
 header {
   padding:2em 3em 0 3em;
   position:fixed;
@@ -53,15 +82,24 @@ header {
       list-style:none;
     }
 footer {
+  box-shadow:inset 0 5px 5px -5px rgba(0,0,0,.3);
   margin-top:-5.5em;
   padding:2em 0;
   background-color:#eee;
   color:#999;
   text-transform:uppercase;
   font-size:0.9em;
+  z-index:20;
 }
   footer p {
     margin-bottom:0;
+  }
+  footer p a {
+    color:#666;
+    border-bottom:1px dotted #666;
+  }
+  footer p a:hover {
+    border-bottom:1px solid #666;
   }
 .link {
   text-transform:uppercase;
@@ -73,22 +111,132 @@ footer {
   .link:hover {
 
   }
-
-/* -- student public page -- */
-.student-public {
+main {
   text-align:center;
 }
+section {
+  padding-bottom:5em;
+  z-index:10;
+}
+/* -- student public page -- */
+.student-form .sf-main {
+  float:none;
+  display:inline-block;
+  padding-top:10em;
+  min-height:100%;
+  margin-bottom:5em;
+}
+.sf-title {
+  color:#333;
+  font-weight:300;
+  font-size:3em;
+  margin-bottom:0.25em;
+  font-family:'Raleway';
+  margin-top:0;
+}
+.sf-field,.sf-field input {
+  width:100%;
+}
+  .sf-field + .sf-field {
+    margin-top:2em;
+  }
+  .sf-field:last-of-type {
+    margin-bottom:2em;
+  }
+  .sf-label,.sf-description {
+    float:left;
+    width:100%;
+    text-align:left;
+  }
+  .sf-label {
+    text-transform:uppercase;
+    font-family:'Raleway';
+    color:#777;
+  }
+  .sf-description {
+    margin-bottom:1em;
+    color:#999;
+  }
+  .sf-input-text {
+    width:100%;
+    outline:none;
+    border:none;
+    border-radius:0.2em;
+    box-shadow:none;
+    -webkit-appearance:     none;
+    font-size:1.2em;
+    background-color:#f6f6f6;
+    padding:0.25em 0.5em;
+  }
+    .sf-input-text:focus {
+      background-color:#FFF;
+    }
+  .sf-back a {
+    color:#666;
+    text-transform:uppercase;
+  }
+  .sf-back a:hover span {
+    margin-right:0.5em;
+  }
+/* -- student public page -- */
+.student-public.resolved {
+  background-color:#690;
+  color:#690;
+}
+.colored .sp-title {
+  color:#FFF;
+}
+.colored .sp-subtitle,.colored .sp-byline {
+  color:rgba(255,255,255,0.5);
+}
+.colored .button {
+  color:#FFF;
+  border:2px solid #FFF;
+}
+  .colored .button:hover {
+    background-color:#FFF;
+    color:inherit;
+  }
+  .colored footer {
+    background-color:#5a8700;
+  }
+  .colored footer p {
+    color:rgba(255,255,255,0.25)
+  }
+  .colored footer p a {
+    color:rgba(255,255,255,0.5);
+    border-bottom:1px dotted rgba(255,255,255,0.5);
+  }
+  .colored footer p a:hover {
+    color:#FFF;
+    border-bottom:1px solid #FFF;
+  }
+  .colored .small-button {
+    border:2px solid #4c7201;
+    color:#4c7201;
+  }
+  .colored .small-button:hover {
+    background-color:#4c7201;
+    color:#FFF;
+  }
 .sp-main {
   display:inline-block;
-  padding-top:12em;
+  padding-top:10em;
   min-height:100%;
 }
 .sp-title {
-  color:#666;
+  color:#333;
   font-weight:300;
-  font-size:5em;
+  font-size:7em;
   margin-bottom:0.25em;
   font-family:'Raleway';
+  margin-top:0;
+}
+.sp-subtitle {
+  color:#333;
+  font-size:0.9em;
+  text-transform:uppercase;
+  letter-spacing:0.25em;
 }
 .sp-byline {
   color:#999;

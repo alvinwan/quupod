@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <!-- scale mobile version correctly -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- third-party code -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Work+Sans:300,400,700|Raleway:300' rel='stylesheet' type='text/css'>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="130677143657-93l88k6j97tdve0ahmuoloufupdns9c6.apps.googleusercontent.com">
+    <script src="http://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <!-- custom code -->
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <main class="student-form">
+      <header>
+        <nav>
+          <ul>
+            <li><a href="#" class="small-button">Google Login</a></li>
+          </ul>
+        </nav>
+      </header>
+      <section class="sf-main col-md-4">
+        <p class="sf-back"><a href="index.html"><span class="sf-back-arr">&larr;</span> back</a></p>
+        <!-- <h1 class="sf-title">Request</h1> -->
+        <form class="sf-form" action="waiting.html">
+          <div class="sf-field">
+            <label class="sf-label">Name</label>
+            <p class="sf-description">Your full name</p>
+            <input class="sf-input-text" placeholder="Name" value="">
+          </div>
+          <div class="sf-field">
+            <label class="sf-label">Location</label>
+            <p class="sf-description">Help us find you.</p>
+            <input class="sf-input-text" placeholder="Location" value="">
+          </div>
+          <div class="sf-field">
+            <label class="sf-label">Assignment</label>
+            <p class="sf-description"><b>Use the following abbreviations</b>: <code>hw</code> for "homework", <code>proj</code> for "project", and <code>dis</code> for "discussion".</p>
+            <input class="sf-input-text" placeholder="Assignment" value="">
+          </div>
+          <div class="sf-field">
+            <label class="sf-label">Problem</label>
+            <p class="sf-description">Be specific about which part, and do not include spaces or punctuation. For example, to specify problem 1 part a, only use <code>1a</code>.</p>
+            <input class="sf-input-text" placeholder="Problem" value="">
+          </div>
+          <input type="submit" value="request help" class="form-button">
+        </form>
+      </section>
+      <footer>
+        <p>created by <a href="http://alvinwan.com">Alvin Wan</a> // project on <a href="http://github.com/alvinwan/quupod">Github</a></p>
+      </footer>
+    </main>
+  </body>
+</html>
