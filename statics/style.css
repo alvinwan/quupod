@@ -53,7 +53,7 @@ header {
       list-style:none;
     }
 footer {
-  margin-top:-5em;
+  margin-top:-5.5em;
   padding:2em 0;
   background-color:#eee;
   color:#999;
@@ -83,26 +83,12 @@ footer {
   padding-top:12em;
   min-height:100%;
 }
-.sp-background {
-  overflow:hidden;
-  width:100%;
-  z-index:-1;
-  position:absolute;
-  top:5em;
-  left:0;
-}
-.sp-course {
-  font-family:'Allura';
-  font-size:30em;
-  text-align:center;
-  width:100%;
-  color:rgba(0,0,0,0.05);
-}
 .sp-title {
   color:#666;
   font-weight:300;
   font-size:5em;
   margin-bottom:0.25em;
+  font-family:'Raleway';
 }
 .sp-byline {
   color:#999;
