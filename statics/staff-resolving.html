@@ -12,28 +12,38 @@
     <!-- custom code -->
     <link rel="stylesheet" href="style.css">
   </head>
-  <body>
-    <main class="student-public">
-      <header>
-        <nav>
-          <ul>
-            <li><a href="#" class="small-button">Google Login</a></li>
-          </ul>
-        </nav>
-      </header>
-      <section class="sp-main">
-        <p class="sp-subtitle">Assigned</p>
-        <h1 class="sp-title small">John Doe the Student</h1>
-        <p class="sp-byline">Request wait time: 00:15:00</p>
+  <body class="staff-public">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="#" class="small-button">Google Login</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main class="stp-main">
+      <section class="stp-module-banner module">
+        <p class="stp-subtitle">Assigned</p>
+        <h1 class="stp-title small">John Doe the Student</h1>
+        <p class="stp-byline">Request wait time: 00:15:00</p>
         <div class="clear">
-          <div class="sp-avatar"><span class="sp-avatar-photo"></span></div>
+          <div class="stp-avatar"><span class="sp-avatar-photo"></span></div>
         </div>
-        <h2>Potential Collaborators</h2>
-        <a href="index.html" class="button">Cancel</a>
+        <a href="index.html" class="button">Resolve</a>
+        <a href="index.html" class="button">Requeue</a>
       </section>
-      <footer>
-        <p>created by <a href="http://alvinwan.com">Alvin Wan</a> // project on <a href="http://github.com/alvinwan/quupod">Github</a></p>
-      </footer>
+      <section class="stp-module-list module">
+        <h2>Potential Group</h2>
+        <p class="stp-copy">If possible, group requests together. Here are names of all individuals requesting the same problem.</p>
+        <div class="clear">
+          <ul class="stp-list col-md-4">
+            <li class="stp-item">John Doe</li>
+            <li class="stp-item">Mary Doe</li>
+          </ul>
+        </div>
+      </section>
     </main>
+    <footer>
+      <p>created by <a href="http://alvinwan.com">Alvin Wan</a> // project on <a href="http://github.com/alvinwan/quupod">Github</a></p>
+    </footer>
   </body>
 </html>

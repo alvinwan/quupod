@@ -12,7 +12,7 @@
     <!-- custom code -->
     <link rel="stylesheet" href="style.css">
   </head>
-  <body class="student-form">
+  <body class="staff-form">
     <header>
       <nav>
         <ul>
@@ -23,12 +23,19 @@
     <main class="sf-main">
       <section class="sf-module-banner module col-md-5">
         <p class="sf-back"><a href="student-index.html"><span class="sf-back-arr">&larr;</span> back</a></p>
-        <!-- <h1 class="sf-title">Request</h1> -->
         <form class="sf-form" action="student-waiting.html">
+          <div class="sf-section-label">
+            <h2>Global Settings</h2>
+            <p>This section includes basic information for the queue.</p>
+          </div>
           <div class="sf-field">
             <label class="sf-label">Name</label>
-            <p class="sf-description">Your full name</p>
+            <p class="sf-description">Name for your queue</p>
             <input class="sf-input-text" placeholder="Name" value="">
+          </div>
+          <div class="sf-section-label">
+            <h2>Security</h2>
+            <p>Including settings for sign ins, registration, and general account management</p>
           </div>
           <div class="sf-field">
             <label class="sf-label">Location</label>
