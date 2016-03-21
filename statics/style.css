@@ -54,7 +54,7 @@ a:hover {
   background-color:#555;
   color:#FFF;
   text-transform:uppercase;
-  padding:1.5em 0;
+  padding:1.5em 2.5em;
   width:100%;
   border-radius:0.2em;
   font-size:0.8em;
@@ -68,6 +68,9 @@ a:hover {
     color:#FFF;
     background-color:#333;
     text-decoration:none;
+  }
+  .form-button.small {
+    width:auto;
   }
 header {
   padding:2em 3em 0 3em;
@@ -182,6 +185,7 @@ main section:nth-child(even) {
 /* -- start staff page -- */
 h2 {
   text-transform:uppercase;
+  font-weight:600;
 }
 .stp-copy {
   color:#888;
@@ -228,7 +232,11 @@ h2 {
 }
 .sf-field,.sf-field input {
   width:100%;
+  text-align:left;
 }
+  .sf-field input + .form-button {
+    margin-top:1.5em;
+  }
   .sf-field + .sf-field {
     margin-top:2em;
   }

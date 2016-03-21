@@ -22,37 +22,39 @@
     </header>
     <main class="sf-main">
       <section class="sf-module-banner module col-md-5">
-        <p class="sf-back"><a href="student-index.html"><span class="sf-back-arr">&larr;</span> back</a></p>
-        <form class="sf-form" action="student-waiting.html">
-          <div class="sf-section-label">
-            <h2>Global Settings</h2>
-            <p>This section includes basic information for the queue.</p>
-          </div>
+        <p class="sf-back"><a href="staff-index.html"><span class="sf-back-arr">&larr;</span> back</a></p>
+        <div class="sf-section-label">
+          <h2>Global Settings</h2>
+          <p>This section includes basic information for the queue.</p>
+        </div>
+        <form class="sf-form" action="#">
           <div class="sf-field">
             <label class="sf-label">Name</label>
             <p class="sf-description">Name for your queue</p>
             <input class="sf-input-text" placeholder="Name" value="">
+            <input type="submit" value="save" class="form-button small">
           </div>
-          <div class="sf-section-label">
-            <h2>Security</h2>
-            <p>Including settings for sign ins, registration, and general account management</p>
-          </div>
+        </form>
+        <div class="sf-section-label">
+          <h2>Security</h2>
+          <p>Including settings for sign ins, registration, and general account management</p>
+        </div>
+        <form class="sf-form" action="#">
           <div class="sf-field">
-            <label class="sf-label">Location</label>
-            <p class="sf-description">Help us find you.</p>
-            <input class="sf-input-text" placeholder="Location" value="">
+            <label class="sf-label">Email Domains</label>
+            <p class="sf-description">Restrict the domains from which users can login with.</p>
+            <input class="sf-input-text" placeholder="berkeley.edu" value="">
+            <input type="submit" value="save" class="form-button small">
           </div>
+        </form>
+        <form class="sf-form" action="#">
           <div class="sf-field">
-            <label class="sf-label">Assignment</label>
-            <p class="sf-description"><b>Use the following abbreviations</b>: <code>hw</code> for "homework", <code>proj</code> for "project", and <code>dis</code> for "discussion".</p>
-            <input class="sf-input-text" placeholder="Assignment" value="">
+            <label class="sf-label">Piipod Endpoint</label>
+            <p class="sf-description">Synchronizing permissions from a Piipod organization. <a href="#">Learn More</a></p>
+            <input class="sf-input-text" placeholder="Name" value="">
+            <input type="submit" value="save" class="form-button small">
           </div>
-          <div class="sf-field">
-            <label class="sf-label">Problem</label>
-            <p class="sf-description">Be specific about which part, and do not include spaces or punctuation. For example, to specify problem 1 part a, only use <code>1a</code>.</p>
-            <input class="sf-input-text" placeholder="Problem" value="">
-          </div>
-          <input type="submit" value="request help" class="form-button">
+        </form>
         </form>
       </section>
     </main>
