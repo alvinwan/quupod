@@ -1,5 +1,5 @@
 from flask import Blueprint, request, g, redirect,\
-    abort
+    abort, session
 from .forms import *
 from quupod import app, login_manager, whitelist
 from quupod.models import User, Inquiry, QueueRole, Participant
@@ -225,13 +225,16 @@ def requeue(inquiry_id):
 # LOGIN/LOGOUT #
 ################
 
+@queue.route('/login', methods=['POST', 'GET'])
+def login():
+    """Login using globally defined login procedure"""
+    from quupod.public.views import login
+    return login(
+        home=url_for('queue.home', _external=True),
+        login=url_for('queue.login', _external=True))
+
 @queue.route('/logout')
 def logout():
+    """Logout using globally defined logout procedure"""
     from quupod.public.views import logout
     return logout()
-
-
-@queue.route('/tokenlogin', methods=['POST'])
-def token_login():
-    from quupod.public.views import token_login
-    return token_login()

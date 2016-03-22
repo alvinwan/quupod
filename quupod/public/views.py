@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect
+from flask import Blueprint, request, render_template, redirect, session, abort
 from .forms import *
 from quupod import app, login_manager, whitelist, googleclientID
 from quupod.models import User, Inquiry, Queue
@@ -6,7 +6,12 @@ from quupod.views import anonymous_required, render, url_for, current_url, curre
 from quupod.notifications import *
 from oauth2client import client, crypt
 import flask_login
+from apiclient.discovery import build
 from quupod.config import config
+import httplib2
+
+# Google API service object for Google Plus
+service = build('plus', 'v1')
 
 public = Blueprint('public', __name__, template_folder='templates')
 
@@ -23,59 +28,39 @@ def home():
 # SIGN IN/SIGN UP #
 ###################
 
-
-@public.route('/tokenlogin', methods=['POST'])
-def token_login():
-    """Login via Google token"""
-    redirect = request.form.get('return', None)
-    if flask_login.current_user.is_authenticated:
-        return redirect or url_for('dashboard.home')
-    google_info = verify_google_token(request.form['token'])
-
-    if google_info:
-        print(' * Google Token verified!')
-        google_id = google_info['sub']
-        user = User.query.filter_by(google_id=google_id).first()
-        if not user:
-            print(' * Registering user using Google token...')
-            user = User(
-                name=google_info['name'],
-                email=google_info['email'],
-                google_id=google_id
-            ).save()
-        flask_login.login_user(user)
-        print('* %s logged in (%s)' % (user.name, user.email))
-        # if user and user.can('help'):
-        #     path, notification = 'admin.home', NOTIF_LOGIN_STAFF
-        # else:
-            # path, notification = 'public.home', NOTIF_LOGIN_STUDENT
-        path, notification = 'dashboard.home', NOTIF_LOGIN_STUDENT
-        if redirect:
-            return redirect + '?notification=%s' % notification
-        return url_for(path, notification=notification)
-    return 'Google token verification failed.'
-
-
-def verify_google_token(token):
+@public.route('/login', methods=['POST', 'GET'])
+def login(home=None, login=None):
     """
-    Verify a google token
+    Login using Google authentication
 
-    :param token str: token
-    :return: token information if valid or None
+    :param str home: URL for queue homepage
+    :param str login: URL for queue login page
     """
     try:
-        idinfo = client.verify_id_token(token, googleclientID)
-        #If multiple clients access the backend server:
-        if idinfo['aud'] not in [googleclientID]:
-            raise crypt.AppIdentityError("Unrecognized client.")
-        if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-            raise crypt.AppIdentityError("Wrong issuer.")
-        # Is this needed?
-        # if idinfo['hd'] != url_for('public.home'):
-        #     raise crypt.AppIdentityError("Wrong hosted domain.")
-    except crypt.AppIdentityError:
-        return
-    return idinfo
+        flow = client.flow_from_clientsecrets(
+            'client_secrets.json',
+            scope='openid profile email',
+            redirect_uri=login or url_for('public.login', _external=True))
+        if 'code' not in request.args:
+            auth_uri = flow.step1_get_authorize_url()
+            return redirect(auth_uri+'&prompt=select_account')
+        credentials = flow.step2_exchange(request.args.get('code'))
+        session['credentials'] = credentials.to_json()
+
+        http = credentials.authorize(httplib2.Http())
+        person = service.people().get(userId='me').execute(http=http)
+
+        user = User.query.filter_by(google_id=person['id']).first()
+        if not user:
+            user = User(
+                name=person['displayName'],
+                email=person['emails'][0]['value'],
+                google_id=person['id']
+            ).save()
+        flask_login.login_user(user)
+        return redirect(home or url_for('public.home'))
+    except client.FlowExchangeError:
+        return redirect(login or url_for('public.login'))
 
 
 ######################
@@ -84,29 +69,24 @@ def verify_google_token(token):
 
 @login_manager.user_loader
 def user_loader(id):
-    """Load user by id"""
-    print(' * Reloading user with id "%s", from user_loader' % id)
+    """Load user from a given integer id"""
     return User.query.get(id)
 
 @login_manager.request_loader
 def request_loader(request):
-    """Loads user by Flask Request object"""
-    id = int(request.form.get('id') or 0)
-    user = User.query.get(id)
+    """Loads user from Flask Request object"""
+    user = User.query.get(int(request.form.get('id') or 0))
     if not user:
-        print(' * Anonymous user found.')
         return
-    # encryption handled by SQLAlchemy PasswordType field
     user.is_authenticated = user.password == request.form['password']
-    if user.is_authenticated:
-        print(' * Reloaded user with id "%s", from request_loader' % id)
     return user
 
 @app.route('/logout')
 def logout():
+    """Logs out current session"""
     flask_login.logout_user()
     return redirect(request.args.get('redirect',
-        url_for('public.home')) + '?logout=true')
+        url_for('public.home')))
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
