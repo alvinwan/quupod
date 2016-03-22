@@ -8,6 +8,7 @@ from quupod.forms import choicify
 from quupod.defaults import default_queue_settings
 from quupod.notifications import *
 from sqlalchemy import desc
+from oauth2client import client, crypt
 import flask_login
 
 queue = Blueprint('queue', __name__, url_prefix='/<string:queue_url>',

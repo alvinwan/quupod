@@ -1,4 +1,5 @@
 migrations
+client_secrets.json
 
 # configuration file
 config.cfg

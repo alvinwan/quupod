@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_old.html" %}
 {% block body %}
   <body class="{{ color or 'blue' }}">
     <header>
@@ -15,6 +15,7 @@
         <a class="header-action" href="/logout?redirect={{ current_url() }}">logout<span class="header-subtext hidden-md hidden-lg hidden-sm">{{ current_user.name }}</span></a>
         <a class="header-action" href="{{ the_url('dashboard.home') }}">Dashboard</a>
         {% else %}
+        <a class="header-action" href="{{ the_url('public.login') }}">Sign in</a>
         <div class="g-signin2" data-onsuccess="onSignIn"></div>
         {% endif %}
       </div>

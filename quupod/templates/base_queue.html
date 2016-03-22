@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_old.html" %}
 {% block body %}
   <body class="{{ color or 'blue' }}">
     <header>
@@ -27,7 +27,7 @@
         {% endif %}
           {% endif %}
         {% else %}
-        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        <a class="header-action" href="{{ the_url('queue.login') }}">Sign in</a>
         {% endif %}
       </div>
     </header>
