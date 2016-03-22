@@ -82,6 +82,7 @@ a:hover {
     color:#666;
     width:100%;
     font-size:1em;
+    margin-top:0;
   }
     .select .options a:hover {
       color:#FFF;
@@ -159,6 +160,14 @@ header {
       header a:hover:not(.small-button) {
         border-bottom:1px dotted #ccc;
       }
+  .header-title {
+    float:left;
+    text-transform:uppercase;
+    font-size:1em;
+    margin:0;
+    letter-spacing:0.1em;
+    padding:1em;
+  }
 footer {
   box-shadow:inset 0 5px 5px -5px rgba(0,0,0,.3);
   margin-top:-5.5em;
@@ -441,8 +450,11 @@ h2 {
   .sp-title.small,.stp-title.small {
     font-size:5em;
   }
-  .button,div.select,.options a {
+  .button,.options a {
     padding:2em 3.5em;
+  }
+  div.select {
+    padding:2em 5em 2em 3.5em;
   }
   header {
     text-align:auto;

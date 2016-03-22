@@ -1,6 +1,6 @@
 {% extends "base_old.html" %}
 {% block body %}
-  <body class="{{ body_classes }}">
+  <body class="{{ color or 'blue' }}">
     <header>
       <div class="col-md-4 col-xs-6 {% if current_user.can('admin') %}hidden-sm hidden-xs{% endif %} left">
         <a href="{{ the_url('queue.home') }}"><h1 class="name">{{ queue.name }}<span>{{ subtitle }}</span><i class="hidden-xs refresh fa fa-refresh fa-spin"></i></h1></a>
