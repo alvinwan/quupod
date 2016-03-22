@@ -38,7 +38,7 @@ def login():
             redirect_uri=url_for('public.login', _external=True))
         if 'code' not in request.args:
             auth_uri = flow.step1_get_authorize_url()
-            return redirect(auth_uri)
+            return redirect(auth_uri+'&prompt=select_account')
         auth_code = request.args.get('code')
         credentials = flow.step2_exchange(auth_code)
         session['credentials'] = credentials.to_json()
@@ -48,7 +48,6 @@ def login():
         http = credentials.authorize(http)
         people_resource = service.people()
         people_document = people_resource.get(userId='me').execute(http=http)
-        raise UserWarning(people_document['displayName'])
 
         google_id = google_info['sub']
         print(' * Google Token verified!')
@@ -65,28 +64,6 @@ def login():
         return redirect(url_for('public.home'))
     except client.FlowExchangeError:
         return redirect(url_for('public.login'))
-
-
-def verify_google_token(token):
-    """
-    Verify a google token
-
-    :param token str: token
-    :return: token information if valid or None
-    """
-    try:
-        idinfo = client.verify_id_token(token, googleclientID)
-        #If multiple clients access the backend server:
-        if idinfo['aud'] not in [googleclientID]:
-            raise crypt.AppIdentityError("Unrecognized client.")
-        if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-            raise crypt.AppIdentityError("Wrong issuer.")
-        # Is this needed?
-        # if idinfo['hd'] != url_for('public.home'):
-        #     raise crypt.AppIdentityError("Wrong hosted domain.")
-    except crypt.AppIdentityError:
-        return
-    return idinfo
 
 
 ######################

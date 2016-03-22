@@ -230,9 +230,3 @@ def requeue(inquiry_id):
 def logout():
     from quupod.public.views import logout
     return logout()
-
-
-@queue.route('/tokenlogin', methods=['POST'])
-def token_login():
-    from quupod.public.views import token_login
-    return token_login()
