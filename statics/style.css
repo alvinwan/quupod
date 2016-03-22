@@ -25,9 +25,10 @@ a:hover {
   border:2px solid #000;
   color:#000;
   text-transform:uppercase;
-  padding:2em 3.5em;
+  padding: 1.75em 3em;
   font-size:0.8em;
   letter-spacing:0.25em;
+  margin-top:0.5em;
 }
   .button:hover,div.select:hover {
     color:#FFF;
@@ -128,20 +129,25 @@ a:hover {
     width:auto;
   }
 header {
-  padding:2em 3em 0 3em;
+  padding:2em 3em 1em 3em;
   position:fixed;
   top:0;
   left:0;
+  background-color:rgba(255,255,255,0.9);
+  text-align:center;
+  z-index:100;
 }
   header nav,header ul {
-    float:right;
+    float:none;
+    display:inline-block;
+    padding:0;
   }
     header li {
       list-style:none;
-      float:right;
+      float:left;
     }
     header li + li {
-      margin-right:2em;
+      margin-left:1em;
     }
     header li a {
       padding:0.75em 0.5em;
@@ -150,7 +156,7 @@ header {
       letter-spacing:0.1em;
       color:#666;
     }
-      header li a:hover {
+      header a:hover:not(.small-button) {
         border-bottom:1px dotted #ccc;
       }
 footer {
@@ -186,6 +192,7 @@ footer {
   }
 main {
   text-align:center;
+  z-index:50;
 }
 section {
   z-index:10;
@@ -194,7 +201,7 @@ section {
   padding-top:10em;
 }
 .module {
-  padding:5em 0;
+  padding:5em 3em;
 }
 *[class*="-main"] {
   padding-bottom:5em;
@@ -250,6 +257,9 @@ main section:nth-child(even) {
     background-color:#FFF;
     color:inherit;
   }
+  .colored header {
+    background-color:transparent;
+  }
 /* -- end color adjustments -- */
 /* -- start staff page -- */
 h2 {
@@ -267,6 +277,7 @@ h2 {
     float:none;
     display:inline-block;
     padding-top:3em;
+    width:100%;
   }
   .stp-item {
     list-style:none;
@@ -289,7 +300,7 @@ h2 {
   float:none;
   display:inline-block;
   min-height:100%;
-  margin-bottom:5em;
+  padding: 7em 3em 5em 3em;
 }
 .sf-title {
   color:#333;
@@ -376,13 +387,13 @@ h2 {
 .sp-title,.stp-title {
   color:#333;
   font-weight:300;
-  font-size:7em;
+  font-size:5em;
   margin-bottom:0.25em;
   font-family:'Raleway';
   margin-top:0;
 }
   .sp-title.small,.stp-title.small {
-    font-size:5em;
+    font-size:3em;
   }
 .sp-subtitle,.stp-subtitle {
   color:#333;
@@ -415,3 +426,37 @@ h2 {
   background-size:cover;
 }
 /* -- end student public page -- */
+/* -- reponsive -- */
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+}
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  .sp-title,.stp-title {
+    font-size:7em;
+  }
+  .sf-module-banner {
+    margin:0 0 5em 0;
+  }
+  .sp-title.small,.stp-title.small {
+    font-size:5em;
+  }
+  .button,div.select,.options a {
+    padding:2em 3.5em;
+  }
+  header {
+    text-align:auto;
+  }
+  header nav,header ul {
+    float:right;
+  }
+  header li {
+    list-style:none;
+    float:right;
+  }
+  header li + li {
+    margin-right:2em;
+    margin-left:0;
+  }
+}
+/* -- end responsive -- */
