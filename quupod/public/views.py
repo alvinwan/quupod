@@ -10,6 +10,7 @@ from apiclient.discovery import build
 from quupod.config import config
 import httplib2
 
+# Google API service object for Google Plus
 service = build('plus', 'v1')
 
 public = Blueprint('public', __name__, template_folder='templates')
@@ -27,43 +28,39 @@ def home():
 # SIGN IN/SIGN UP #
 ###################
 
-
 @public.route('/login', methods=['POST', 'GET'])
-def login():
-    """Login"""
+def login(home=None, login=None):
+    """
+    Login using Google authentication
+
+    :param str home: URL for queue homepage
+    :param str login: URL for queue login page
+    """
     try:
         flow = client.flow_from_clientsecrets(
             'client_secrets.json',
             scope='openid profile email',
-            redirect_uri=url_for('public.login', _external=True))
+            redirect_uri=login or url_for('public.login', _external=True))
         if 'code' not in request.args:
             auth_uri = flow.step1_get_authorize_url()
             return redirect(auth_uri+'&prompt=select_account')
-        auth_code = request.args.get('code')
-        credentials = flow.step2_exchange(auth_code)
+        credentials = flow.step2_exchange(request.args.get('code'))
         session['credentials'] = credentials.to_json()
-        google_info = credentials.id_token
 
-        http = httplib2.Http()
-        http = credentials.authorize(http)
-        people_resource = service.people()
-        people_document = people_resource.get(userId='me').execute(http=http)
+        http = credentials.authorize(httplib2.Http())
+        person = service.people().get(userId='me').execute(http=http)
 
-        google_id = google_info['sub']
-        print(' * Google Token verified!')
-        user = User.query.filter_by(google_id=google_id).first()
+        user = User.query.filter_by(google_id=person['id']).first()
         if not user:
-            print(' * Registering user using Google token...')
             user = User(
-                name=google_info['name'],
-                email=google_info['email'],
-                google_id=google_id
+                name=person['displayName'],
+                email=person['emails'][0]['value'],
+                google_id=person['id']
             ).save()
         flask_login.login_user(user)
-        print('* %s logged in (%s)' % (user.name, user.email))
-        return redirect(url_for('public.home'))
+        return redirect(home or url_for('public.home'))
     except client.FlowExchangeError:
-        return redirect(url_for('public.login'))
+        return redirect(login or url_for('public.login'))
 
 
 ######################
@@ -72,29 +69,24 @@ def login():
 
 @login_manager.user_loader
 def user_loader(id):
-    """Load user by id"""
-    print(' * Reloading user with id "%s", from user_loader' % id)
+    """Load user from a given integer id"""
     return User.query.get(id)
 
 @login_manager.request_loader
 def request_loader(request):
-    """Loads user by Flask Request object"""
-    id = int(request.form.get('id') or 0)
-    user = User.query.get(id)
+    """Loads user from Flask Request object"""
+    user = User.query.get(int(request.form.get('id') or 0))
     if not user:
-        print(' * Anonymous user found.')
         return
-    # encryption handled by SQLAlchemy PasswordType field
     user.is_authenticated = user.password == request.form['password']
-    if user.is_authenticated:
-        print(' * Reloaded user with id "%s", from request_loader' % id)
     return user
 
 @app.route('/logout')
 def logout():
+    """Logs out current session"""
     flask_login.logout_user()
     return redirect(request.args.get('redirect',
-        url_for('public.home')) + '?logout=true')
+        url_for('public.home')))
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
