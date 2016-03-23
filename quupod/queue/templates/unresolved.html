@@ -2,8 +2,8 @@
 {% block modules %}
     <section class="sp-module-banner module">
       <p class="sp-subtitle">Estimated Wait Time</p>
-      <h1 class="sp-title">{{ ttr }}</h1>
-      <p class="sp-byline">{{ inquiries | length }} requests enqueued {% if q_welcome %}// {{ q_welcome }}{% endif %}</p>
+      <h1 class="sp-title" id="ttr">{{ ttr }}</h1>
+      <p class="sp-byline"><span id="nor">{{ inquiries | length }}</span> requests enqueued {% if q_welcome %}// {{ q_welcome }}{% endif %}</p>
       {% if q_require_login and not current_user.is_authenticated %}
       <a href="{{ the_url('queue.login') }}" class="button">Login</a>
       {% elif (current_user.is_authenticated or not q_require_login) and not current_user.can('admin') %}

@@ -37,3 +37,18 @@ def emitQueuePositions(inquiry):
         {'positions': json.dumps(indices)},
         broadcast=True,
         namespace='/q%d' % inquiry.queue_id)
+
+def emitQueueInfo(queue):
+    """
+    Emit information about queue:
+      (1) time to resolution
+      (2) number of requests
+    """
+    from quupod.models import Inquiry
+    emit('update student page',
+        {
+            'ttr': queue.ttr(),
+            'nor': Inquiry.query.filter_by(queue_id=queue.id, status='unresolved').count()
+        },
+        broadcast=True,
+        namespace='/q%d' % queue.id)

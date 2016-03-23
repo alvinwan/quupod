@@ -31,7 +31,8 @@
 
       // Update student page with ttr, number of requests
       socket.on('update student page', function(msg) {
-
+        $('#ttr').html(msg.ttr);
+        $('#nor').html(msg.nor);
       });
 
       // Update staff page with ttr, number of requests, help needed

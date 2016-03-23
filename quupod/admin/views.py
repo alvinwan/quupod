@@ -4,7 +4,7 @@ from quupod.views import requires, render, url_for, current_user
 from quupod.models import User, Inquiry, Queue, QueueSetting, Participant
 from quupod.notifications import *
 from quupod.defaults import default_queue_settings
-from quupod.utils import strfdelta, emitQueuePositions
+from quupod.utils import strfdelta, emitQueuePositions, emitQueueInfo
 import flask_login
 import arrow
 
@@ -132,13 +132,12 @@ def help_inquiry(id, location=None):
         inquiry.lock()
         inquiry.link(current_user())
     if request.method == 'POST':
-        print('='*30, '\nUPDATING POST')
         delayed_id=None
         inquiry.resolution.close()
-        print('='*30, '\nNew TERRITORY')
 
         # emit new queue positions
         emitQueuePositions(inquiry)
+        emitQueueInfo(inquiry.queue)
 
         if request.form['status'] == 'unresolved':
             delayed_id = inquiry.id
