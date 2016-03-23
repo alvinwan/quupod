@@ -5,7 +5,8 @@ from quupod.models import Queue
 from quupod.defaults import default_queue_roles
 
 
-dashboard = Blueprint('dashboard', __name__, url_prefix='/dashboard')
+dashboard = Blueprint('dashboard', __name__,
+    url_prefix='/dashboard', template_folder='templates')
 
 
 @dashboard.url_value_preprocessor

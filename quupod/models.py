@@ -11,6 +11,7 @@ from quupod.defaults import default_queue_settings
 import flask_login, arrow
 from flask import g, request
 from quupod.views import url_for
+from quupod.utils import strfdelta
 
 #################
 # PARENT MODELS #
@@ -237,15 +238,16 @@ class Queue(Base):
 
     def ttr(self):
         """Compute average time until resolution."""
-        resolutions = Resolution.query.filter(
-            Resolution.created_at >= arrow.utcnow().replace(hours=-3)).all()
+        resolutions = Resolution.query.join(Inquiry).filter(
+            Resolution.created_at >= arrow.utcnow().replace(hours=-3),
+            Inquiry.queue_id == self.id).all()
         ns = [res.created_at - res.inquiry.created_at for res in resolutions]
         if ns:
             total = ns[0]
             for n in ns[1:]:
                 total = n + total
-            return total/len(ns)
-        return 'n/a'
+            return strfdelta(total/len(ns))
+        return '00:00:00'
 
     def is_valid_assignment(self, request, form):
         """
@@ -319,6 +321,7 @@ class User(Base, flask_login.UserMixin):
     email = db.Column(db.String(100), unique=True)
     username = db.Column(db.String(50), unique=True)
     password = db.Column(PasswordType(schemes=['pbkdf2_sha512']))
+    image_url = db.Column(db.Text)
 
     google_id = db.Column(db.String(30), unique=True)
 

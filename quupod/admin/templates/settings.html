@@ -1,45 +1,46 @@
 {% extends "admin.html" %}
 {% set title='%s | %s' % (app_name, 'Settings') %}
-{% set panel='Settings' %}
-{% block text %}
-    <p class="event-byline"><a href="{{ the_url('admin.home') }}">Admin</a> &raquo; Settings</p>
-    <h1 class="event-title">Settings</h1>
-    <p class="event-copy">Here are the app's basic details and advanced configurations.</p>
-{% endblock %}
-{% block panel %}
-<section class="queue">
+{% set main_class='sf-main' %}
+{% set body_class='staff-form' %}
+{% block modules %}
+<section class="sf-module-banner module col-md-8">
+  <p class="sf-back"><a href="{{ the_url('admin.home') }}"><span class="sf-back-arr">&larr;</span> back</a></p>
+  <div class="sf-section-label">
+    <h2>Settings</h2>
+    <p>From basic to advanced configurations.</p>
+  </div>
   {% for setting in settings %}
-  <div class="setting col-md-12 col-xs-12">
-    <h2>{{ setting.label }}</h2>
-    <p>{{ setting.description | safe }}{% if setting.toggable %}<br>Enabled: <b>{{ setting.enabled }}</b>{% endif %}</p>
-    <form method="POST" action="{{ current_url() }}">
+  <form class="sf-form" action="{{ current_url() }}" method="post">
+    <div class="sf-field">
+      <label class="sf-label">{{ setting.label }}</label>
+      <p class="sf-description">{{ setting.description | safe }}{% if setting.toggable %}<br>Enabled: <b>{{ setting.enabled }}</b>{% endif %}</p>
       <input type="hidden" value="{{ setting.name }}" name="name">
       {% if setting.enabled %}
         {% if setting.input_type != 'None' %}
           {% if setting.input_type == 'textarea' %}
-      <textarea name="value">
+      <textarea class="sf-input-text" name="value">
 {{ setting.value }}</textarea>
           {% else %}
-      <input type="{{ setting.input_type }}" value="{{ setting.value }}" name="value">
+      <input class="sf-input-text" type="{{ setting.input_type }}" value="{{ setting.value }}" name="value">
           {% endif %}
-      <input type="submit" class="button sm color" value="Save">
+      <input type="submit" class="form-button small" value="Save">
         {% endif %}
       {% else %}
       {% if setting.enable_description %}
       <p><b>Why enable?</b> {{ setting.enable_description }}</p>
       {% endif %}
       <input type="hidden" value="1" name="enabled">
-      <input type="submit" class="button sm color" value="Enable">
+      <input type="submit" class="form-button small" value="Enable">
       {% endif %}
-    </form>
-    {% if setting.enabled and setting.toggable %}
-    <form method="POST">
-      <input type="hidden" value="{{ setting.name }}" name="name">
-      <input type="hidden" value="0" name="enabled">
-      <input type="submit" class="button sm color" value="Disable">
-    </form>
-    {% endif %}
-  </div>
+    </div>
+  </form>
+  {% if setting.enabled and setting.toggable %}
+  <form method="POST">
+    <input type="hidden" value="{{ setting.name }}" name="name">
+    <input type="hidden" value="0" name="enabled">
+    <input type="submit" class="{% if setting.input_type != 'None' %}sp-disable{% endif %} form-button small" value="Disable">
+  </form>
+  {% endif %}
   {% endfor %}
 </section>
 {% endblock %}

@@ -43,7 +43,7 @@ def render_queue(template, *args, **kwargs):
             current_user().set_role(entries[current_user().email])
     for k in default_queue_settings:
         setting = g.queue.setting(k)
-        kwargs.update({'q_%s' % k: setting.value or setting.enabled})
+        kwargs.update({'q_%s' % k: (setting.value or setting.enabled) if setting.enabled else False })
     kwargs.setdefault('queue', g.queue)
     return render(template, *args, **kwargs)
 
@@ -55,23 +55,12 @@ def render_queue(template, *args, **kwargs):
 @queue.route('/')
 def home():
     """list all unresolved inquiries for the homepage"""
+    if current_user().can('admin'):
+        return redirect(url_for('admin.home'))
     return render_queue('unresolved.html',
         inquiries=Inquiry.query.filter_by(
             status='unresolved',
             queue_id=g.queue.id).all(),
-        panel='Unresolved',
-        empty='No inquiries have been unaddressed!',
-        ttr=g.queue.ttr())
-
-@queue.route('/resolving')
-def resolving():
-    """List of all 'resolving' inquiries for the homepage"""
-    return render_queue('resolving.html',
-        inquiries=Inquiry.query.filter_by(
-            status='resolving',
-            queue_id=g.queue.id).all(),
-        panel='Resolving',
-        empty='No inquiries currently being resolved.',
         ttr=g.queue.ttr())
 
 @queue.route('/resolved')
@@ -85,14 +74,12 @@ def resolved():
         empty='No inquiries resolved.',
         ttr=g.queue.ttr())
 
-@queue.route('/staff')
-def staff():
-    """Lists all staff present at the current event."""
-    return render_queue('staff.html',
-        staff=g.queue.present_staff(),
-        panel='Staff',
-        empty='No staff members currently present.',
-        ttr=g.queue.ttr())
+@queue.route('/requeue/<int:inquiry_id>', methods=['POST', 'GET'])
+@requires('help')
+def requeue(inquiry_id):
+    delayed = Inquiry.query.get(inquiry_id)
+    delayed.unlock()
+    return redirect(url_for('queue.resolved'))
 
 @queue.route('/promote/<string:role_name>', methods=['POST', 'GET'])
 @queue.route('/promote')
@@ -166,7 +153,12 @@ def promote(role_name=None):
             url=url_for('queue.home'))
     return render_queue('form.html',
         form=form,
-        submit='Promote')
+        submit='Promote',
+        back=url_for('queue.promote'))
+
+########
+# FLOW #
+########
 
 @queue.route('/request', methods=['POST', 'GET'])
 def inquiry():
@@ -208,17 +200,40 @@ def inquiry():
         if current_user().is_authenticated:
             inquiry.owner_id = current_user().id
         inquiry.save()
-        return redirect(url_for('queue.home',
-            notification=NOTIF_INQUIRY_PLACED))
+        return redirect(url_for('queue.waiting'))
     return render_queue('form.html', form=form, title='Request Help',
-        submit='Ask')
+        submit='Request Help')
 
-@queue.route('/requeue/<int:inquiry_id>', methods=['POST', 'GET'])
-@requires('help')
-def requeue(inquiry_id):
-    delayed = Inquiry.query.get(inquiry_id)
-    delayed.unlock()
-    return redirect(url_for('queue.resolved'))
+@queue.route('/cancel')
+def cancel():
+    """Cancel placed request"""
+    inquiry = Inquiry.query.filter_by(
+        owner_id=current_user().id,
+        status='unresolved',
+        queue_id=g.queue.id).first().update(status='closed').save()
+    return redirect(url_for('queue.home'))
+
+@queue.route('/waiting')
+def waiting():
+    """Screen shown after user has placed request and is waiting"""
+    current_inquiry = Inquiry.query.filter_by(
+        owner_id=current_user().id,
+        status='unresolved',
+        queue_id=g.queue.id).first()
+    return render_queue('waiting.html',
+        position=Inquiry.query.filter(
+            Inquiry.status == 'unresolved',
+            Inquiry.queue_id == g.queue.id,
+            Inquiry.created_at <= current_inquiry.created_at
+        ).count(),
+        details='Assignment: %s, Problem: %s' % (current_inquiry.assignment, current_inquiry.problem),
+        group=Inquiry.query.filter(
+            Inquiry.status == 'unresolved',
+            Inquiry.queue_id == g.queue.id,
+            Inquiry.assignment == current_inquiry.assignment,
+            Inquiry.problem == current_inquiry.problem,
+            Inquiry.owner_id != current_user().id
+        ).all())
 
 
 ################
@@ -237,4 +252,4 @@ def login():
 def logout():
     """Logout using globally defined logout procedure"""
     from quupod.public.views import logout
-    return logout()
+    return logout(home=url_for('queue.home', _external=True))

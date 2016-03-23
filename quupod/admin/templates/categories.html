@@ -1,17 +1,24 @@
 {% extends "base_queue.html" %}
-{% set color='gold' %}
 {% block main %}
-<section class="modules">
-  <div class="sidebar">
-  </div>
-  <div class="col-md-3"></div>
-  <div class="content col-md-6">
-    <h2 class="content-title">Select a Request Type</h2>
-    <div class="module">
-      {% for category, count in categories %}
-      <a href="{{ the_url('admin.help_latest', location=location, category=category) }}" class="button color">{{ category }} ({{ count }})</a>
-      {% endfor %}
+<main class="sp-main">
+  <section class="sp-module-list module">
+    <p class="sf-back"><a href="{{ the_url('queue.home') }}"><span class="sf-back-arr">&larr;</span> back</a></p>
+    <h2>Select Request Type</h2>
+    <p class="sp-byline">Select a request type to start processing immediately. Then, use "resolve and next" on every page, to continue resolving that type.</p>
+    <div class="clear">
+      <ul class="stp-list col-md-4">
+    {% if categories | length == 0 %}
+    <span class="button faded">No categories available</span>
+    {% else %}
+    <div class="select">
+      <li class="select-default"><span>Select a Role <span class="arrow-down"></span></span></li>
+      <ul class="options">
+        {% for category, count in categories %}
+        <li><a href="{{ the_url('admin.help_latest', location=location, category=category) }}" class="button color">{{ category }} ({{ count }})</a></li>
+        {% endfor %}
+      </ul>
     </div>
-  </div>
-</section>
+    {% endif %}
+  </section>
+</main>
 {% endblock %}

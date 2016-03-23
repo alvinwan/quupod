@@ -78,6 +78,14 @@ default_queue_settings = {
         'enable_description': 'Enable to show a list of inquiry types, if there are requests of different types. Staff can then select a category to finish resolving first.',
         'toggable': True,
         'input_type': 'None'
+    },
+    'welcome': {
+        'label': 'Welcome message',
+        'description': 'Add a welcome message to the home screen.',
+        'value': 'Welcome to the queue!',
+        'enabled': False,
+        'enable_description': 'Enable to add welcome message.',
+        'toggable': True
     }
 }
 

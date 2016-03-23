@@ -1,29 +1,8 @@
 {% extends "base_queue.html" %}
-{% set color='gold' %}
 {% set subtitle='Admin' %}
 {% block main %}
-<section class="event">
-  <div class="col-md-6 event-text">
-    {% block text %}
-    {% endblock %}
-  </div>
-  {% block decor %}
+<main class="{{ main_class or 'sp-main'}}">
+  {% block modules %}
   {% endblock %}
-  {% if not hide_event_nav %}
-  <nav class="event-nav">
-    <ul>
-      {% for link in (
-          (the_url('admin.home'), 'Home', 'clear_all'),
-          (the_url('admin.help'), 'Help', 'help'),
-          (the_url('admin.settings'), 'Settings', 'edit_settings')) %}
-      {% if current_user.can(link[2]) %}
-      <li><a class="{% if link[1] == panel %}s{% endif %}" href="{% if link[1] != panel %}{{ link[0] }}{% else %}#{% endif %}">{{ link[1] }}</a></li>
-      {% endif %}
-      {% endfor %}
-    </ul>
-  </nav>
-  {% endif %}
-</section>
-{% block panel %}
-{% endblock %}
+</main>
 {% endblock %}

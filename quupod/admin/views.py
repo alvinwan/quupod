@@ -4,7 +4,9 @@ from quupod.views import requires, render, url_for, current_user
 from quupod.models import User, Inquiry, Queue, QueueSetting, Participant
 from quupod.notifications import *
 from quupod.defaults import default_queue_settings
+from quupod.utils import strfdelta
 import flask_login
+import arrow
 
 
 admin = Blueprint('admin', __name__, url_prefix='/<string:queue_url>/admin',
@@ -44,27 +46,20 @@ def render_admin(template, *args, **kwargs):
 @requires('staff')
 def home():
     """admin homepage"""
-    return render_admin('home.html')
-
-@admin.route('/help')
-@flask_login.login_required
-@requires('help')
-def help():
-    """help start"""
     if not g.queue.setting('location_selection').enabled:
-        return render_admin('help.html',
-            no_mobile_action=True,
-            locations_disabled=True,
+        return render_admin('home.html',
             latest_inquiry=Inquiry.latest(),
-            current_inquiry=Inquiry.current())
+            current_inquiry=Inquiry.current(),
+            ttr=g.queue.ttr())
     locations = [(l,
         Inquiry.query.filter_by(
             location=l, status='unresolved', queue_id=g.queue.id).count())
         for l in g.queue.setting('locations').value.split(',')]
-    return render_admin('help.html',
-        no_mobile_action=True,
+    return render_admin('home.html',
         locations=[t for t in locations if t[1]],
-        current_inquiry=Inquiry.current())
+        current_inquiry=Inquiry.current(),
+        ttr=g.queue.ttr())
+
 
 @admin.route('/clear/<string:location>', methods=['POST', 'GET'])
 @admin.route('/clear', methods=['POST', 'GET'])
@@ -102,7 +97,7 @@ def help_latest(location=None, category=None):
     inquiry = Inquiry.latest(location=location, category=category)
     delayed_id, delayed = request.args.get('delayed_id', None), None
     if not inquiry:
-        return redirect(url_for('admin.help', notification=NOTIF_HELP_DONE))
+        return redirect(url_for('admin.home', notification=NOTIF_HELP_DONE))
     if g.queue.setting('inquiry_types').enabled and not category and g.queue.setting('inquiry_type_selection').enabled:
         categories = [(cat, Inquiry.query.filter_by(
             category=cat,
@@ -145,7 +140,7 @@ def help_inquiry(id, location=None):
             if delayed_id:
                 delayed = Inquiry.query.get(delayed_id)
                 delayed.unlock()
-            return redirect(url_for('admin.help'))
+            return redirect(url_for('admin.home'))
         if not location:
             return redirect(url_for('admin.help_latest', delayed_id=delayed_id))
         return redirect(url_for('admin.help_latest',
@@ -153,7 +148,16 @@ def help_inquiry(id, location=None):
     return render_admin('help_inquiry.html',
         inquiry=inquiry,
         inquiries=Inquiry.query.filter_by(name=inquiry.name).limit(10).all(),
-        hide_event_nav=True)
+        hide_event_nav=True,
+        group=Inquiry.query.filter(
+            Inquiry.status == 'unresolved',
+            Inquiry.queue_id == g.queue.id,
+            Inquiry.assignment == inquiry.assignment,
+            Inquiry.problem == inquiry.problem,
+            Inquiry.owner_id != inquiry.owner_id
+        ).all(),
+        wait_time=strfdelta(
+            inquiry.resolution.created_at-inquiry.created_at, '%h:%m:%s'))
 
 
 ############

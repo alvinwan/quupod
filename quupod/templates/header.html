@@ -1,0 +1,23 @@
+<header>
+  <a href="{% if current_user.can('admin') %}{{ the_url('admin.home') }}{% else %}{{ the_url('queue.home') }}{% endif %}"><h1 class="hidden-xs col-sm-4 col-md-3 header-title">{{ queue.name }} <span>{% if current_user.can('admin') %}Admin{% else %}Queue{% endif %}</span></h1></a>
+  <nav class="col-md-9 col-sm-8 col-xs-12">
+    <ul>
+      {% if current_user.is_authenticated %}
+      <li><span class="header-text"><span>Hi, {{ current_user.name }}<a class="logout" href="{{ the_url('queue.logout') }}">Logout</a></span><span class="header-avatar"><span style="background: url('{{ current_user.image_url }}') center; background-size:cover;"></span></span></li>
+        {% if current_user.can('admin') %}
+      <li><a href="{{ the_url('queue.resolved') }}">Resolved</a></li>
+      <li><a href="{{ the_url('admin.settings') }}">Settings</a></li>
+        {% else %}
+          {% if g.queue.setting(name='self_promotion').enabled %}
+      <li><a href="{{ the_url('queue.promote') }}">Staff?</a>
+          {% endif %}
+        {% endif %}
+      {% else %}
+      <li><a href="{{ the_url('queue.login') }}" class="small-button hidden-xs">Login</a></li>
+      {% endif %}
+      {% if (current_user.is_authenticated or not q_require_login) and not current_user.can('admin') %}
+      <li><a href="{{ the_url('queue.inquiry') }}">Request</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+</header>

@@ -1,19 +1,24 @@
 {% extends "base_queue.html" %}
-{% set color='blue' %}
-{% set no_mobile_action=True %}
 {% block main %}
-<section class="modules">
-  <div class="sidebar">
-  </div>
-  <div class="col-md-3"></div>
-  <div class="content col-md-6">
-    <h2 class="content-title">{{ title }}</h2>
-    <div class="module">
-      <div class="content-copy">{{ message | safe }}</div>
-      {% for role_name in roles %}
-      <a href="{{ the_url('queue.promote', role_name=role_name) }}" class="button color">{{ role_name }}</a>
-      {% endfor %}
-    </form>
-  </div>
-</section>
+<main class="sp-main">
+  <section class="sp-module-list module">
+    <p class="sf-back"><a href="{{ the_url('queue.home') }}"><span class="sf-back-arr">&larr;</span> back</a></p>
+    <h2>{{ title }}</h2>
+    <p class="sp-byline">{{ message | safe }}</p>
+    <div class="clear">
+      <ul class="stp-list col-md-4">
+    {% if roles | length == 0 %}
+    <span class="button faded">No roles available</span>
+    {% else %}
+    <div class="select">
+      <li class="select-default"><span>Select a Role <span class="arrow-down"></span></span></li>
+      <ul class="options">
+        {% for role_name in roles %}
+        <li><a href="{{ the_url('queue.promote', role_name=role_name) }}" class="button">{{ role_name }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </section>
+</main>
 {% endblock %}

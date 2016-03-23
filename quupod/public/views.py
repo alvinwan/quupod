@@ -22,7 +22,7 @@ public = Blueprint('public', __name__, template_folder='templates')
 @public.route('/')
 def home():
     """List of all 'unresolved' inquiries for the homepage"""
-    return render('index.html', queues=Queue.query.all())
+    return render('public/index.html', queues=Queue.query.all())
 
 ###################
 # SIGN IN/SIGN UP #
@@ -55,8 +55,11 @@ def login(home=None, login=None):
             user = User(
                 name=person['displayName'],
                 email=person['emails'][0]['value'],
-                google_id=person['id']
+                google_id=person['id'],
+                image_url=person['image']['url']
             ).save()
+        else:
+            user.update(image_url=person['image']['url']).save()
         flask_login.login_user(user)
         return redirect(home or url_for('public.home'))
     except client.FlowExchangeError:
@@ -81,12 +84,16 @@ def request_loader(request):
     user.is_authenticated = user.password == request.form['password']
     return user
 
-@app.route('/logout')
-def logout():
-    """Logs out current session"""
+@public.route('/logout')
+def logout(home=None):
+    """
+    Logs out current session and redirects to home
+
+    :param str home: URL to redirect to after logout success
+    """
     flask_login.logout_user()
     return redirect(request.args.get('redirect',
-        url_for('public.home')))
+        home or url_for('public.home')))
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():

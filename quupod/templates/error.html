@@ -1,20 +1,13 @@
-{% extends "base_public.html" %}
-{% set subtitle='Queue' %}
-{% set title=code %}
-{% set color='blue' %}
+{% extends "base_queue.html" %}
 {% block main %}
-<section class="modules">
-  <div class="sidebar">
-  </div>
-  <div class="col-md-3"></div>
-  <div class="content col-md-6">
-    <h2 class="content-title">{{ code }}</h2>
-    <div class="module">
-      <p class="content-copy">{{ message }}</p>
-      {% if url and action %}
-      <a href="{{ url }}" class="button color">{{ action }}</a>
-      {% endif %}
-    </div>
-  </div>
-</section>
+<main class="sp-main">
+  <section class="sp-module-list module">
+    <p class="sf-back"><a href="{{ the_url('queue.home') }}"><span class="sf-back-arr">&larr;</span> back</a></p>
+    <h1 class="sp-title">{{ code }}</h1>
+    <p class="sp-byline">{{ message | safe }}</p>
+    {% if url and action %}
+    <a href="{{ url }}" class="button">{{ action }}</a>
+    {% endif %}
+  </section>
+</main>
 {% endblock %}

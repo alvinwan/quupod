@@ -1,27 +1,32 @@
 {% extends "base_queue.html" %}
-{% set subtitle=subtitle or 'Queue' %}
 {% set title=title %}
-{% set no_mobile_action=True %}
 {% block main %}
-<section class="modules">
-  <div class="sidebar">
-  </div>
-  <div class="col-md-3"></div>
-  <div class="content col-md-6">
-    <h2 class="content-title">{{ title }}</h2>
-    <form class="module" action="{{ current_url() }}" method="POST">
+<main class="sf-main">
+  <section class="sf-module-banner module col-md-6">
+    <p class="sf-back"><a href="{{ back or the_url('queue.home') }}"><span class="sf-back-arr">&larr;</span> back</a></p>
+    {% if form_title %}
+    <div class="sf-section-label">
+      <h2>{{ form_title }}</h2>
+      {% if form_description %}
+      <p>{{ form_description }}
+      {% endif %}
+    </div>
+    {% endif %}
+    <form action="{{ current_url() }}" method="POST">
     {% for field in form %}
-      <h3>{{ field.label }}</h3>
+      <div class="sf-field">
+        {{ field.label(class_='sf-label') }}
       {% if field.description %}
-      <p>{{ field.description | safe }}</p>
+        <p class="sf-description">{{ field.description | safe }}</p>
       {% endif %}
       {% for error in form.errors[field.name] %}
         <p style="color:red"><strong>Error!</strong> {{error}}</p>
       {% endfor %}
-      {{ field }}
+        {{ field(class_='sf-input-text') }}
+      </div>
     {% endfor %}
-      <input type="submit" class="button color" value="{{ submit }}">
+      <input type="submit" class="form-button" value="{{ submit }}">
     </form>
-  </div>
-</section>
+  </section>
+</main>
 {% endblock %}

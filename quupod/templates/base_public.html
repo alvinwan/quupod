@@ -1,41 +1,9 @@
-{% extends "base_old.html" %}
+{% extends "base.html" %}
 {% block body %}
-  <body class="{{ color or 'blue' }}">
-    <header>
-      <div class="col-md-2 col-xs-6 left">
-        <a href="{{ the_url('public.home') }}"><h1 class="name">Quuu<span>Pod</span><i class="hidden-xs refresh fa fa-refresh fa-spin"></i></h1></a>
-      </div>
-      <div class="col-md-10 right">
-        {% if current_user.is_authenticated %}
-        <p class="header-text hidden-xs">Hi, {{ current_user.name }}
-          <span class="user-profile">
-            <i class="fa fa-user fa-stack-1x"></i>
-          </span>
-        </p>
-        <a class="header-action" href="/logout?redirect={{ current_url() }}">logout<span class="header-subtext hidden-md hidden-lg hidden-sm">{{ current_user.name }}</span></a>
-        <a class="header-action" href="{{ the_url('dashboard.home') }}">Dashboard</a>
-        {% else %}
-        <a class="header-action" href="{{ the_url('public.login') }}">Sign in</a>
-        {% endif %}
-      </div>
-    </header>
-    <main>
-      <div class="banner-cont">
-      {% if banner_message %}
-      <div class="banner"><p>{{ banner_message | safe}}</p></div>
-      {% endif %}
-      </div>
-      {% block main %}
-      {% endblock %}
-    </main>
-    {% if current_user.is_authenticated %}
-    <a href="{{ the_url('dashboard.create_queue') }}">
-      <div class="mobile-action">
-        <span class="ma-add"><i class="fa fa-plus"></i></span>
-        <p>Create Queue</p>
-      </div>
-    </a>
-    {% endif %}
+  <body class="{{ body_class }}">
+    {% include "header_public.html" %}
+    {% block main %}
+    {% endblock %}
     {% include "footer.html" %}
   </body>
 {% endblock %}
