@@ -238,8 +238,9 @@ class Queue(Base):
 
     def ttr(self):
         """Compute average time until resolution."""
-        resolutions = Resolution.query.filter(
-            Resolution.created_at >= arrow.utcnow().replace(hours=-3)).all()
+        resolutions = Resolution.query.join(Inquiry).filter(
+            Resolution.created_at >= arrow.utcnow().replace(hours=-3),
+            Inquiry.queue_id == self.id).all()
         ns = [res.created_at - res.inquiry.created_at for res in resolutions]
         if ns:
             total = ns[0]
