@@ -32,13 +32,11 @@ Queue calculates estimated time until resolution, and extra statistics are inclu
 
 ## Preview
 
-<img width="1278" alt="screen shot 2016-01-14 at 10 10 10 pm" src="https://cloud.githubusercontent.com/assets/2068077/12346697/a462645a-bb0b-11e5-92b8-0f718e63f9a8.png">
-
-<img width="1278" alt="screen shot 2016-01-14 at 10 12 25 pm" src="https://cloud.githubusercontent.com/assets/2068077/12346724/e9708c84-bb0b-11e5-98da-82fef54dd018.png">
-
-<img width="301" alt="screen shot 2016-01-14 at 10 11 03 pm" src="https://cloud.githubusercontent.com/assets/2068077/12346706/c6d38d5c-bb0b-11e5-91e2-98d724884b27.png">
-
-<img width="301" alt="screen shot 2016-01-14 at 10 11 20 pm" src="https://cloud.githubusercontent.com/assets/2068077/12346708/c8756ce8-bb0b-11e5-8afd-c716064f6578.png">
+<img width="1280" alt="screen shot 2016-03-22 at 11 09 43 pm" src="https://cloud.githubusercontent.com/assets/2068077/13977085/343428f0-f083-11e5-86f5-c2e633403ee2.png">
+<img width="1279" alt="screen shot 2016-03-22 at 11 05 17 pm" src="https://cloud.githubusercontent.com/assets/2068077/13977033/c68214d4-f082-11e5-9dfd-251ec161b022.png">
+<img width="1280" alt="screen shot 2016-03-22 at 11 11 01 pm" src="https://cloud.githubusercontent.com/assets/2068077/13977115/74edc72a-f083-11e5-8423-08a9043f5ba3.png">
+<img width="1280" alt="screen shot 2016-03-22 at 11 06 19 pm" src="https://cloud.githubusercontent.com/assets/2068077/13977036/c6a272b0-f082-11e5-9dbe-f300db41a624.png">
+<img width="1280" alt="screen shot 2016-03-22 at 11 06 29 pm" src="https://cloud.githubusercontent.com/assets/2068077/13977034/c6a04bd4-f082-11e5-961d-1a0520d8ba67.png">
 
 
 ## Installation
