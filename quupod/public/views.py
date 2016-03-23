@@ -7,7 +7,7 @@ from quupod.notifications import *
 from oauth2client import client, crypt
 import flask_login
 from apiclient.discovery import build
-from quupod.config import config
+from quupod.config import config, domain
 import httplib2
 
 # Google API service object for Google Plus
@@ -106,10 +106,11 @@ def unauthorized_handler():
 @app.errorhandler(404)
 def not_found(error):
     return render('error.html',
+        back=domain,
         title='404. Oops.',
         code=404,
         message='Oops. This page doesn\'t exist!',
-        url=url_for('public.home'),
+        url=domain,
         action='Return to homepage?'), 404
 
 

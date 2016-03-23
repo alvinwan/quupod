@@ -1,5 +1,6 @@
 <header>
-  <a href="{% if current_user.can('admin') %}{{ the_url('admin.home') }}{% else %}{{ the_url('queue.home') }}{% endif %}"><h1 class="hidden-xs col-sm-4 col-md-3 header-title">{{ queue.name }} <span>{% if current_user.can('admin') %}Admin{% else %}Queue{% endif %}</span></h1></a>
+  {% if queue %}
+  <a href="{% if current_user.can('admin') %}{{ the_url('admin.home') }}{% else %}{{ the_url('queue.home') }}{% endif %}"><h1 class="hidden-xs col-sm-4 col-md-3 header-title">{{ g.queue.name }} <span>{% if current_user.can('admin') %}Admin{% else %}Queue{% endif %}</span></h1></a>
   <nav class="col-md-9 col-sm-8 col-xs-12">
     <ul>
       {% if current_user.is_authenticated %}
@@ -20,4 +21,7 @@
       {% endif %}
     </ul>
   </nav>
+  {% else %}
+  <a href="{{ domain }}"><h1 class="hidden-xs col-sm-4 col-md-3 header-title">Quu<span>Pod</span></h1></a>
+  {% endif %}
 </header>
