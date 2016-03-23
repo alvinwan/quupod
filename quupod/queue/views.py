@@ -55,6 +55,8 @@ def render_queue(template, *args, **kwargs):
 @queue.route('/')
 def home():
     """list all unresolved inquiries for the homepage"""
+    if current_user().can('admin'):
+        return redirect(url_for('admin.home'))
     return render_queue('unresolved.html',
         inquiries=Inquiry.query.filter_by(
             status='unresolved',
@@ -209,7 +211,7 @@ def inquiry():
         return redirect(url_for('queue.home',
             notification=NOTIF_INQUIRY_PLACED))
     return render_queue('form.html', form=form, title='Request Help',
-        submit='Ask')
+        submit='Request Help')
 
 @queue.route('/requeue/<int:inquiry_id>', methods=['POST', 'GET'])
 @requires('help')

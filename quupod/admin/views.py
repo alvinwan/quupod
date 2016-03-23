@@ -49,14 +49,16 @@ def home():
             no_mobile_action=True,
             locations_disabled=True,
             latest_inquiry=Inquiry.latest(),
-            current_inquiry=Inquiry.current())
+            current_inquiry=Inquiry.current(),
+            ttr=g.queue.ttr())
     locations = [(l,
         Inquiry.query.filter_by(
             location=l, status='unresolved', queue_id=g.queue.id).count())
         for l in g.queue.setting('locations').value.split(',')]
     return render_admin('home.html',
         locations=[t for t in locations if t[1]],
-        current_inquiry=Inquiry.current())
+        current_inquiry=Inquiry.current(),
+        ttr=g.queue.ttr())
 
 
 @admin.route('/clear/<string:location>', methods=['POST', 'GET'])

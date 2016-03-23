@@ -16,7 +16,7 @@
       {% else %}
       <li><a href="{{ the_url('queue.login') }}" class="small-button hidden-xs">Login</a></li>
       {% endif %}
-      {% if (current_user.is_authenticated or not app_require_login) and not current_user.can('admin') %}
+      {% if (current_user.is_authenticated or not q_require_login) and not current_user.can('admin') %}
       <li><a href="{{ the_url('queue.inquiry') }}">Request Help</a></li>
       {% endif %}
     </ul>
