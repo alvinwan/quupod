@@ -22,7 +22,7 @@ public = Blueprint('public', __name__, template_folder='templates')
 @public.route('/')
 def home():
     """List of all 'unresolved' inquiries for the homepage"""
-    return render('index.html', queues=Queue.query.all())
+    return render('public/index.html', queues=Queue.query.all())
 
 ###################
 # SIGN IN/SIGN UP #
@@ -84,7 +84,7 @@ def request_loader(request):
     user.is_authenticated = user.password == request.form['password']
     return user
 
-@app.route('/logout')
+@public.route('/logout')
 def logout(home=None):
     """
     Logs out current session and redirects to home

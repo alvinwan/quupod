@@ -1,19 +1,13 @@
-{% extends "base_queue_old.html" %}
-{% set color='blue' %}
-{% set no_mobile_action=True %}
+{% extends "base_queue.html" %}
 {% block main %}
-<section class="modules">
-  <div class="sidebar">
-  </div>
-  <div class="col-md-3"></div>
-  <div class="content col-md-6">
-    <h2 class="content-title">{{ title }}</h2>
-    <div class="module">
-      <div class="content-copy">{{ message | safe }}</div>
-      {% if url and action %}
-      <a href="{{ url }}" class="button color">{{ action }}</a>
-      {% endif %}
-    </form>
-  </div>
-</section>
+<main class="sp-main">
+  <section class="sp-module-list module">
+    <p class="sf-back"><a href="{{ back or the_url('queue.home') }}"><span class="sf-back-arr">&larr;</span> back</a></p>
+    <h2>{{ title }}</h2>
+    <p class="sp-byline">{{ message | safe }}</p>
+    {% if url %}
+    <a href="{{ url }}" class="button">{{ action }}</a>
+    {% endif %}
+  </section>
+</main>
 {% endblock %}

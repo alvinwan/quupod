@@ -48,8 +48,6 @@ def home():
     """admin homepage"""
     if not g.queue.setting('location_selection').enabled:
         return render_admin('home.html',
-            no_mobile_action=True,
-            locations_disabled=True,
             latest_inquiry=Inquiry.latest(),
             current_inquiry=Inquiry.current(),
             ttr=g.queue.ttr())

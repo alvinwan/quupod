@@ -1,0 +1,15 @@
+{% extends "public.html" %}
+{% set body_class='student-public resolved colored' %}
+{% block modules %}
+<section class="stp-module-banner module">
+  <div class="clear">
+    <div class="stp-avatar"><span class="sp-avatar-photo" style="background:url('{{ inquiry.owner.image_url }}');background-size:cover;"></span></div>
+  </div>
+  <p class="stp-subtitle">Staff Member Assigned</p>
+  <h1 class="stp-title small">{{ staff.name }}</h1>
+  <p class="sp-byline">Look out for the following staff member.</p>
+  <div class="clear">
+    <div class="stp-avatar"><span class="sp-avatar-photo" style="background:url('{{ staff.image_url }}');background-size:cover;"></span></div>
+  </div>
+</section>
+{% endblock %}
