@@ -48,6 +48,7 @@ def home():
     """admin homepage"""
     if not g.queue.setting('location_selection').enabled:
         return render_admin('home.html',
+            num_inquiries=Inquiry.query.filter_by(status='unresolved', queue_id=g.queue.id).count(),
             latest_inquiry=Inquiry.latest(),
             current_inquiry=Inquiry.current(),
             ttr=g.queue.ttr())
@@ -56,6 +57,7 @@ def home():
             location=l, status='unresolved', queue_id=g.queue.id).count())
         for l in g.queue.setting('locations').value.split(',')]
     return render_admin('home.html',
+        num_inquiries=Inquiry.query.filter_by(status='unresolved', queue_id=g.queue.id).count(),
         locations=[t for t in locations if t[1]],
         current_inquiry=Inquiry.current(),
         ttr=g.queue.ttr())

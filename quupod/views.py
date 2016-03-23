@@ -62,8 +62,8 @@ def strip_subdomain(string):
     if '/subdomain' not in request.path or not getattr(g, 'queue', None):
         return string
     string = string.replace('/subdomain', '')
-    if string.startswith('/%s' % g.queue.url):
-        string = string.replace('/%s' % g.queue.url, '')
+    if '/%s' % g.queue.url in string:
+        string = string.replace('/%s' % g.queue.url, '', 1)
     return string
 
 

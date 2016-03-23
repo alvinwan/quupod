@@ -2,7 +2,7 @@ from flask import Blueprint, request, g, redirect,\
     abort, session
 from .forms import *
 from quupod import app, login_manager, whitelist
-from quupod.models import User, Inquiry, QueueRole, Participant
+from quupod.models import User, Inquiry, QueueRole, Participant, Resolution
 from quupod.views import anonymous_required, render, current_user, url_for, current_user, requires
 from quupod.forms import choicify
 from quupod.defaults import default_queue_settings
@@ -67,9 +67,9 @@ def home():
 def resolved():
     """List of all 'resoled' inquiries for the homepage"""
     return render_queue('resolved.html',
-        inquiries=Inquiry.query.filter_by(
-            status='resolved',
-            queue_id=g.queue.id).order_by(desc(Inquiry.id)).limit(20).all(),
+        inquiries=Inquiry.query.join(Resolution).filter(
+            Inquiry.status=='resolved',
+            Inquiry.queue_id==g.queue.id).order_by(desc(Resolution.resolved_at)).limit(20).all(),
         panel='Resolved',
         empty='No inquiries resolved.',
         ttr=g.queue.ttr())

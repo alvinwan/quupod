@@ -8,17 +8,15 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link href='https://fonts.googleapis.com/css?family=Work+Sans:300,400,700|Raleway:300' rel='stylesheet' type='text/css'>
     <!-- custom code -->
-    <link rel="stylesheet" href="{{ domain }}{{ the_url('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ domain }}{{ url_for('static', filename='style.css') }}">
   </head>
   <body>
     <header>
-      <div class="col-md-2 col-xs-6 left">
-        <h1 class="name">Course<span>Queue</span></h1>
-      </div>
+      <h1 class="hidden-xs col-sm-4 col-md-3 header-title">Course</h1>
     </header>
     <main class="sp-main">
       <section class="sp-module-list module">
-        <p class="sf-back"><a href="{{ the_url('queue.home') }}"><span class="sf-back-arr">&larr;</span> back</a></p>
+        <p class="sf-back"><a href="{{ url_for('queue.home') }}"><span class="sf-back-arr">&larr;</span> back</a></p>
         <h1 class="sp-title">{{ code }}</h1>
         <p class="sp-byline">{{ message | safe }}</p>
         {% if url and action %}
