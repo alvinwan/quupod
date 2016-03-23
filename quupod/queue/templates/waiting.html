@@ -1,0 +1,24 @@
+{% extends "public.html" %}
+{% block modules %}
+<section class="sp-module-banner module">
+  <p class="sp-subtitle">Queue Position</p>
+  <h1 class="sp-title">{{ position }}</h1>
+  <p class="sp-byline">Details: {{ details }}</p>
+  <a href="student-index.html" class="button">Cancel</a>
+</section>
+<section class="stp-module-list module">
+  <h2 class="stp-heading2">Potential Group</h2>
+  <p class="stp-copy">Interested in asking others what they think first? Here is a list of people asking the same question.</p>
+  <div class="clear">
+    <ul class="stp-list col-md-4">
+      {% if group | length == 0 %}
+      <li class="stp-item faded">No similar requests found.</li>
+      {% else %}
+        {% for inq in group %}
+      <li class="stp-item">{{ inq.owner.name }}</li>
+        {% endfor %}
+      {% endif %}
+    </ul>
+  </div>
+</section>
+{% endblock %}

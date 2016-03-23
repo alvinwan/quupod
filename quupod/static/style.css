@@ -29,6 +29,7 @@ a:hover {
   font-size:0.8em;
   letter-spacing:0.25em;
   margin-top:0.5em;
+  background-color:#FFF;
 }
   .button.faded {
     border:2px solid #ccc;
@@ -421,6 +422,11 @@ h2 {
 form {
   text-align:left;
 }
+form.inline {
+  width: auto;
+  float:none;
+  display:inline-block;
+}
 textarea {
   margin-bottom:1em;
 }
@@ -495,6 +501,9 @@ th, td {
     font-size: 0.6em;
     margin:-0.25em 0;
     float:left;
+  }
+  table {
+    width:100%;
   }
 /* -- end tables -- */
 /* -- begin reponsive -- */

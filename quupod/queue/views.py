@@ -63,17 +63,6 @@ def home():
             queue_id=g.queue.id).all(),
         ttr=g.queue.ttr())
 
-@queue.route('/resolving')
-def resolving():
-    """List of all 'resolving' inquiries for the homepage"""
-    return render_queue('resolving.html',
-        inquiries=Inquiry.query.filter_by(
-            status='resolving',
-            queue_id=g.queue.id).all(),
-        panel='Resolving',
-        empty='No inquiries currently being resolved.',
-        ttr=g.queue.ttr())
-
 @queue.route('/resolved')
 def resolved():
     """List of all 'resoled' inquiries for the homepage"""
@@ -85,14 +74,12 @@ def resolved():
         empty='No inquiries resolved.',
         ttr=g.queue.ttr())
 
-@queue.route('/staff')
-def staff():
-    """Lists all staff present at the current event."""
-    return render_queue('staff.html',
-        staff=g.queue.present_staff(),
-        panel='Staff',
-        empty='No staff members currently present.',
-        ttr=g.queue.ttr())
+@queue.route('/requeue/<int:inquiry_id>', methods=['POST', 'GET'])
+@requires('help')
+def requeue(inquiry_id):
+    delayed = Inquiry.query.get(inquiry_id)
+    delayed.unlock()
+    return redirect(url_for('queue.resolved'))
 
 @queue.route('/promote/<string:role_name>', methods=['POST', 'GET'])
 @queue.route('/promote')
@@ -168,6 +155,10 @@ def promote(role_name=None):
         form=form,
         submit='Promote')
 
+########
+# FLOW #
+########
+
 @queue.route('/request', methods=['POST', 'GET'])
 def inquiry():
     """
@@ -208,17 +199,40 @@ def inquiry():
         if current_user().is_authenticated:
             inquiry.owner_id = current_user().id
         inquiry.save()
-        return redirect(url_for('queue.home',
-            notification=NOTIF_INQUIRY_PLACED))
+        return redirect(url_for('queue.waiting'))
     return render_queue('form.html', form=form, title='Request Help',
         submit='Request Help')
 
-@queue.route('/requeue/<int:inquiry_id>', methods=['POST', 'GET'])
-@requires('help')
-def requeue(inquiry_id):
-    delayed = Inquiry.query.get(inquiry_id)
-    delayed.unlock()
-    return redirect(url_for('queue.resolved'))
+@queue.route('/cancel')
+def cancel():
+    """Cancel placed request"""
+    inquiry = Inquiry.query.filter_by(
+        owner_id=current_user().id,
+        status='unresolved',
+        queue_id=g.queue.id).first().update(status='closed').save()
+    return redirect(url_for('public.home'))
+
+@queue.route('/waiting')
+def waiting():
+    """Screen shown after user has placed request and is waiting"""
+    current_inquiry = Inquiry.query.filter_by(
+        owner_id=current_user().id,
+        status='unresolved',
+        queue_id=g.queue.id).first()
+    return render_queue('waiting.html',
+        position=Inquiry.query.filter(
+            Inquiry.status == 'unresolved',
+            Inquiry.queue_id == g.queue.id,
+            Inquiry.created_at <= current_inquiry.created_at
+        ).count(),
+        details='Assignment: %s, Problem: %s' % (current_inquiry.assignment, current_inquiry.problem),
+        group=Inquiry.query.filter(
+            Inquiry.status == 'unresolved',
+            Inquiry.queue_id == g.queue.id,
+            Inquiry.assignment == current_inquiry.assignment,
+            Inquiry.problem == current_inquiry.problem,
+            Inquiry.owner_id != current_user().id
+        ).all())
 
 
 ################

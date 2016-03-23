@@ -1,7 +1,81 @@
-{% extends "admin_old.html" %}
+{% extends "admin.html" %}
 {% set title='%s | %s %s' % (app_name, 'Helping', inquiry.name) %}
-{% set no_mobile_action=True %}
-{% set panel='Help' %}
+{% block modules %}
+<section class="stp-module-banner module">
+  <div class="clear">
+    <div class="stp-avatar"><span class="sp-avatar-photo"></span></div>
+  </div>
+  <p class="stp-subtitle">Assigned</p>
+  <h1 class="stp-title small">{{ inquiry.name }}</h1>
+  <p class="stp-byline">{{ inquiry.category }} // Request wait time: {{ wait_time }}</p>
+  <form class="inline" method="post" action="{{ current_url() }}">
+    <input type="hidden" name="load_next" value="y">
+    <input type="hidden" name="status" value="resolved">
+    <input type="submit" class="button" value="resolve and next">
+  </form>
+  <form class="inline" method="post" action="{{ current_url() }}">
+    <input type="hidden" name="load_next" value="n">
+    <input type="hidden" name="status" value="resolved">
+    <input type="submit" class="button" value="resolve">
+  </form>
+  <form class="inline" method="post" action="{{ current_url() }}">
+    <input type="hidden" name="load_next" value="y">
+    <input type="hidden" name="status" value="unresolved">
+    <input type="submit" class="button" value="requeue and next">
+  </form>
+  <form class="inline" method="post" action="{{ current_url() }}">
+    <input type="hidden" name="load_next" value="n">
+    <input type="hidden" name="status" value="unresolved">
+    <input type="submit" class="button" value="requeue">
+  </form>
+</section>
+<section class="stp-module-list module">
+  <h2>Potential Group</h2>
+  <p class="stp-copy">If possible, group requests together. Here are names of all individuals requesting the same problem.</p>
+  <div class="clear">
+    <ul class="stp-list col-md-4">
+      {% if group | length == 0 %}
+      <li class="stp-item faded">No similar requests found.</li>
+      {% else %}
+        {% for inq in group %}
+      <li class="stp-item">{{ inq.owner.name }}</li>
+        {% endfor %}
+      {% endif %}
+    </ul>
+  </div>
+</section>
+<section class="stp-module-text module">
+  <h2>Request History</h2>
+  <table>
+    <tr><th>Queue Time</th><th class="hidden-xs">Help Time</th><th>Resolution Time</th><th>Staff</th></tr>
+    {% for inquiry in inquiries %}
+    <tr>
+      <td>{{ inquiry.created_at.humanize() }}</td>
+      <td class="hidden-xs">
+        {% if inquiry.resolution %}
+        {{ inquiry.resolution.created_at.humanize() }}
+        {% else %}
+        n/a
+        {% endif %}
+      </td>
+      <td>
+        {% if inquiry.resolution and inquiry.resolution.resolved_at %}
+        {{ inquiry.resolution.resolved_at.humanize() }}
+        {% else %}
+        n/a
+        {% endif %}
+      </td>
+      <td>
+        {% if inquiry.resolution %}
+        {{ inquiry.resolution.staff.name }}
+        {% else %}
+        n/a
+        {% endif %}
+      </td>
+    {% endfor %}
+  </table>
+</section>
+{% endblock %}
 {% block text %}
     <p class="event-byline">asked {{ inquiry.created_at.humanize() }}</p>
     <h1 class="event-title">{{ inquiry.name }}</h1>

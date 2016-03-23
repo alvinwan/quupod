@@ -4,7 +4,9 @@ from quupod.views import requires, render, url_for, current_user
 from quupod.models import User, Inquiry, Queue, QueueSetting, Participant
 from quupod.notifications import *
 from quupod.defaults import default_queue_settings
+from quupod.utils import strfdelta
 import flask_login
+import arrow
 
 
 admin = Blueprint('admin', __name__, url_prefix='/<string:queue_url>/admin',
@@ -148,7 +150,16 @@ def help_inquiry(id, location=None):
     return render_admin('help_inquiry.html',
         inquiry=inquiry,
         inquiries=Inquiry.query.filter_by(name=inquiry.name).limit(10).all(),
-        hide_event_nav=True)
+        hide_event_nav=True,
+        group=Inquiry.query.filter(
+            Inquiry.status == 'unresolved',
+            Inquiry.queue_id == g.queue.id,
+            Inquiry.assignment == inquiry.assignment,
+            Inquiry.problem == inquiry.problem,
+            Inquiry.owner_id != inquiry.owner_id
+        ).all(),
+        wait_time=strfdelta(
+            inquiry.resolution.created_at-inquiry.created_at, '%h:%m:%s'))
 
 
 ############
