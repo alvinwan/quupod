@@ -203,6 +203,7 @@ def inquiry():
         if current_user().is_authenticated:
             inquiry.owner_id = current_user().id
         inquiry.save()
+        emitQueueInfo(g.queue)
         return redirect(url_for('queue.waiting'))
     return render_queue('form.html', form=form, title='Request Help',
         submit='Request Help')
@@ -214,6 +215,8 @@ def cancel():
         owner_id=current_user().id,
         status='unresolved',
         queue_id=g.queue.id).first().update(status='closed').save()
+    emitQueuePositions(inquiry)
+    emitQueueInfo(inquiry.queue)
     return redirect(url_for('queue.home'))
 
 @queue.route('/waiting')
