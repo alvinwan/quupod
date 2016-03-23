@@ -1,5 +1,4 @@
 {% extends "base_queue.html" %}
-{% set subtitle=subtitle or 'Queue' %}
 {% set title=title %}
 {% block main %}
 <main class="sf-main">
@@ -23,6 +22,6 @@
     {% endfor %}
       <input type="submit" class="form-button" value="{{ submit }}">
     </form>
-  </div>
-</section>
+  </section>
+</main>
 {% endblock %}

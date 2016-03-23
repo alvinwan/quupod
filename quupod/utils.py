@@ -3,7 +3,7 @@ from string import Template
 class DeltaTemplate(Template):
     delimiter = "%"
 
-def strfdelta(tdelta, fmt):
+def strfdelta(tdelta, fmt='%h:%m:%s'):
     """
     Formats timedeltas
     http://stackoverflow.com/a/8907269/4855984

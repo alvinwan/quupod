@@ -1,10 +1,10 @@
 <header>
-  <a href="{% if current_user.can('admin') %}{{ the_url('admin.home') }}{% else %}{{ the_url('queue.home') }}{% endif %}"><h1 class="col-xs-12 col-md-4 header-title">{{ queue.name }} <span>{{ subtitle }}</span></h1></a>
+  <a href="{% if current_user.can('admin') %}{{ the_url('admin.home') }}{% else %}{{ the_url('queue.home') }}{% endif %}"><h1 class="col-xs-12 col-md-4 header-title">{{ queue.name }} <span>{% if current_user.can('admin') %}Admin{% else %}Queue{% endif %}</span></h1></a>
   <nav>
     <ul>
       {% if current_user.is_authenticated %}
       <li><a href="{{ the_url('queue.logout') }}">Logout</a></li>
-      <li class="hidden-xs"><span class="header-text"><span>Hi, {{ current_user.name }}</span><span class="header-avatar"><span style="background: url('{{ current_user.avatar }}') center; background-size:cover;"></span></span></li>
+      <li class="hidden-xs"><span class="header-text"><span>Hi, {{ current_user.name }}</span><span class="header-avatar"><span style="background: url('{{ current_user.image_url }}') center; background-size:cover;"></span></span></li>
         {% if current_user.can('admin') %}
       <li><a href="{{ the_url('admin.settings') }}">Resolved</a></li>
       <li><a href="{{ the_url('admin.settings') }}">Settings</a></li>

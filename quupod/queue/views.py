@@ -210,7 +210,7 @@ def cancel():
         owner_id=current_user().id,
         status='unresolved',
         queue_id=g.queue.id).first().update(status='closed').save()
-    return redirect(url_for('public.home'))
+    return redirect(url_for('queue.home'))
 
 @queue.route('/waiting')
 def waiting():
@@ -251,4 +251,4 @@ def login():
 def logout():
     """Logout using globally defined logout procedure"""
     from quupod.public.views import logout
-    return logout()
+    return logout(home=url_for('queue.home', _external=True))
