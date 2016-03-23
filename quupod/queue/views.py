@@ -186,9 +186,9 @@ def inquiry():
             not_logged_in_max = 'If you haven\'t submitted a request, try logging in and re-requesting.'
         return render_queue('confirm.html',
             title='Oops',
-            message='Looks like you\'ve reached the maximum number of times you can add yourself to the queue at once (<code>%d</code>). %s' % (n, not_logged_in_max),
-            action='Back',
-            url=url_for('queue.home'))
+            message='Looks like you\'ve reached the maximum number of times you can add yourself to the queue at once (<code>%d</code>). %s' % (n, not_logged_in_max or 'Would you like to cancel your oldest request?'),
+            action='Cancel Oldest Request',
+            url=url_for('queue.cancel'))
     form.location.choices = choicify(
         g.queue.setting('locations').value.split(','))
     form.category.choices = choicify(

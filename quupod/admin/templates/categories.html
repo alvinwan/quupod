@@ -11,7 +11,7 @@
     <span class="button faded">No categories available</span>
     {% else %}
     <div class="select">
-      <li class="select-default"><span>Select a Role <span class="arrow-down"></span></span></li>
+      <li class="select-default"><span>Select a Category <span class="arrow-down"></span></span></li>
       <ul class="options">
         {% for category, count in categories %}
         <li><a href="{{ the_url('admin.help_latest', location=location, category=category) }}" class="button color">{{ category }} ({{ count }})</a></li>
