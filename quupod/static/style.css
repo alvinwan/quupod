@@ -30,7 +30,11 @@ a:hover {
   letter-spacing:0.25em;
   margin-top:0.5em;
 }
-  .button:hover,div.select:hover {
+  .button.faded {
+    border:2px solid #ccc;
+    color:#ccc;
+  }
+  .button:not(.faded):hover,div.select:hover {
     color:#FFF;
     background-color:#000;
     text-decoration:none;
@@ -339,7 +343,6 @@ h2 {
   float:none;
   display:inline-block;
   min-height:100%;
-  /*padding: 7em 3em 5em 3em;*/
 }
 .sf-title {
   color:#333;
@@ -414,6 +417,17 @@ h2 {
     top: 2.2em;
     right: 100%;
   }
+/* settings disable button hack */
+form {
+  text-align:left;
+}
+textarea {
+  margin-bottom:1em;
+}
+.sp-disable {
+  float: right;
+  margin-top:-6.95em;
+}
 /* -- end student form page -- */
 /* -- student public page -- */
 .clear {

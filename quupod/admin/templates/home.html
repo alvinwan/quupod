@@ -1,17 +1,31 @@
 {% extends "admin.html" %}
 {% set title='%s | %s' % (app_name, 'Admin') %}
-{% set panel='Home' %}
-{% block text %}
-<p class="event-byline">Admin</p>
-<h1 class="event-title">Administration Panel</h1>
-<p class="event-copy">Want to get started clearing the queue? Click 'help'.</p>
-{% endblock %}
-{% block panel %}
-<section class="queue">
-  <div class="setting">
-    <h2>Clear</h2>
-    <p>If everyone has left and the day has ended, use this button to clear the queue.</p>
-    <a href="{{ the_url('admin.clear') }}" class="button color">Clear Inquiries</a>
+{% block modules %}
+<section class="sp-module-banner module">
+  <p class="sp-subtitle">Estimated Wait Time</p>
+  <h1 class="sp-title">{{ ttr }}</h1>
+  <p class="sp-byline">{{ inquiries | length }} requests enqueued</p>
+  {% if current_inquiry %}
+  <a class="button" href="{{ the_url('admin.help_inquiry', id=current_inquiry.id) }}">Resume</a>
+  {% elif locations_disabled %}
+    {% if not latest_inquiry %}
+    <p class="button faded">No pending requests</p>
+    {% else %}
+    <a href="{{ the_url('admin.help_latest') }}" class="button">Start Helping</a>
+    {% endif %}
+  {% else %}
+    {% if locations | length != 0 %}
+  <div class="select">
+    <li class="select-default"><span>Help a Location <span class="arrow-down"></span></span></li>
+    <ul class="options">
+      {% for location in locations %}
+      <li><a href="{{ the_url('admin.help_latest', location=location[0]) }}">{{ location[0] }} ({{ location[1] }})</a></li>
+      {% endfor %}
+    </ul>
   </div>
+    {% else %}
+    <p class="button faded">No pending requests</p>
+    {% endif %}
+  {% endif %}
 </section>
 {% endblock %}

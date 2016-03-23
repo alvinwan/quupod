@@ -1,59 +1,10 @@
-{% extends "base_queue_old.html" %}
-{% set refresh=60000 %}
-{% set color='blue' %}
+{% extends "base_queue.html" %}
 {% set title='%s | %s' % (queue.name, 'Queue') %}
 {% set subtitle='Queue' %}
+{% set body_class=body_class or 'student-public' %}
 {% block main %}
-<section class="event">
-  {% if q_large_banner %}
-  <div class="col-md-6 event-text">
-    <p class="event-byline"><a href="{{ q_url}}">{{ q_url }}</a></p>
-    <h1 class="event-title">{{ queue.name }}</h1>
-    <p class="event-copy">{{ queue.description }}<br>Current Locations: {{ q_locations }}</p>
-  </div>
-  <div class="col-md-6 event-decor">
-    {% if current_user.is_authenticated or not q_require_login %}
-      {% if current_user.role != 'staff' %}
-    <a class="button" href="{{ the_url('queue.inquiry') }}">Request Help</a>
-      {% elif current_user.role == 'staff' %}
-    <a class="button" href="{{ the_url('admin.help') }}">Help</a>
-      {% endif %}
-    {% endif %}
-  </div>
-  {% endif %}
-  <nav class="event-nav">
-    <ul>
-      {% for link in (
-          (the_url('queue.home'), 'Unresolved'),
-          (the_url('queue.resolving'), 'Resolving'),
-          (the_url('queue.staff'), 'Staff'),
-          (the_url('queue.resolved'), 'Resolved', 'help')) %}
-      {% if not link[2] or current_user.can(link[2]) %}
-      <li><a class="{% if link[1] == panel %}s{% endif %}" href="{% if link[1] != panel %}{{ link[0] }}{% else %}#{% endif %}">{{ link[1] }}</a></li>
-      {% endif %}
-      {% endfor %}
-      <p class="right nav-text hidden-xs">Estimated wait: {{ ttr }}</p>
-    </ul>
-  </nav>
-  <i class="hidden-lg refresh dark event-refresh fa fa-refresh fa-spin"></i>
-</section>
-{% if (current_user.is_authenticated or not q_require_login) and not no_mobile_action %}
-  {% if current_user.role != 'staff' %}
-<a href="{{ the_url('queue.inquiry') }}">
-  <div class="mobile-action">
-    <span class="ma-add"><i class="fa fa-plus"></i></span>
-    <p>Request Help</p>
-  </div>
-</a>
-  {% elif current_user.role == 'staff' %}
-<a href="{{ the_url('admin.help') }}">
-  <div class="mobile-action">
-    <span class="ma-add"><i class="fa fa-medkit"></i></span>
-    <p>Start Helping</p>
-  </div>
-</a>
-  {% endif %}
-{% endif %}
-{% block panel %}
-{% endblock %}
+<main class="{{ main_class or 'sp-main' }}">
+  {% block modules %}
+  {% endblock %}
+</main>
 {% endblock %}

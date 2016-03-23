@@ -44,15 +44,8 @@ def render_admin(template, *args, **kwargs):
 @requires('staff')
 def home():
     """admin homepage"""
-    return render_admin('home.html')
-
-@admin.route('/help')
-@flask_login.login_required
-@requires('help')
-def help():
-    """help start"""
     if not g.queue.setting('location_selection').enabled:
-        return render_admin('help.html',
+        return render_admin('home.html',
             no_mobile_action=True,
             locations_disabled=True,
             latest_inquiry=Inquiry.latest(),
@@ -61,10 +54,10 @@ def help():
         Inquiry.query.filter_by(
             location=l, status='unresolved', queue_id=g.queue.id).count())
         for l in g.queue.setting('locations').value.split(',')]
-    return render_admin('help.html',
-        no_mobile_action=True,
+    return render_admin('home.html',
         locations=[t for t in locations if t[1]],
         current_inquiry=Inquiry.current())
+
 
 @admin.route('/clear/<string:location>', methods=['POST', 'GET'])
 @admin.route('/clear', methods=['POST', 'GET'])
@@ -102,7 +95,7 @@ def help_latest(location=None, category=None):
     inquiry = Inquiry.latest(location=location, category=category)
     delayed_id, delayed = request.args.get('delayed_id', None), None
     if not inquiry:
-        return redirect(url_for('admin.help', notification=NOTIF_HELP_DONE))
+        return redirect(url_for('admin.home', notification=NOTIF_HELP_DONE))
     if g.queue.setting('inquiry_types').enabled and not category and g.queue.setting('inquiry_type_selection').enabled:
         categories = [(cat, Inquiry.query.filter_by(
             category=cat,
@@ -145,7 +138,7 @@ def help_inquiry(id, location=None):
             if delayed_id:
                 delayed = Inquiry.query.get(delayed_id)
                 delayed.unlock()
-            return redirect(url_for('admin.help'))
+            return redirect(url_for('admin.home'))
         if not location:
             return redirect(url_for('admin.help_latest', delayed_id=delayed_id))
         return redirect(url_for('admin.help_latest',

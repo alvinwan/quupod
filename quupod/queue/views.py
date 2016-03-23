@@ -59,8 +59,6 @@ def home():
         inquiries=Inquiry.query.filter_by(
             status='unresolved',
             queue_id=g.queue.id).all(),
-        panel='Unresolved',
-        empty='No inquiries have been unaddressed!',
         ttr=g.queue.ttr())
 
 @queue.route('/resolving')

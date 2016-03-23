@@ -1,28 +1,13 @@
 {% extends "public.html" %}
-{% block panel %}
-<section class="queue">
-  <p class="right ttr hidden-lg hidden-md hidden-sm col-xs-12">Estimated wait: {{ ttr }}</p>
-  <h2 class="queue-title col-md-6 hidden-xs">{{ panel }} {% if inquiries | length != 0 %}({{ inquiries | length }}){% endif %}</h2>
-  <div class="col-md-12 queue-content">
-  <table>
-    <tr><th>Name</th><th class="hidden-xs">Assignment</th><th class="hidden-xs">Problem</th>{% if app_inquiry_types %}<th>Category</th>{% endif %}<th class="hidden-xs">Queue Time</th><th class="hidden-sm hidden-md hidden-lg">Wait</th>{% if current_user.can('help') %}<th>Action</th>{% endif %}<th></tr>
-  {% if inquiries | length > 0 %}
-    {% for inquiry in inquiries %}
-    <tr>
-      <td>{{ inquiry.to_local('created_at').name.split(' ')[0] }}</td>
-      <td class="hidden-xs">{{ inquiry.assignment }}</td>
-      <td class="hidden-xs">{{ inquiry.problem }}</td>
-      {% if app_inquiry_types %}<td>{{ inquiry.category }}</td>{% endif %}
-      <td class="hidden-xs">{{ inquiry.created_at.humanize() }}</td>
-      <td class="hidden-sm hidden-md hidden-lg">{{ inquiry.created_at.humanize()[:-4] }}</td>
-      {% if current_user.can('help') %}<td><a class="button xs color" href="{{ the_url('admin.help_inquiry', id=inquiry.id) }}">Help</a></td>{% endif %}
-    </tr>
-    {% endfor %}
-  {% endif %}
-  </table>
-  {% if inquiries | length == 0 %}
-    <p class="queue-note col-xs-12">{{ empty }}</p>
-  {% endif %}
-  </div>
-</section>
+{% block modules %}
+    <section class="sp-module-banner module">
+      <p class="sp-subtitle">Estimated Wait Time</p>
+      <h1 class="sp-title">{{ ttr }}</h1>
+      <p class="sp-byline">{{ inquiries | length }} requests enqueued</p>
+      {% if app_require_login and not current_user.is_authenticated %}
+      <a href="{{ the_url('queue.login') }}" class="button">Login</a>
+      {% elif (current_user.is_authenticated or not app_require_login) and not current_user.can('admin') %}
+      <a href="{{ the_url('queue.inquiry') }}" class="button">Request Help</a>
+      {% endif %}
+    </section>
 {% endblock %}
