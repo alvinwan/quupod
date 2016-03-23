@@ -17,3 +17,4 @@ Flask-Migrate==1.7.0
 flask_script
 flask-debugtoolbar==0.10.0
 flask-socketio
+eventlet
