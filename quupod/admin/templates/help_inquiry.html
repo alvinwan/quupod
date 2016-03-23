@@ -8,12 +8,12 @@
   <p class="stp-subtitle">Assigned</p>
   <h1 class="stp-title small">{{ inquiry.name }}</h1>
   <p class="stp-byline">{{ inquiry.category }} // Request wait time: {{ wait_time }}</p>
-  <form class="inline resolve-socket" method="post" action="{{ current_url() }}" data-inquiry="{{ inquiry.id }}">
+  <form class="inline" method="post" action="{{ current_url() }}">
     <input type="hidden" name="load_next" value="y">
     <input type="hidden" name="status" value="resolved">
     <input type="submit" class="button" value="resolve and next">
   </form>
-  <form class="inline resolve-socket" method="post" action="{{ current_url() }}" data-inquiry="{{ inquiry.id }}">
+  <form class="inline" method="post" action="{{ current_url() }}">
     <input type="hidden" name="load_next" value="n">
     <input type="hidden" name="status" value="resolved">
     <input type="submit" class="button" value="resolve">

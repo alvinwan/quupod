@@ -3,7 +3,7 @@
 {% block modules %}
 <section class="sp-module-banner module">
   <p class="sp-subtitle">Estimated Wait Time</p>
-  <h1 class="sp-title">{{ ttr }}</h1>
+  <h1 class="sp-title" id="ttr">{{ ttr }}</h1>
   <p class="sp-byline">{{ num_inquiries }} requests enqueued</p>
   {% if current_inquiry %}
   <a class="button" href="{{ the_url('admin.help_inquiry', id=current_inquiry.id) }}">Resume</a>

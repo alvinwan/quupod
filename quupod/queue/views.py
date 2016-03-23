@@ -7,6 +7,7 @@ from quupod.views import anonymous_required, render, current_user, url_for, curr
 from quupod.forms import choicify
 from quupod.defaults import default_queue_settings
 from quupod.notifications import *
+from quupod.utils import emitQueuePositions
 from sqlalchemy import desc
 import flask_login
 
@@ -79,6 +80,7 @@ def resolved():
 def requeue(inquiry_id):
     delayed = Inquiry.query.get(inquiry_id)
     delayed.unlock()
+    emitQueuePositions(delayed)
     return redirect(url_for('queue.resolved'))
 
 @queue.route('/promote/<string:role_name>', methods=['POST', 'GET'])
@@ -233,7 +235,8 @@ def waiting():
             Inquiry.assignment == current_inquiry.assignment,
             Inquiry.problem == current_inquiry.problem,
             Inquiry.owner_id != current_user().id
-        ).all())
+        ).all(),
+        inquiry=current_inquiry)
 
 
 ################

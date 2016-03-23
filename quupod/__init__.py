@@ -5,7 +5,7 @@ import flask_login
 from flask_login import AnonymousUserMixin
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
-from flask_socketio import SocketIO, emit, disconnect
+from flask_socketio import SocketIO
 import eventlet
 import os
 from .config import config, secret_key, debug, whitelist, googleclientID, port,\
@@ -22,9 +22,8 @@ app = Flask(__name__)
 
 # Async socket initialization
 eventlet.monkey_patch()
-socketio = SocketIO(app, async_mode=async_mode)
+socketio = SocketIO(app, async_mode='eventlet')
 thread = None
-from . import sockets
 
 # Configuration for mySQL database
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

@@ -11,7 +11,8 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
     <!-- custom code -->
     <link rel="stylesheet" href="{{ domain }}{{ the_url('static', filename='style.css') }}">
-    <script type="text/javascript" charset="utf-8" src="{{ domain }}{{ the_url('static', filename='script.js') }}"></script>
+    {% block head %}
+    {% endblock %}
   </head>
   {% block body %}
   {% endblock %}
