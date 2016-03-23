@@ -165,6 +165,16 @@ header {
       header a:hover:not(.small-button) {
         border-bottom:1px dotted #ccc;
       }
+  .logout {
+    position:absolute;
+    left:0.25em;
+    text-transform:lowercase;
+    letter-spacing:0;
+    margin-top:0.5em;
+  }
+    header a.logout:hover {
+      border-bottom:none;
+    }
   .header-title {
     float:left;
     text-transform:uppercase;
@@ -186,6 +196,7 @@ header {
     padding:0.75em;
     display:inline-block;
     text-transform:uppercase;
+    position:relative;
   }
   .header-avatar {
     border-radius:50%;

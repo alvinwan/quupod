@@ -43,7 +43,7 @@ def render_queue(template, *args, **kwargs):
             current_user().set_role(entries[current_user().email])
     for k in default_queue_settings:
         setting = g.queue.setting(k)
-        kwargs.update({'q_%s' % k: setting.value or setting.enabled})
+        kwargs.update({'q_%s' % k: (setting.value or setting.enabled) if setting.enabled else False })
     kwargs.setdefault('queue', g.queue)
     return render(template, *args, **kwargs)
 
@@ -153,7 +153,8 @@ def promote(role_name=None):
             url=url_for('queue.home'))
     return render_queue('form.html',
         form=form,
-        submit='Promote')
+        submit='Promote',
+        back=url_for('queue.promote'))
 
 ########
 # FLOW #

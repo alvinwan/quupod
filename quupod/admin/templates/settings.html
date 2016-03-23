@@ -10,7 +10,7 @@
     <p>From basic to advanced configurations.</p>
   </div>
   {% for setting in settings %}
-  <form class="sf-form" action="{{ current_url() }}">
+  <form class="sf-form" action="{{ current_url() }}" method="post">
     <div class="sf-field">
       <label class="sf-label">{{ setting.label }}</label>
       <p class="sf-description">{{ setting.description | safe }}{% if setting.toggable %}<br>Enabled: <b>{{ setting.enabled }}</b>{% endif %}</p>

@@ -3,14 +3,19 @@
 {% block main %}
 <main class="sf-main">
   <section class="sf-module-banner module col-md-6">
-    <p class="sf-back"><a href="{{ the_url('queue.home') }}"><span class="sf-back-arr">&larr;</span> back</a></p>
+    <p class="sf-back"><a href="{{ back or the_url('queue.home') }}"><span class="sf-back-arr">&larr;</span> back</a></p>
+    {% if form_title %}
     <div class="sf-section-label">
-      <h2>{{ title }}</h2>
+      <h2>{{ form_title }}</h2>
+      {% if form_description %}
+      <p>{{ form_description }}
+      {% endif %}
     </div>
+    {% endif %}
     <form action="{{ current_url() }}" method="POST">
     {% for field in form %}
       <div class="sf-field">
-        <label class="sf-label">{{ field.label }}</label>
+        {{ field.label(class_='sf-label') }}
       {% if field.description %}
         <p class="sf-description">{{ field.description | safe }}</p>
       {% endif %}
