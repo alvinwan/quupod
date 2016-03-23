@@ -1,5 +1,5 @@
 $(document).ready(function(){
-  namespace = '/test'; // change to an empty string to use the global namespace
+  namespace = '/main'; // change to an empty string to use the global namespace
 
   // Socket.io documentation recommends sending an explicit package upon
   // connection. This is especially important when using the global namespace
@@ -12,7 +12,9 @@ $(document).ready(function(){
 
   // Update queue positions for all users
   socket.on('update position', function(msg) {
-
+    for (i=0; i<len(msg.positions); i++) {
+      console.log(msg.positions[i]);
+    }
   });
 
   // Update student page with ttr, number of requests
