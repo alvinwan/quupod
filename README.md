@@ -1,5 +1,5 @@
 # [Quupod](http://quupod.com)
-In-session questions queue management, with a one-click Google sign in; now being used by ~3100 students across four courses - [CS61A](http://oh.cs61a.org), [CS61B](http://cs61b.quupod.com), [CS70](http://cs70.quupod.com), [DS8](http://oh.data8.org) - at UC Berkeley.
+In-session questions queue management, with a one-click Google sign in; now being used by ~3100 students across four courses - [CS61A](http://oh.cs61a.org), [CS61B](http://oh.cs61b.ug), [CS70](http://oh.eecs70.org), [DS8](http://oh.data8.org) - at UC Berkeley.
 
 created by [Alvin Wan](http://alvinwan.com), Spring 2016
 
