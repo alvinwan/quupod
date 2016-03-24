@@ -1,7 +1,7 @@
 from flask import Blueprint, request, g, redirect,\
     abort, session
 from .forms import *
-from quupod import app, login_manager, whitelist
+from quupod import app, login_manager, whitelist, AnonymousUserMixin
 from quupod.models import User, Inquiry, QueueRole, Participant, Resolution
 from quupod.views import anonymous_required, render, current_user, url_for, current_user, requires
 from quupod.forms import choicify
@@ -204,28 +204,43 @@ def inquiry():
             inquiry.owner_id = current_user().id
         inquiry.save()
         emitQueueInfo(g.queue)
-        return redirect(url_for('queue.waiting'))
+        return redirect(url_for('queue.waiting', inquiry_id=inquiry.id))
     return render_queue('form.html', form=form, title='Request Help',
         submit='Request Help')
 
+@queue.route('/cancel/<int:inquiry_id>')
 @queue.route('/cancel')
-def cancel():
+def cancel(inquiry_id=None):
     """Cancel placed request"""
-    inquiry = Inquiry.query.filter_by(
+    inquiry = Inquiry.query.get(inquiry_id) if inquiry_id else Inquiry.query.filter_by(
         owner_id=current_user().id,
         status='unresolved',
-        queue_id=g.queue.id).first().update(status='closed').save()
+        queue_id=g.queue.id).first()
+    anon = not current_user().is_authenticated and not inquiry.owner_id
+    non_anon = current_user().is_authenticated and inquiry.owner_id == current_user().id
+    if anon or non_anon:
+        inquiry.update(status='closed').save()
+    else:
+        return render_queue('error.html',
+            code='404',
+            message='You cannot cancel another user\'s request. This incident has been logged.',
+            url=url_for('queue.home'),
+            action='Back Home')
     emitQueuePositions(inquiry)
     emitQueueInfo(inquiry.queue)
     return redirect(url_for('queue.home'))
 
+@queue.route('/waiting/<int:inquiry_id>')
 @queue.route('/waiting')
-def waiting():
+def waiting(inquiry_id=None):
     """Screen shown after user has placed request and is waiting"""
-    current_inquiry = Inquiry.query.filter_by(
-        owner_id=current_user().id,
-        status='unresolved',
-        queue_id=g.queue.id).first()
+    if inquiry_id:
+        current_inquiry = Inquiry.query.get(inquiry_id)
+    else:
+        current_inquiry = Inquiry.query.filter_by(
+            owner_id=current_user().id,
+            status='unresolved',
+            queue_id=g.queue.id).first()
     return render_queue('waiting.html',
         position=Inquiry.query.filter(
             Inquiry.status == 'unresolved',
@@ -238,7 +253,7 @@ def waiting():
             Inquiry.queue_id == g.queue.id,
             Inquiry.assignment == current_inquiry.assignment,
             Inquiry.problem == current_inquiry.problem,
-            Inquiry.owner_id != current_user().id
+            Inquiry.id != current_inquiry.id
         ).all(),
         inquiry=current_inquiry)
 

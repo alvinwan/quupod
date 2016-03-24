@@ -3,8 +3,8 @@
 <section class="sp-module-banner module">
   <p class="sp-subtitle">Queue Position</p>
   <h1 class="sp-title" id="qpos" data-request="{{ inquiry.id }}">{{ position }}</h1>
-  <p class="sp-byline">Details: {{ details }}</p>
-  <a href="{{ the_url('queue.cancel') }}" class="button">Cancel</a>
+  <p class="sp-byline">{{ details }}</p>
+  <a href="{{ the_url('queue.cancel', inquiry_id=inquiry.id) }}" class="button">Cancel</a>
 </section>
 <section class="stp-module-list module">
   <h2 class="stp-heading2">Potential Group</h2>
@@ -15,7 +15,7 @@
       <li class="stp-item faded">No similar requests found.</li>
       {% else %}
         {% for inq in group %}
-      <li class="stp-item">{{ inq.owner.name }}</li>
+      <li class="stp-item">{{ inq.name }}</li>
         {% endfor %}
       {% endif %}
     </ul>
