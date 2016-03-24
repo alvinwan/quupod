@@ -2,7 +2,7 @@
 {% block head %}
     <script>
     $(document).ready(function(){
-      namespace = '/q{{ g.queue.id }}';
+      namespace = {% if g.queue %}'/q{{ g.queue.id }}'{% else %}'/main'{% endif %};
 
       // Socket.io documentation recommends sending an explicit package upon
       // connection. This is especially important when using the global namespace
