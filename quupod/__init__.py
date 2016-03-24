@@ -5,6 +5,8 @@ import flask_login
 from flask_login import AnonymousUserMixin
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
+from flask_socketio import SocketIO
+import eventlet
 import os
 from .config import config, secret_key, debug, whitelist, googleclientID, port,\
     domain, tz
@@ -17,6 +19,11 @@ print(' * Google Client ID: %s' % googleclientID if googleclientID else
 
 # Flask app
 app = Flask(__name__)
+
+# Async socket initialization
+eventlet.monkey_patch()
+socketio = SocketIO(app, async_mode='eventlet')
+thread = None
 
 # Configuration for mySQL database
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

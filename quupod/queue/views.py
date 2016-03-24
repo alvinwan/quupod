@@ -7,6 +7,7 @@ from quupod.views import anonymous_required, render, current_user, url_for, curr
 from quupod.forms import choicify
 from quupod.defaults import default_queue_settings
 from quupod.notifications import *
+from quupod.utils import emitQueuePositions, emitQueueInfo
 from sqlalchemy import desc
 import flask_login
 
@@ -79,6 +80,8 @@ def resolved():
 def requeue(inquiry_id):
     delayed = Inquiry.query.get(inquiry_id)
     delayed.unlock()
+    emitQueuePositions(delayed)
+    emitQueueInfo(delayed.queue)
     return redirect(url_for('queue.resolved'))
 
 @queue.route('/promote/<string:role_name>', methods=['POST', 'GET'])
@@ -200,6 +203,7 @@ def inquiry():
         if current_user().is_authenticated:
             inquiry.owner_id = current_user().id
         inquiry.save()
+        emitQueueInfo(g.queue)
         return redirect(url_for('queue.waiting'))
     return render_queue('form.html', form=form, title='Request Help',
         submit='Request Help')
@@ -211,6 +215,8 @@ def cancel():
         owner_id=current_user().id,
         status='unresolved',
         queue_id=g.queue.id).first().update(status='closed').save()
+    emitQueuePositions(inquiry)
+    emitQueueInfo(inquiry.queue)
     return redirect(url_for('queue.home'))
 
 @queue.route('/waiting')
@@ -233,7 +239,8 @@ def waiting():
             Inquiry.assignment == current_inquiry.assignment,
             Inquiry.problem == current_inquiry.problem,
             Inquiry.owner_id != current_user().id
-        ).all())
+        ).all(),
+        inquiry=current_inquiry)
 
 
 ################

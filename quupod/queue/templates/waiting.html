@@ -2,7 +2,7 @@
 {% block modules %}
 <section class="sp-module-banner module">
   <p class="sp-subtitle">Queue Position</p>
-  <h1 class="sp-title">{{ position }}</h1>
+  <h1 class="sp-title" id="qpos" data-request="{{ inquiry.id }}">{{ position }}</h1>
   <p class="sp-byline">Details: {{ details }}</p>
   <a href="{{ the_url('queue.cancel') }}" class="button">Cancel</a>
 </section>

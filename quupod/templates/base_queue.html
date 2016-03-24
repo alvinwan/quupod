@@ -1,4 +1,52 @@
 {% extends "base.html" %}
+{% block head %}
+    <script>
+    $(document).ready(function(){
+      namespace = '/q{{ g.queue.id }}';
+
+      // Socket.io documentation recommends sending an explicit package upon
+      // connection. This is especially important when using the global namespace
+      var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+
+      /*
+       * EVENT HANDLERS
+       * These receive data from server and update pages client-side.
+       */
+
+      // Update queue positions for all users
+      socket.on('update position', function(msg) {
+        ele = $('#qpos');
+        if (ele) {
+          positions = JSON.parse(msg.positions);
+          newPosition = null;
+          for (i=0; i<positions.length; i++) {
+            if (positions[i][1] == ele.attr('data-request')) {
+              newPosition = positions[i][0];
+              break;
+            }
+          }
+          if (newPosition != null) ele.html(newPosition);
+        }
+      });
+
+      // Update student page with ttr, number of requests
+      socket.on('update student page', function(msg) {
+        $('#ttr').html(msg.ttr);
+        $('#nor').html(msg.nor);
+      });
+
+      // Update staff page with ttr, number of requests, help needed
+      socket.on('update staff page', function(msg) {
+
+      });
+
+      // Event handler for new connections
+      socket.on('connect', function() {
+        socket.emit('ping', {'data': 'pong'});
+      });
+    });
+    </script>
+{% endblock %}
 {% block body %}
   <body class="{{ body_class }}">
     {% include "header.html" %}

@@ -427,6 +427,10 @@ class Inquiry(Base):
             **kwargs).order_by(asc(Inquiry.created_at)).first()
 
     @property
+    def queue(self):
+        return Queue.query.get(self.queue_id)
+
+    @property
     def resolution(self):
         if self.status != 'resolved':
             return Resolution.query.filter_by(

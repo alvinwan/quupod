@@ -1,10 +1,10 @@
 from flask import Blueprint, request, redirect, g, abort
-from quupod import app, db
+from quupod import app, db, socketio
 from quupod.views import requires, render, url_for, current_user
 from quupod.models import User, Inquiry, Queue, QueueSetting, Participant
 from quupod.notifications import *
 from quupod.defaults import default_queue_settings
-from quupod.utils import strfdelta
+from quupod.utils import strfdelta, emitQueuePositions, emitQueueInfo
 import flask_login
 import arrow
 
@@ -134,6 +134,11 @@ def help_inquiry(id, location=None):
     if request.method == 'POST':
         delayed_id=None
         inquiry.resolution.close()
+
+        # emit new queue positions
+        emitQueuePositions(inquiry)
+        emitQueueInfo(inquiry.queue)
+
         if request.form['status'] == 'unresolved':
             delayed_id = inquiry.id
         else:
@@ -194,3 +199,14 @@ def settings():
         return redirect(url_for('admin.settings',
             notification=notification))
     return render_admin('settings.html', settings=settings)
+
+
+###########
+# SOCKETS #
+###########
+
+@socketio.on('ping', namespace='/main')
+def ping(msg):
+    """Receive new client connection"""
+    g.count = getattr(g, 'count', 0)+1
+    print(' * %d pings' % g.count)
