@@ -59,9 +59,9 @@ def home():
     if current_user().can('admin'):
         return redirect(url_for('admin.home'))
     return render_queue('unresolved.html',
-        inquiries=Inquiry.query.filter_by(
+        num_inquiries=Inquiry.query.filter_by(
             status='unresolved',
-            queue_id=g.queue.id).all(),
+            queue_id=g.queue.id).count(),
         ttr=g.queue.ttr())
 
 @queue.route('/resolved')
