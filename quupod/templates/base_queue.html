@@ -45,6 +45,10 @@
         socket.emit('ping', {'data': 'pong'});
       });
     });
+
+    $('.select').on('click', function() {
+      $(this).toggleClass('s');
+    })
     </script>
 {% endblock %}
 {% block body %}

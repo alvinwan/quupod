@@ -11,13 +11,6 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
     <!-- custom code -->
     <link rel="stylesheet" href="{{ domain }}{{ the_url('static', filename='style.css') }}">
-    <script>
-$(document).ready(function() {
-  $('.select').on('click', function() {
-    $(this).toggleClass('s');
-  })
-});
-    </script>
     {% block head %}
     {% endblock %}
   </head>
