@@ -3,7 +3,7 @@
 <section class="sp-module-banner module">
   <table>
     <tbody>
-    <tr><th>#</th><th>Name</th><th class="hidden-xs hidden-sm">Closed At</th>{% if q_inquiry_types %}<th class="hidden-xs">Category</th>{% endif %}<th class="hidden-xs">Staff</th><th class="hidden-xs">Assignment</th><th class="hidden-sm hidden-md hidden-lg">Assign.</td><th class="hidden-xs">Problem</td><th></th></tr>
+    <tr><th>#</th><th>Name</th><th class="hidden-xs hidden-sm">Closed At</th>{% if q_inquiry_types %}<th class="hidden-xs">Category</th>{% endif %}<th class="hidden-xs">Staff</th><th class="hidden-xs">Assignment</th><th class="hidden-sm hidden-md hidden-lg">Assign.</td><th class="hidden-xs hidden-sm">Problem</td><th></th></tr>
   {% set i = 0 %}
   {% if inquiries | length > 0 %}
     {% for inquiry in inquiries %}
@@ -17,7 +17,7 @@
       {% endif %}
       <td class="hidden-xs">{% if inquiry.resolution %}{{ inquiry.resolution.staff.name }}{% else %}n/a{% endif %}</td>
       <td>{{ inquiry.assignment }}</td>
-      <td class="hidden-xs">{{ inquiry.problem }}</td>
+      <td class="hidden-xs hidden-sm">{{ inquiry.problem }}</td>
       <td><a href="{{ the_url('queue.requeue', inquiry_id=inquiry.id) }}" class="small-button">Requeue</a></td>
     </tr>
     {% endfor %}

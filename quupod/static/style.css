@@ -13,7 +13,7 @@ html,body {
 a:hover {
   text-decoration:none;
 }
-.sf-input-text,.sf-back-arr,.button {
+.sf-input-text,.sf-back-arr,.button,.arrow-down {
   -webkit-transition: 0.2s ease;
   -moz-transition:    0.2s ease;
   -o-transition:      0.2s ease;
@@ -35,7 +35,7 @@ a:hover {
     border:2px solid #ccc;
     color:#ccc;
   }
-  .button:not(.faded):hover,div.select:hover {
+  .button:not(.faded):hover,div.select:hover,div.select.s {
     color:#FFF;
     background-color:#000;
     text-decoration:none;
@@ -59,14 +59,20 @@ a:hover {
     right:3em;
     top:2.25em;
   }
-    .select:hover .arrow-down {
+    .select:hover .arrow-down,.select.s .arrow-down {
       border-bottom:1px solid #fff;
       border-right:1px solid #fff;
+    }
+    .select.s .arrow-down {
+      -webkit-transform:  rotate(225deg);
+      -moz-transform:     rotate(225deg);
+      -o-transform:       rotate(225deg);
+      transform:          rotate(225deg);
     }
   div.select li {
     list-style:none;
   }
-    .select:hover ul {
+    .select.s ul {
       height:auto;
     }
   .select ul {
@@ -383,9 +389,11 @@ h2 {
     text-align:left;
   }
   .sf-label {
-    text-transform:uppercase;
-    font-family:'Raleway';
-    color:#777;
+    font-family: 'Raleway';
+    font-weight:300;
+    color: #777;
+    font-size: 1.75em;
+    padding:0.25em 0;
   }
   .sf-description {
     margin-bottom:1em;
@@ -497,6 +505,7 @@ textarea {
 /* -- begin tables -- */
 th, td {
   padding:1em;
+  font-size:1.15em;
 }
   th {
     color:#ccc;
