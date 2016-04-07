@@ -361,9 +361,6 @@ section {
 .module:first-child {
   padding-top:10em;
 }
-.module {
-  padding:5em 3em;
-}
 *[class*="-main"] {
   padding-bottom:5em;
 }
@@ -662,6 +659,9 @@ th, td {
   header li + li {
     margin-right:2em;
     margin-left:0;
+  }
+  .module {
+    padding:5em 3em;
   }
 }
 /* -- end responsive -- */

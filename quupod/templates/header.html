@@ -39,7 +39,7 @@
         <li><a href="{{ the_url('admin.resolved') }}">Resolved</a></li>
         <li><a href="{{ the_url('admin.unresolved') }}">Unresolved</a></li>
         {% else %}
-          {% if g.queue.setting(name='self_promotion').enabled %}
+          {% if g.queue and g.queue.setting(name='self_promotion').enabled %}
         <li><a href="{{ the_url('queue.promote') }}">Staff?</a>
           {% endif %}
         {% endif %}

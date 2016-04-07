@@ -328,6 +328,8 @@ class User(Base, flask_login.UserMixin):
     @property
     def role(self):
         """Get user role for given queue"""
+        if not g.queue:
+            return
         return QueueRole.query.join(Participant).filter_by(
             queue_id=g.queue.id,
             user_id=self.id,
