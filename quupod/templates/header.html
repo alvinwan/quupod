@@ -6,7 +6,15 @@
       {% if current_user.is_authenticated %}
       <li><span class="header-text"><span>Hi, {{ current_user.name }}<a class="logout" href="{{ the_url('queue.logout') }}">Logout</a></span><span class="header-avatar"><span style="background: url('{{ current_user.image_url }}') center; background-size:cover;"></span></span></li>
         {% if current_user.can('admin', 'help') %}
-      <li><a href="{{ the_url('queue.resolved') }}">Resolved</a></li>
+      <!-- <li>
+        <span class="bars">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </span>
+      </li> -->
+      <li><a href="{{ the_url('admin.resolved') }}">Resolved</a></li>
+      <li><a href="{{ the_url('admin.unresolved') }}">Unresolved</a></li>
           {% if current_user.can('admin') %}
       <li><a href="{{ the_url('admin.settings') }}">Settings</a></li>
           {% endif %}

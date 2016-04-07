@@ -18,7 +18,7 @@
       <td class="hidden-xs">{% if inquiry.resolution %}{{ inquiry.resolution.staff.name }}{% else %}n/a{% endif %}</td>
       <td>{{ inquiry.assignment }}</td>
       <td class="hidden-xs hidden-sm">{{ inquiry.problem }}</td>
-      <td><a href="{{ the_url('queue.requeue', inquiry_id=inquiry.id) }}" class="small-button">Requeue</a></td>
+      <td><a href="{{ the_url('admin.requeue', inquiry_id=inquiry.id) }}" class="small-button">Requeue</a></td>
     </tr>
     {% endfor %}
   {% endif %}

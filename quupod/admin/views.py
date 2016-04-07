@@ -1,10 +1,12 @@
 from flask import Blueprint, request, redirect, g, abort
 from quupod import app, db, socketio
 from quupod.views import requires, render, url_for, current_user
-from quupod.models import User, Inquiry, Queue, QueueSetting, Participant
+from quupod.models import User, Inquiry, Queue, QueueSetting, Participant,\
+    Resolution
 from quupod.notifications import *
 from quupod.defaults import default_queue_settings
 from quupod.utils import strfdelta, emitQueuePositions, emitQueueInfo
+from sqlalchemy import desc
 import flask_login
 import arrow
 
@@ -62,6 +64,36 @@ def home():
         current_inquiry=Inquiry.current(),
         ttr=g.queue.ttr())
 
+##########
+# QUEUES #
+##########
+
+@admin.route('/unresolved')
+@requires('help')
+def unresolved():
+    """List of all 'unresolved' inquiries"""
+    return render_admin('unresolved.html',
+        inquiries=Inquiry.query.join(Resolution).filter(
+            Inquiry.status=='unresolved',
+            Inquiry.queue_id==g.queue.id).order_by(desc(Resolution.created_at)).limit(20).all())
+
+@admin.route('/resolved')
+@requires('help')
+def resolved():
+    """List of all 'resolved' inquiries"""
+    return render_admin('resolved.html',
+        inquiries=Inquiry.query.join(Resolution).filter(
+            Inquiry.status=='resolved',
+            Inquiry.queue_id==g.queue.id).order_by(desc(Resolution.resolved_at)).limit(20).all())
+
+@admin.route('/requeue/<int:inquiry_id>', methods=['POST', 'GET'])
+@requires('help')
+def requeue(inquiry_id):
+    delayed = Inquiry.query.get(inquiry_id)
+    delayed.unlock()
+    emitQueuePositions(delayed)
+    emitQueueInfo(delayed.queue)
+    return redirect(url_for('admin.resolved'))
 
 @admin.route('/clear/<string:location>', methods=['POST', 'GET'])
 @admin.route('/clear', methods=['POST', 'GET'])
@@ -88,6 +120,10 @@ def clear(location=None):
         <form method="POST"><input type="submit" value="clear"></form>',
         action='admin home',
         url=url_for('admin.home'))
+
+########
+# HELP #
+########
 
 @admin.route('/help/<string:location>/<string:category>/latest', methods=['POST', 'GET'])
 @admin.route('/help/<string:location>/latest')

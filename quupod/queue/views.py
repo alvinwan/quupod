@@ -58,31 +58,11 @@ def home():
     """list all unresolved inquiries for the homepage"""
     if current_user().can('help'):
         return redirect(url_for('admin.home'))
-    return render_queue('unresolved.html',
+    return render_queue('landing.html',
         num_inquiries=Inquiry.query.filter_by(
             status='unresolved',
             queue_id=g.queue.id).count(),
         ttr=g.queue.ttr())
-
-@queue.route('/resolved')
-def resolved():
-    """List of all 'resoled' inquiries for the homepage"""
-    return render_queue('resolved.html',
-        inquiries=Inquiry.query.join(Resolution).filter(
-            Inquiry.status=='resolved',
-            Inquiry.queue_id==g.queue.id).order_by(desc(Resolution.resolved_at)).limit(20).all(),
-        panel='Resolved',
-        empty='No inquiries resolved.',
-        ttr=g.queue.ttr())
-
-@queue.route('/requeue/<int:inquiry_id>', methods=['POST', 'GET'])
-@requires('help')
-def requeue(inquiry_id):
-    delayed = Inquiry.query.get(inquiry_id)
-    delayed.unlock()
-    emitQueuePositions(delayed)
-    emitQueueInfo(delayed.queue)
-    return redirect(url_for('queue.resolved'))
 
 @queue.route('/promote/<string:role_name>', methods=['POST', 'GET'])
 @queue.route('/promote')
