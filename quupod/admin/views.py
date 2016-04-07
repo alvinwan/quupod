@@ -75,9 +75,9 @@ def home():
 def unresolved():
     """List of all 'unresolved' inquiries"""
     return render_admin('unresolved.html',
-        inquiries=Inquiry.query.join(Resolution).filter(
-            Inquiry.status=='unresolved',
-            Inquiry.queue_id==g.queue.id).order_by(desc(Resolution.created_at)).limit(20).all())
+        inquiries=Inquiry.query.filter_by(status='unresolved',
+            queue_id=g.queue.id
+            ).order_by(desc(Inquiry.created_at)).limit(20).all())
 
 @admin.route('/resolved')
 @requires('help')
