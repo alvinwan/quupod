@@ -13,11 +13,18 @@ html,body {
 a:hover {
   text-decoration:none;
 }
-.sf-input-text,.sf-back-arr,.button,.arrow-down {
+.sf-input-text,.sf-back-arr,.button,.arrow-down,.drawer {
   -webkit-transition: 0.2s ease;
   -moz-transition:    0.2s ease;
   -o-transition:      0.2s ease;
   transition:         0.2s ease;
+}
+
+.drawer, body, header {
+  -webkit-transition: 0.3s ease;
+  -moz-transition:    0.3s ease;
+  -o-transition:      0.3s ease;
+  transition:         0.3s ease;
 }
 
 .button,div.select,.options a {
@@ -149,6 +156,9 @@ header {
   text-align:center;
   z-index:100;
 }
+  .drawer-push header {
+    left:-20em;
+  }
   header nav,header ul {
     float:none;
     display:inline-block;
@@ -171,6 +181,54 @@ header {
       header a:hover:not(.small-button) {
         border-bottom:1px dotted #ccc;
       }
+  .bars {
+    width:1.25em;
+    display:inline-block;
+    padding:1em;
+    cursor:pointer;
+  }
+    .bar {
+      width:1.25em;
+      height:0.16em;
+      background-color:#999;
+      display:inline-block;
+    }
+    .bar + .bar {
+      margin-top:0.25em;
+    }
+    .bars:hover .bar {
+      background-color:#000;
+    }
+  .dclose {
+    position:absolute;
+    top:0;
+    right:0;
+    padding:0.5em;
+    margin:2em;
+    border-radius:50%;
+    cursor:pointer;
+  }
+    .dclose .closex {
+      -webkit-transform:  rotate(45deg);
+      -moz-transform:     rotate(45deg);
+      -o-transform:       rotate(45deg);
+      transform:          rotate(45deg);
+      display:inline-block;
+      padding-bottom:0.5em;
+    }
+    .dclose .bar {
+      background-color:#666;
+      height:0.125em;
+    }
+    .dclose .bar.cross {
+      height:1.25em;
+      width:0.125em;
+      margin-left:-1em;
+      margin-bottom: -0.55em;
+    }
+    .dclose:hover .bar {
+      background-color:#FFF;
+    }
   .logout {
     position:absolute;
     left:0.25em;
@@ -216,6 +274,51 @@ header {
       width:100%;
       height:100%;
       display:inline-block;
+    }
+  .drawer {
+    width:20.1em;
+    position:fixed;
+    top:0;
+    right:-20em;
+    height:100%;
+    background-color:#222;
+    padding-top:5em;
+  }
+    .drawer-trigger {
+      cursor:pointer;
+    }
+    .drawer.show {
+      right:0;
+    }
+    .drawer nav, .drawer ul, .drawer li, .drawer a {
+      width:100%;
+    }
+    .drawer li + li {
+      margin:0;
+    }
+    .drawer .primary a {
+      font-weight:500;
+    }
+    .drawer .secondary a {
+      text-transform:none;
+      font-weight:400;
+    }
+    .drawer ul {
+      margin:0.75em 0;
+    }
+    .drawer li a {
+      text-align:left;
+      padding:0.3em 3em;
+      letter-spacing:0;
+      font-size:1.1em;
+      color:#888;
+    }
+    .drawer li a:hover {
+      border-bottom:none;
+      color:#FFF;
+    }
+    body.drawer-push {
+      margin-left:-20em;
     }
 footer {
   box-shadow:inset 0 5px 5px -5px rgba(0,0,0,.3);

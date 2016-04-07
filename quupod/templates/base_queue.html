@@ -44,6 +44,20 @@
       socket.on('connect', function() {
         socket.emit('ping', {'data': 'pong'});
       });
+
+      /*
+       * DRAWER
+       * Navigation bar to the side
+       */
+      $('.drawer-trigger').on('click', function() {
+        $('.drawer').toggleClass('show');
+        $('body').toggleClass('drawer-push');
+      });
+
+      $('.drawer .dclose').on('click', function() {
+        $('.drawer').removeClass('show');
+        $('body').removeClass('drawer-push');
+      })
     });
     </script>
 {% endblock %}
