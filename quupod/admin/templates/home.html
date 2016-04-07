@@ -4,7 +4,7 @@
 <section class="sp-module-banner module">
   <p class="sp-subtitle">Estimated Wait Time</p>
   <h1 class="sp-title" id="ttr">{{ ttr }}</h1>
-  <p class="sp-byline"><span id="nor">{{ num_inquiries }}</span> requests enqueued // Earliest enqueued request: <span id="eer">{{ earliest_request.created_at.format('hh:mm a') }} ({{ earliest_request.created_at.humanize() }})</span></p>
+  <p class="sp-byline"><span id="nor">{{ num_inquiries }}</span> requests enqueued{% if earliest_request %} // Earliest enqueued request: <span id="eer">{{ earliest_request.created_at.format('hh:mm a') }} ({{ earliest_request.created_at.humanize() }}){% endif %}</span></p>
   {% if current_inquiry %}
   <a class="button" href="{{ the_url('admin.help_inquiry', id=current_inquiry.id) }}">Resume</a>
   {% elif locations_disabled %}

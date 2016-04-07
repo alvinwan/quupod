@@ -117,11 +117,15 @@ def clear(location=None):
             message='All Cleared',
             action='Admin Home',
             url=url_for('admin.home'))
+    num_unresolved = Inquiry.query.filter_by(status='unresolved', queue_id=g.queue.id).count()
+    num_resolving = Inquiry.query.filter_by(status='resolving', queue_id=g.queue.id).count()
     return render_admin('admin_confirm.html',
-        message='Are you sure? This will clear all resolving and unresolved. \
-        <form method="POST"><input type="submit" value="clear"></form>',
-        action='admin home',
-        url=url_for('admin.home'))
+        title='Are you sure?',
+        message='This will clear all requests "resolving" (%d) and \
+        "unresolved" (%d). <form method="POST" style="text-align:center;"> \
+        <input type="submit" value="clear" class="button"></form>' % (
+            num_unresolved, num_resolving
+        ))
 
 ########
 # HELP #

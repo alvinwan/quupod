@@ -47,6 +47,7 @@
       <ul class="secondary">
         {% if current_user.can('admin') %}
         <li><a href="{{ the_url('admin.settings') }}">Settings</a></li>
+        <li><a href="{{ the_url('admin.clear') }}">Clear all requests</a></li>
         {% endif %}
         {% if current_user.is_authenticated %}
         <li><a href="{{ the_url('queue.logout') }}">Logout</a></li>
