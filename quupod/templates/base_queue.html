@@ -6,7 +6,7 @@
 
       // Socket.io documentation recommends sending an explicit package upon
       // connection. This is especially important when using the global namespace
-      var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+      // var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
 
       /*
        * EVENT HANDLERS
@@ -14,9 +14,9 @@
        */
 
       // Event handler for new connections
-      socket.on('connect', function() {
-        socket.emit('ping', {'data': 'pong'});
-      });
+      // socket.on('connect', function() {
+      //   socket.emit('ping', {'data': 'pong'});
+      // });
 
       // Update queue positions for all users
       // socket.on('update position', function(msg) {
@@ -49,15 +49,15 @@
        * DRAWER
        * Navigation bar to the side
        */
-      // $('.drawer-trigger').on('click', function() {
-      //   $('.drawer').toggleClass('show');
-      //   $('body').toggleClass('drawer-push');
-      // });
-      //
-      // $('.drawer .dclose').on('click', function() {
-      //   $('.drawer').removeClass('show');
-      //   $('body').removeClass('drawer-push');
-      // })
+      $('.drawer-trigger').on('click', function() {
+        $('.drawer').toggleClass('show');
+        $('body').toggleClass('drawer-push');
+      });
+
+      $('.drawer .dclose').on('click', function() {
+        $('.drawer').removeClass('show');
+        $('body').removeClass('drawer-push');
+      });
     });
     </script>
 {% endblock %}
