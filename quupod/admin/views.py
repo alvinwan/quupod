@@ -132,7 +132,10 @@ def clear(location=None):
 @requires('help')
 def help_latest(location=None, category=None):
     """automatically selects next inquiry"""
-    inquiry = Inquiry.latest(location=location, category=category)
+    if not category or category == 'all':
+        inquiry = Inquiry.latest(location=location)
+    else:
+        inquiry = Inquiry.latest(location=location, category=category)
     delayed_id, delayed = request.args.get('delayed_id', None), None
     if not inquiry:
         return redirect(url_for('admin.home', notification=NOTIF_HELP_DONE))

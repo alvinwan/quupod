@@ -13,6 +13,7 @@
     <div class="select">
       <li class="select-default"><span>Select a Category <span class="arrow-down"></span></span></li>
       <ul class="options">
+        <li><a href="{{ the_url('admin.help_latest', location=location, category='all') }}" class="button color">Any (Latest)</a></li>
         {% for category, count in categories %}
         <li><a href="{{ the_url('admin.help_latest', location=location, category=category) }}" class="button color">{{ category }} ({{ count }})</a></li>
         {% endfor %}
