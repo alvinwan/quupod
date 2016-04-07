@@ -43,7 +43,7 @@ def render_admin(template, *args, **kwargs):
 
 @admin.route('/')
 @flask_login.login_required
-@requires('staff')
+@requires('help')
 def home():
     """admin homepage"""
     if not g.queue.setting('location_selection').enabled:

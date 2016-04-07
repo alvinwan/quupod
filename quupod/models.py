@@ -376,11 +376,11 @@ class User(Base, flask_login.UserMixin):
         """returns all queues for this user"""
         return Queue.query.join(Participant).filter_by(user_id=self.id).all()
 
-    def can(self, permission):
+    def can(self, *permission):
         role = self.role
         if role and \
             (role.permissions == '*' or \
-            permission in role.permissions.split(',')):
+            any(p in role.permissions.split(',') for p in permission)):
             return True
         return False
 

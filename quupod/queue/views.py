@@ -56,7 +56,7 @@ def render_queue(template, *args, **kwargs):
 @queue.route('/')
 def home():
     """list all unresolved inquiries for the homepage"""
-    if current_user().can('admin'):
+    if current_user().can('help'):
         return redirect(url_for('admin.home'))
     return render_queue('unresolved.html',
         num_inquiries=Inquiry.query.filter_by(
@@ -129,31 +129,30 @@ def promote(role_name=None):
         abort(404)
     form = PromotionForm(request.form)
     if request.method == 'POST' or code == '*':
-        role = QueueRole.query.filter_by(
-            name=role_name, queue_id=g.queue.id).one()
-        if code == '*' or request.form['code'] == code:
-            part = Participant.query.filter_by(
-                user_id=current_user().id,
-                queue_id=g.queue.id).one_or_none()
-            if part:
-                part.update(role_id = role.id).save()
-            else:
-                Participant(
-                    user_id=current_user().id,
-                    queue_id=g.queue.id,
-                    role_id=role.id
-                ).save()
-        else:
+        if not (code == '*' or request.form['code'] == code):
             form.errors.setdefault('code', []).append('Incorrect code.')
             return render_queue('form.html',
                 form=form,
                 submit='Promote',
                 back=url_for('queue.promote'))
+        role = QueueRole.query.filter_by(
+            name=role_name, queue_id=g.queue.id).one()
+        part = Participant.query.filter_by(
+            user_id=current_user().id,
+            queue_id=g.queue.id).one_or_none()
+        if part:
+            part.update(role_id = role.id).save()
+        else:
+            Participant(
+                user_id=current_user().id,
+                queue_id=g.queue.id,
+                role_id=role.id
+            ).save()
         return render_queue('confirm.html',
             title='Promotion Success',
             message='You have been promoted to %s' % role_name,
-            action='back',
-            url=url_for('queue.home'))
+            action='Onward',
+            url=url_for('admin.home'))
     return render_queue('form.html',
         form=form,
         submit='Promote',

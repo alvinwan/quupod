@@ -57,7 +57,7 @@ app.register_blueprint(queue, url_prefix='/subdomain/<string:queue_url>')
 # Anonymous User definition
 class Anonymous(AnonymousUserMixin):
 
-    def can(self, permission):
+    def can(self, *permission):
         return False
 
 login_manager.anonymous_user = Anonymous
