@@ -226,7 +226,7 @@ def waiting(inquiry_id=None):
             Inquiry.queue_id == g.queue.id,
             Inquiry.created_at <= current_inquiry.created_at
         ).count(),
-        details='Assignment: %s, Problem: %s' % (current_inquiry.assignment, current_inquiry.problem),
+        details='Location: %s, Assignment: %s, Problem: %s, Request: %s' % (current_inquiry.location, current_inquiry.assignment, current_inquiry.problem, current_inquiry.created_at.humanize()),
         group=Inquiry.query.filter(
             Inquiry.status == 'unresolved',
             Inquiry.queue_id == g.queue.id,

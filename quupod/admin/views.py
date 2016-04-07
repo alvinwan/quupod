@@ -62,7 +62,9 @@ def home():
         num_inquiries=Inquiry.query.filter_by(status='unresolved', queue_id=g.queue.id).count(),
         locations=[t for t in locations if t[1]],
         current_inquiry=Inquiry.current(),
-        ttr=g.queue.ttr())
+        ttr=g.queue.ttr(),
+        earliest_request=Inquiry.query.filter_by(status='unresolved',
+            queue_id=g.queue.id).order_by(Inquiry.created_at).first())
 
 ##########
 # QUEUES #
@@ -132,7 +134,10 @@ def clear(location=None):
 @requires('help')
 def help_latest(location=None, category=None):
     """automatically selects next inquiry"""
-    inquiry = Inquiry.latest(location=location, category=category)
+    if not category or category == 'all':
+        inquiry = Inquiry.latest(location=location)
+    else:
+        inquiry = Inquiry.latest(location=location, category=category)
     delayed_id, delayed = request.args.get('delayed_id', None), None
     if not inquiry:
         return redirect(url_for('admin.home', notification=NOTIF_HELP_DONE))
