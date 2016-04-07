@@ -62,7 +62,9 @@ def home():
         num_inquiries=Inquiry.query.filter_by(status='unresolved', queue_id=g.queue.id).count(),
         locations=[t for t in locations if t[1]],
         current_inquiry=Inquiry.current(),
-        ttr=g.queue.ttr())
+        ttr=g.queue.ttr(),
+        earliest_request=Inquiry.query.filter_by(status='unresolved',
+            queue_id=g.queue.id).order_by(Inquiry.created_at).first())
 
 ##########
 # QUEUES #

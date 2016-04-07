@@ -15,7 +15,7 @@
       <li class="stp-item faded">No similar requests found.</li>
       {% else %}
         {% for inq in group %}
-      <li class="stp-item">{{ inq.name }}</li>
+      <li class="stp-item">{{ inq.name }} ({{ inq.location }})</li>
         {% endfor %}
       {% endif %}
     </ul>
