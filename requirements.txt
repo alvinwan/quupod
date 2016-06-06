@@ -1,9 +1,9 @@
-flask
-sqlalchemy
-flask-sqlalchemy
-pymysql
-sqlalchemy-utils==0.31.0
-cryptography
+flask==0.11
+sqlalchemy==1.0.13
+flask-sqlalchemy==2.1
+pymysql==0.7.4
+sqlalchemy-utils==0.32.7
+cryptography==1.4
 wtforms==2.1
 wtforms-alchemy==0.16.1
 passlib==1.6.5

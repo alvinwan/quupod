@@ -38,7 +38,7 @@ def login(home=None, login=None):
     """
     try:
         flow = client.flow_from_clientsecrets(
-            'client_secrets.json',
+            'storage/client_secrets.json',
             scope='openid profile email',
             redirect_uri=login or url_for('public.login', _external=True))
         if 'code' not in request.args:
