@@ -37,10 +37,16 @@ def login(home=None, login=None):
     :param str login: URL for queue login page
     """
     try:
-        flow = client.flow_from_clientsecrets(
-            'storage/client_secrets.json',
-            scope='openid profile email',
-            redirect_uri=login or url_for('public.login', _external=True))
+        try:
+            flow = client.flow_from_clientsecrets(
+                'client_secrets.json',
+                scope='openid profile email',
+                redirect_uri=login or url_for('public.login', _external=True))
+        except:
+            flow = client.flow_from_clientsecrets(
+                '/storage/client_secrets.json',
+                scope='openid profile email',
+                redirect_uri=login or url_for('public.login', _external=True))
         if 'code' not in request.args:
             auth_uri = flow.step1_get_authorize_url()
             return redirect(auth_uri+'&prompt=select_account')
