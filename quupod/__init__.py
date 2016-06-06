@@ -5,6 +5,8 @@ import flask_login
 from flask_login import AnonymousUserMixin
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
+from flask_debugtoolbar import DebugToolbarExtension
+
 from flask_socketio import SocketIO
 import eventlet
 import os
@@ -34,6 +36,9 @@ db = SQLAlchemy(app)
 app.secret_key = secret_key
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
+
+# Flask Debug Toolbar
+toolbar = DebugToolbarExtension(app)
 
 # Database migration management
 migrate = Migrate(app, db)
