@@ -5,7 +5,7 @@ pymysql
 sqlalchemy-utils
 cryptography
 wtforms==2.1
-wtforms-alchemy==0.13.3
+wtforms-alchemy==0.16.1
 passlib==1.6.5
 flask_login==0.3.2
 arrow==0.7.0
