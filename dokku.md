@@ -17,6 +17,7 @@ git push dokku master
 sudo dokku plugin:install https://github.com/dokku/dokku-mysql.git mysql
 
 ## App Creation
+```
 dokku apps:create quupod
 dokku mysql:create quupod
 dokku mysql:link quupod quupod
@@ -25,17 +26,22 @@ dokku domains:add quupod oh.cs61a.org # (also update DNS record of oh.cs61a.org 
 dokku config:set quupod DOMAIN=http://quupod.app.cs61a.org
 dokku storage:mount quupod /var/lib/dokku/data/storage:/storage
 scp client_secrets.json ubuntu@app.cs61a.org:/var/lib/dokku/data/storage/
+```
 
 # SSL
+```
 dokku letsencrypt quupod #(assuming the letsencrypt plugin is installed)
 dokku config:set quupod DOMAIN=https://oh.cs61a.org
-
+```
 # Commands:
 If needed:
 `dokku run quupod <your command>`
 
+```
 dokku run quupod 'bash'
-$ echo  'contents of client_secrets' > client_secrets.json
+$ echo foo
+# Note that these changes will not persist
+```
 
 ## Suggestions
 `alias dokku=ssh -t dokku@app.cs61a.org`
