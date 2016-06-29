@@ -21,10 +21,10 @@ a:hover {
 }
 
 .drawer, body, header {
-  -webkit-transition: 0.4s ease-in-out 0.05s;
-  -moz-transition:    0.4s ease-in-out 0.05s;
-  -o-transition:      0.4s ease-in-out 0.05s;
-  transition:         0.4s ease-in-out 0.05s;
+  -webkit-transition: 0.3s ease;
+  -moz-transition:    0.3s ease;
+  -o-transition:      0.3s ease;
+  transition:         0.3s ease;
 }
 
 .button,div.select,.options a {
@@ -304,16 +304,11 @@ header {
       font-weight:400;
     }
     .drawer ul {
-      padding:0.75em 5em;
-      width:100%;
-      text-align:right;
-    }
-    .drawer .primary,.drawer .secondary {
-      padding:0.75em 0;
+      margin:0.75em 0;
     }
     .drawer li a {
-      text-align:right;
-      padding:0.3em 5em;
+      text-align:left;
+      padding:0.3em 3em;
       letter-spacing:0;
       font-size:1.1em;
       color:#888;
@@ -322,22 +317,6 @@ header {
       border-bottom:none;
       color:#FFF;
     }
-    .drawer .button {
-      width:auto;
-      border:2px solid #666;
-      color:#666;
-      background-color:transparent;
-      font-size:1em;
-      font-weight:600;
-      padding:1em 1.5em;
-      letter-spacing:0.1em;
-    }
-      .drawer .button:hover {
-        border:2px solid #FFF;
-        background-color:#FFF;
-        color:#222;
-        font-weight:400;
-      }
     body.drawer-push {
       margin-left:-20em;
     }
