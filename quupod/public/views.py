@@ -1,13 +1,13 @@
 from flask import Blueprint, request, render_template, redirect, session, abort
 from .forms import *
-from quupod import app, login_manager, whitelist, googleclientID
+from quupod import app, login_manager
 from quupod.models import User, Inquiry, Queue
 from quupod.views import anonymous_required, render, url_for, current_url, current_user
 from quupod.notifications import *
 from oauth2client import client, crypt
 import flask_login
 from apiclient.discovery import build
-from quupod.config import config, domain
+from quupod.config import config
 import httplib2
 
 # Google API service object for Google Plus
@@ -106,11 +106,11 @@ def unauthorized_handler():
 @app.errorhandler(404)
 def not_found(error):
     return render('error.html',
-        back=domain,
+        back=config['domain'],
         title='404. Oops.',
         code=404,
         message='Oops. This page doesn\'t exist!',
-        url=domain,
+        url=config['domain'],
         action='Return to homepage?'), 404
 
 

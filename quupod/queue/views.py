@@ -1,7 +1,7 @@
 from flask import Blueprint, request, g, redirect,\
     abort, session
 from .forms import *
-from quupod import app, login_manager, whitelist, AnonymousUserMixin
+from quupod import app, login_manager, AnonymousUserMixin
 from quupod.models import User, Inquiry, QueueRole, Participant, Resolution
 from quupod.views import anonymous_required, render, current_user, url_for, current_user, requires
 from quupod.forms import choicify

@@ -8,14 +8,13 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_socketio import SocketIO
 import eventlet
 import os
-from .config import config, secret_key, debug, whitelist, googleclientID, port,\
-    domain, tz
+from .config import config
 
-print(' * Running in DEBUG mode.' if debug else
+print(' * Running in DEBUG mode.' if config['debug'] else
       ' * Running in PRODUCTION mode.')
 
-print(' * Google Client ID: %s' % googleclientID if googleclientID else
-      ' * No Google Client ID found.')
+print(' * Google Client ID: %s' % config['googleclientID']
+    if config['googleclientID'] else ' * No Google Client ID found.')
 
 # Flask app
 app = Flask(__name__)
@@ -27,11 +26,11 @@ thread = None
 
 # Configuration for mySQL database
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{USERNAME}:{PASSWORD}@{HOST}/{DATABASE}'.format(**config)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{username}:{password}@{host}/{database}'.format(**config)
 db = SQLAlchemy(app)
 
 # Configuration for login sessions
-app.secret_key = secret_key
+app.secret_key = config['secret_key']
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 

@@ -2,7 +2,7 @@
 Important: Changes here need to be followed by `make refresh`.
 """
 
-from quupod import db, tz
+from quupod import db, config
 from sqlalchemy import types, asc
 from sqlalchemy_utils import EncryptedType, PasswordType, ArrowType
 from sqlalchemy_utils.types.choice import ChoiceType
@@ -65,7 +65,7 @@ class Base(db.Model):
 
     def to_local(self, *fields):
         """Convert all to local times"""
-        return self.modify_time(*fields, act=lambda t: t.to(tz or 'local'))
+        return self.modify_time(*fields, act=lambda t: t.to(config['tz'] or 'local'))
 
     def to_utc(self, *fields):
         """Convert all to UTC times"""
@@ -74,12 +74,13 @@ class Base(db.Model):
     def set_tz(self, *fields, tz):
         """Set timezones of current times to be a specific tz"""
         return self.modify_time(*fields,
-            act=lambda t: t.replace(tzinfo=tz))
+            act=lambda t: t.replace(tzinfo=config['tz']))
 
     def set_local(self, *fields):
         """Set timezones of current times to be local time"""
         from dateutil import tz as t
-        return self.set_tz(*fields, tz=t.gettz(tz) if tz else t.tzlocal())
+        return self.set_tz(*fields,
+            tz=t.gettz(config['tz']) if config['tz'] else t.tzlocal())
 
     def update(self, **kwargs):
         """Update object with kwargs"""

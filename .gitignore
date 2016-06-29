@@ -2,7 +2,7 @@ migrations
 client_secrets.json
 
 # configuration file
-config.cfg
+configvars.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

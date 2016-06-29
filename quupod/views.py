@@ -3,7 +3,7 @@ from flask import url_for as flask_url_for, redirect, render_template, request, 
 import flask_login
 from quupod.defaults import default_queue_settings
 from quupod.notifications import *
-from quupod import googleclientID, config, debug, domain
+from quupod import config
 from flask_login import login_required
 
 
@@ -16,10 +16,10 @@ def render(template, **kwargs):
     """Render with settings"""
     for k, v in config.items():
         kwargs.setdefault('cfg_%s' % k, v)
-    if not debug: # if on production
-        kwargs.setdefault('domain', domain)
+    if not config['debug']: # if on production
+        kwargs.setdefault('domain', config['domain'])
     return render_template(template,
-        googleclientID=googleclientID,
+        googleclientID=config['googleclientID'],
         banner_message=notifications.get(
             int(request.args.get('notification', None) or -1), None),
         request=request,

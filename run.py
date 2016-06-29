@@ -1,4 +1,4 @@
-from quupod import app, debug, db, port, socketio
+from quupod import config, app, db, socketio
 from quupod.models import Setting
 import argparse
 import os
@@ -15,10 +15,13 @@ def run(app, with_tornado=False):
 
     if with_tornado:
         http_server = HTTPServer(WSGIContainer(app))
-        http_server.listen(port)
+        http_server.listen(config['port'])
         IOLoop.instance().start()
     else:
-        socketio.run(app, host='0.0.0.0', port=port, debug=debug)
+        socketio.run(app,
+            host='0.0.0.0',
+            port=config['port'],
+            debug=config['debug'])
 
 
 parser = argparse.ArgumentParser(description='Small manager for this queue application.')
