@@ -11,4 +11,4 @@ class ConfigVars:
     app_port = 5000
     allowed_netlocs = "http://localhost:5000"
     domain = "http://localhost:5000"
-    timezone = "US/Pacific"
+    tz = "US/Pacific"

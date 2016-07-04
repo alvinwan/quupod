@@ -42,5 +42,5 @@ for attr in (
         'allowed_netlocs',
         'app_port',
         'domain',
-        'timezone'):
+        'tz'):
     config[attr] = os.environ.get(attr.upper(), getattr(ConfigVars, attr))
