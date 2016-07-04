@@ -15,12 +15,12 @@ def run(app, with_tornado=False):
 
     if with_tornado:
         http_server = HTTPServer(WSGIContainer(app))
-        http_server.listen(config['port'])
+        http_server.listen(int(config['app_port']))
         IOLoop.instance().start()
     else:
         socketio.run(app,
             host='0.0.0.0',
-            port=config['port'],
+            port=int(config['app_port']),
             debug=config['debug'])
 
 

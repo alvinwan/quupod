@@ -24,6 +24,7 @@ for attr in (
     'debug',
     'googleclientID',
     'allowed_netlocs',
+    'app_port',
     'domain',
     'timezone'):
     config[attr] = get(attr, getattr(ConfigVars, attr))
