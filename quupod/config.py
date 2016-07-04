@@ -20,6 +20,7 @@ except ImportError:
     ConfigVars.password = url.password
     ConfigVars.host = url.hostname
     ConfigVars.port = url.port
+    ConfigVars.database = database_url.split('/')[3].split('?')[0]
     print(
         'Configuration file not found. Rerun `make install` and update the new'
         'configvars.py accordingly OR make sure your environment variables are'
