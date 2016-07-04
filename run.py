@@ -1,47 +1,40 @@
-from quupod import config, app, db, socketio
-from quupod.models import Setting
-import argparse
-import os
+"""Handle main application command-line interface.
+
+Usage: run.py [--tornado]
+
+Options:
+  -h --help     Show this screen.
+  --tornado     Run the application using tornado.
+"""
+
+from flask import Flask
+from quupod import config
+from quupod import app
+from quupod import db
+from quupod import socketio
+from docopt import docopt
 
 
-def run(app, with_tornado=False):
-    from tornado.wsgi import WSGIContainer
-    from tornado.httpserver import HTTPServer
-    from tornado.ioloop import IOLoop
-
-    # create database
+def run(app: Flask, tornado: bool=False) -> None:
+    """Run the Flask application."""
     db.create_all()
     print('[OK] Database creation complete.')
 
-    if with_tornado:
+    if tornado:
+        from tornado.wsgi import WSGIContainer
+        from tornado.httpserver import HTTPServer
+        from tornado.ioloop import IOLoop
+
         http_server = HTTPServer(WSGIContainer(app))
         http_server.listen(int(config['app_port']))
         IOLoop.instance().start()
     else:
-        socketio.run(app,
+        socketio.run(
+            app,
             host='0.0.0.0',
             port=int(config['app_port']),
             debug=config['debug'])
 
-
-parser = argparse.ArgumentParser(description='Small manager for this queue application.')
-parser.add_argument('-d', '--database', type=str,
-                   help='Database operation',
-                   choices=('default', 'override'))
-parser.add_argument('-t', '--tornado', action='store_const', const=True,
-                    default=False, help='launch with tornado')
-
 if __name__ == "__main__":
-    args = parser.parse_args()
-    if args.database == 'create':
-        db.create_all()
-        print('[OK] Database creation complete.')
-        print("""---
-
-[OK] Database creation complete.
-Use 'make run' to launch server.
-    """)
-    elif args.tornado:
-        run(app, with_tornado=True)
-    else:
-        run(app)
+    arguments = docopt(__doc__)
+    run(app, tornado=arguments['--tornado'])
