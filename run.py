@@ -7,16 +7,26 @@ Options:
   --tornado     Run the application using tornado.
 """
 
+from docopt import docopt
 from flask import Flask
-from quupod import app
+from quupod import create_app
 from quupod import socketio
 from quupod.models import db
-from docopt import docopt
+
+import os
+
+# Name of the application root module
+ROOT = 'quupod'
+
+# Two options: Development, Production
+MODE = os.environ.get('MODE', 'Development')
+
+# Define format for config mode
+CONFIG_MODE_FORMAT = '%sConfig'
 
 
 def main(app: Flask, tornado: bool=False) -> None:
     """Run the Flask application."""
-
     with app.app_context():
         db.create_all()
         print('[OK] Database creation complete.')
@@ -35,4 +45,6 @@ def main(app: Flask, tornado: bool=False) -> None:
 
 if __name__ == "__main__":
     arguments = docopt(__doc__)
-    main(app, tornado=arguments['--tornado'])
+    main(
+        create_app(ROOT, CONFIG_MODE_FORMAT % MODE),
+        tornado=arguments['--tornado'])

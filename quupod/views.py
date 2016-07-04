@@ -2,6 +2,7 @@ from functools import wraps
 from flask_socketio import SocketIO
 from flask_login import AnonymousUserMixin
 from flask import url_for as flask_url_for, redirect, render_template, request, g
+from flask import current_app
 import flask_login
 from quupod.defaults import default_queue_settings
 from quupod.notifications import *
@@ -94,7 +95,9 @@ def url_for(*args, **kwargs):
 ##################
 
 def error_not_found(error):
-    return render('error.html',
+    """Show custom 404 page if page not found."""
+    return render(
+        'error.html',
         back=current_app.config['DOMAIN'],
         title='404. Oops.',
         code=404,
@@ -104,10 +107,16 @@ def error_not_found(error):
 
 
 def error_server(error):
+    """Show custom 500 page if uncaught server exception occurs."""
     from quupod import db
     db.session.rollback()
-    return render_template('500.html',
+    return render_template(
+        '500.html',
         domain=current_app.config['DOMAIN'],
         title='500. Hurr.',
         code=500,
-        message='Sorry. Here is the error: <br><code>%s</code><br> Please file an issue on the <a href="https://github.com/alvinwan/quupod/issues">Github issues page</a>, with the above code if it has not already been submitted.' % str(error)), 500
+        message='Sorry. Here is the error: <br><code>%s</code><br> Please file'
+        ' an issue on the <a '
+        'href="https://github.com/alvinwan/quupod/issues">Github issues '
+        'page</a>, with the above code if it has not already been submitted.'
+        % str(error)), 500

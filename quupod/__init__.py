@@ -12,56 +12,72 @@ from .views import error_server
 import eventlet
 
 CONFIG_PATH_FORMAT = '%s.config.%s'
+LOG_FORMAT = ' * %s'
+LOG_MODE_DEBUG = LOG_FORMAT % 'Running in DEBUG mode.'
+LOG_MODE_PRODUCTION = LOG_FORMAT % 'Running in PRODUCTION mode.'
+LOG_ID_FORMAT = LOG_FORMAT % 'Google Client ID: %s'
+LOG_ID_NOT_FOUND = LOG_FORMAT % 'No Google Client ID found.'
 
 
-# Flask app
-app = Flask(__name__)
-app.config.from_object(CONFIG_PATH_FORMAT % ('quupod', 'DevelopmentConfig'))
+def create_app(root: str, config: str) -> Flask:
+    """Create a new Flask application with the provided configuration.
 
-print(
-    ' * Running in DEBUG mode.' if app.config['INIT']['debug'] else
-    ' * Running in PRODUCTION mode.')
+    :param root: The application root module name.
+    :param config: The application configuration mode.
+    """
+    app = Flask(__name__)
+    app.config.from_object(CONFIG_PATH_FORMAT % (root, config))
 
-print(
-    ' * Google Client ID: %s' % app.config['GOOGLECLIENTID']
-    if app.config['GOOGLECLIENTID'] else ' * No Google Client ID found.')
+    if app.config['INIT']['debug']:
+        print(LOG_MODE_DEBUG)
+    else:
+        print(LOG_MODE_PRODUCTION)
 
-# Async socket initialization
-eventlet.monkey_patch()
-socketio.init_app(app)
+    if app.config['GOOGLECLIENTID']:
+        print(LOG_ID_FORMAT % app.config['GOOGLECLIENTID'])
+    else:
+        print(LOG_ID_NOT_FOUND)
 
-# Configuration for mySQL database
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = \
-    app.config['DATABASE_URL'].replace('mysql', 'mysql+pymysql', 1)
-db.init_app(app)
+    # Async socket initialization
+    eventlet.monkey_patch()
+    socketio.init_app(app)
 
-# Configuration for login sessions
-app.secret_key = app.config['SECRET_KEY']
-login_manager.init_app(app)
+    # Configuration for mySQL database
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = \
+        app.config['DATABASE_URL'].replace('mysql', 'mysql+pymysql', 1)
+    db.init_app(app)
 
-# Flask Debug Toolbar
-toolbar.init_app(app)
+    # Configuration for login sessions
+    app.secret_key = app.config['SECRET_KEY']
+    login_manager.init_app(app)
 
-# Database migration management
-migrate.init_app(app, db)
-migration_manager(app)
+    # Flask Debug Toolbar
+    toolbar.init_app(app)
 
-from .public.views import public
-from .queue.views import queue
-from .admin.views import admin
-from .dashboard.views import dashboard
+    # Database migration management
+    migrate.init_app(app, db)
+    migration_manager(app)
 
-BLUEPRINTS = [public, queue, admin, dashboard]
+    from .public.views import public
+    from .queue.views import queue
+    from .admin.views import admin
+    from .dashboard.views import dashboard
 
-for blueprint in BLUEPRINTS:
-    print(' * Registering blueprint "%s"' % blueprint.name)
-    app.register_blueprint(blueprint)
+    BLUEPRINTS = [public, queue, admin, dashboard]
 
-# subdomain routes with special urls
-app.register_blueprint(admin, url_prefix='/subdomain/<string:queue_url>/admin')
-app.register_blueprint(queue, url_prefix='/subdomain/<string:queue_url>')
+    for blueprint in BLUEPRINTS:
+        print(' * Registering blueprint "%s"' % blueprint.name)
+        app.register_blueprint(blueprint)
 
-# register error handlers
-app.register_error_handler(404, error_not_found)
-app.register_error_handler(500, error_server)
+    # subdomain routes with special urls
+    app.register_blueprint(
+        admin,
+        url_prefix='/subdomain/<string:queue_url>/admin')
+    app.register_blueprint(queue, url_prefix='/subdomain/<string:queue_url>')
+
+    # register error handlers
+    app.register_error_handler(404, error_not_found)
+    app.register_error_handler(500, error_server)
+
+    return app
