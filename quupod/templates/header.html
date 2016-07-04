@@ -34,6 +34,7 @@
     </div>
     <nav>
       <ul class="primary">
+        <li><span>{{ current_user.email }} ({{ current_user.role.name }})</span></li>
         {% if current_user.can('admin', 'help') %}
         <li><a href="{{ the_url('admin.home') }}">Home</a></li>
         <li><a href="{{ the_url('admin.resolved') }}">Resolved</a></li>

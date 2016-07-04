@@ -306,7 +306,8 @@ header {
     .drawer ul {
       margin:0.75em 0;
     }
-    .drawer li a {
+    .drawer li a,.drawer li span {
+      float:left;
       text-align:left;
       padding:0.3em 3em;
       letter-spacing:0;

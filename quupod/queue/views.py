@@ -36,12 +36,12 @@ def render_queue(template, *args, **kwargs):
         for entry in whitelist.split(','):
             entry = tuple(s.strip() for s in entry.split('('))
             if len(entry) == 2:
-                entries[entry[0]] = entry[1][:-1]
+                entries[entry[0].lower()] = entry[1][:-1]
             else:
-                entries[entry[0]] = 'Staff'
+                entries[entry[0].lower()] = 'Staff'
         if current_user().is_authenticated and \
-            current_user().email in entries:
-            current_user().set_role(entries[current_user().email])
+            current_user().email.lower() in entries:
+            current_user().set_role(entries[current_user().email.lower()])
     for k in default_queue_settings:
         setting = g.queue.setting(k)
         kwargs.update({'q_%s' % k: (setting.value or setting.enabled) if setting.enabled else False })
