@@ -1,4 +1,6 @@
 from functools import wraps
+from flask_socketio import SocketIO
+from flask_login import AnonymousUserMixin
 from flask import url_for as flask_url_for, redirect, render_template, request, g
 import flask_login
 from quupod.defaults import default_queue_settings
@@ -6,6 +8,16 @@ from quupod.notifications import *
 from quupod import config
 from flask_login import login_required
 
+login_manager = flask_login.LoginManager()
+socketio = SocketIO(async_mode='eventlet')
+
+# Anonymous User definition
+class Anonymous(AnonymousUserMixin):
+
+    def can(self, *permission):
+        return False
+
+login_manager.anonymous_user = Anonymous
 
 def current_user():
     """Returns currently-logged-in user"""
@@ -16,10 +28,10 @@ def render(template, **kwargs):
     """Render with settings"""
     for k, v in config.items():
         kwargs.setdefault('cfg_%s' % k, v)
-    if not config['debug']: # if on production
-        kwargs.setdefault('domain', config['domain'])
+    if not current_app.config['DEBUG']: # if on production
+        kwargs.setdefault('domain', current_app.config['DOMAIN'])
     return render_template(template,
-        googleclientID=config['googleclientID'],
+        googleclientID=current_app.config['GOOGLECLIENTID'],
         banner_message=notifications.get(
             int(request.args.get('notification', None) or -1), None),
         request=request,
@@ -75,3 +87,27 @@ def current_url():
 def url_for(*args, **kwargs):
     """Special url function for subdomain websites"""
     return strip_subdomain(flask_url_for(*args, **kwargs))
+
+
+##################
+# ERROR HANDLERS #
+##################
+
+def error_not_found(error):
+    return render('error.html',
+        back=current_app.config['DOMAIN'],
+        title='404. Oops.',
+        code=404,
+        message='Oops. This page doesn\'t exist!',
+        url=current_app.config['DOMAIN'],
+        action='Return to homepage?'), 404
+
+
+def error_server(error):
+    from quupod import db
+    db.session.rollback()
+    return render_template('500.html',
+        domain=current_app.config['DOMAIN'],
+        title='500. Hurr.',
+        code=500,
+        message='Sorry. Here is the error: <br><code>%s</code><br> Please file an issue on the <a href="https://github.com/alvinwan/quupod/issues">Github issues page</a>, with the above code if it has not already been submitted.' % str(error)), 500

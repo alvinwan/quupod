@@ -1,46 +1,35 @@
-"""Temporary configuration file.
+"""Configuration file containing per-mode settings."""
 
-TODO: Replace with a configuration file that Flask can digest.
-"""
-
-from urllib.parse import urlparse
 import os
 
-try:
-    from configvars import ConfigVars
-except ImportError:
-    from sampleconfigvars import ConfigVars
 
-    # TODO: Clean up this mess
-    database_url = os.environ.get(
+class Config(object):
+    """General configuration settings."""
+
+    DATABASE_URL = os.environ.get(
         'DATABASE_URL',
-        'mysql://root:root@localhost/queue')
-    url = urlparse(database_url)
-    ConfigVars.username = url.username
-    ConfigVars.password = url.password
-    ConfigVars.host = url.hostname
-    ConfigVars.port = url.port
-    ConfigVars.database = database_url.split('/')[3].split('?')[0]
-    print(
-        'Configuration file not found. Rerun `make install` and update the new'
-        'configvars.py accordingly OR make sure your environment variables are'
-        'correct.')
+        'mysql://cs70:cs70r0ck$@localhost/queue')
+    DOMAIN = os.environ.get('DOMAIN', 'http://localhost:5000')
+    GOOGLECLIENTID = os.environ.get('GOOGLECLIENTID', '')
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'dEf@u1t$eCRE+KEY')
+    TZ = os.environ.get('TZ', 'US/Pacific')
 
-__all__ = ['config']
 
-# Setup configuration dictionary, and check for environment variables.
-config = {}
-for attr in (
-        'username',
-        'password',
-        'host',
-        'port',
-        'database',
-        'secret_key',
-        'debug',
-        'googleclientID',
-        'allowed_netlocs',
-        'app_port',
-        'domain',
-        'tz'):
-    config[attr] = os.environ.get(attr.upper(), getattr(ConfigVars, attr))
+class ProductionConfig(Config):
+    """Use when in production."""
+
+    INIT = {
+        'host': os.environ.get('INIT_HOST', '0.0.0.0'),
+        'port': os.environ.get('INIT_PORT', 8000),
+        'debug': os.environ.get('INIT_DEBUG', False)
+    }
+
+
+class DevelopmentConfig(Config):
+    """Use when in development."""
+
+    INIT = {
+        'host': '0.0.0.0',
+        'port': 5000,
+        'debug': True
+    }

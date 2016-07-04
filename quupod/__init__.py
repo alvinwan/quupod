@@ -1,56 +1,60 @@
+"""Quupod application factory."""
+
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from urllib.parse import urlparse
-import flask_login
-from flask_login import AnonymousUserMixin
-from flask_script import Manager
-from flask_migrate import Migrate, MigrateCommand
-from flask_debugtoolbar import DebugToolbarExtension
-
-from flask_socketio import SocketIO
+from .models import db
+from .models import migrate
+from .models import migration_manager
+from .models import toolbar
+from .views import login_manager
+from .views import socketio
+from .views import error_not_found
+from .views import error_server
 import eventlet
-import os
-from .config import config
 
-print(' * Running in DEBUG mode.' if config['debug'] else
-      ' * Running in PRODUCTION mode.')
+CONFIG_PATH_FORMAT = '%s.config.%s'
 
-print(' * Google Client ID: %s' % config['googleclientID']
-    if config['googleclientID'] else ' * No Google Client ID found.')
 
 # Flask app
 app = Flask(__name__)
+app.config.from_object(CONFIG_PATH_FORMAT % ('quupod', 'DevelopmentConfig'))
+
+print(
+    ' * Running in DEBUG mode.' if app.config['INIT']['debug'] else
+    ' * Running in PRODUCTION mode.')
+
+print(
+    ' * Google Client ID: %s' % app.config['GOOGLECLIENTID']
+    if app.config['GOOGLECLIENTID'] else ' * No Google Client ID found.')
 
 # Async socket initialization
 eventlet.monkey_patch()
-socketio = SocketIO(app, async_mode='eventlet')
-thread = None
+socketio.init_app(app)
 
 # Configuration for mySQL database
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{username}:{password}@{host}/{database}'.format(**config)
-db = SQLAlchemy(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = \
+    app.config['DATABASE_URL'].replace('mysql', 'mysql+pymysql', 1)
+db.init_app(app)
 
 # Configuration for login sessions
-app.secret_key = config['secret_key']
-login_manager = flask_login.LoginManager()
+app.secret_key = app.config['SECRET_KEY']
 login_manager.init_app(app)
 
 # Flask Debug Toolbar
-toolbar = DebugToolbarExtension(app)
+toolbar.init_app(app)
 
 # Database migration management
-migrate = Migrate(app, db)
-migration_manager = Manager(app)
+migrate.init_app(app, db)
+migration_manager(app)
 
-# Configuration for app views
 from .public.views import public
 from .queue.views import queue
 from .admin.views import admin
 from .dashboard.views import dashboard
 
-blueprints = (public, admin, queue, dashboard)
-for blueprint in blueprints:
+BLUEPRINTS = [public, queue, admin, dashboard]
+
+for blueprint in BLUEPRINTS:
     print(' * Registering blueprint "%s"' % blueprint.name)
     app.register_blueprint(blueprint)
 
@@ -58,10 +62,6 @@ for blueprint in blueprints:
 app.register_blueprint(admin, url_prefix='/subdomain/<string:queue_url>/admin')
 app.register_blueprint(queue, url_prefix='/subdomain/<string:queue_url>')
 
-# Anonymous User definition
-class Anonymous(AnonymousUserMixin):
-
-    def can(self, *permission):
-        return False
-
-login_manager.anonymous_user = Anonymous
+# register error handlers
+app.register_error_handler(404, error_not_found)
+app.register_error_handler(500, error_server)

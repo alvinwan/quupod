@@ -1,13 +1,13 @@
 from flask import Blueprint, request, render_template, redirect, session, abort
+from flask import current_app
 from .forms import *
-from quupod import app, login_manager
 from quupod.models import User, Inquiry, Queue
 from quupod.views import anonymous_required, render, url_for, current_url, current_user
+from quupod.views import login_manager
 from quupod.notifications import *
 from oauth2client import client, crypt
 import flask_login
 from apiclient.discovery import build
-from quupod.config import config
 import httplib2
 
 # Google API service object for Google Plus
@@ -104,28 +104,3 @@ def logout(home=None):
 @login_manager.unauthorized_handler
 def unauthorized_handler():
     return redirect(url_for('public.home'))
-
-##################
-# ERROR HANDLERS #
-##################
-
-@app.errorhandler(404)
-def not_found(error):
-    return render('error.html',
-        back=config['domain'],
-        title='404. Oops.',
-        code=404,
-        message='Oops. This page doesn\'t exist!',
-        url=config['domain'],
-        action='Return to homepage?'), 404
-
-
-@app.errorhandler(500)
-def not_found(error):
-    from quupod import db
-    db.session.rollback()
-    return render_template('500.html',
-        domain=config['domain'],
-        title='500. Hurr.',
-        code=500,
-        message='Sorry. Here is the error: <br><code>%s</code><br> Please file an issue on the <a href="https://github.com/alvinwan/quupod/issues">Github issues page</a>, with the above code if it has not already been submitted.' % str(error)), 500

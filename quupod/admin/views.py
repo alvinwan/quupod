@@ -1,8 +1,9 @@
 from flask import Blueprint, request, redirect, g, abort
-from quupod import app, db, socketio
+from quupod import socketio
 from quupod.views import requires, render, url_for, current_user
 from quupod.models import User, Inquiry, Queue, QueueSetting, Participant,\
     Resolution
+from quupod.models import db
 from quupod.notifications import *
 from quupod.defaults import default_queue_settings
 from quupod.utils import strfdelta, emitQueuePositions, emitQueueInfo

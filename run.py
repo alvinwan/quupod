@@ -8,17 +8,18 @@ Options:
 """
 
 from flask import Flask
-from quupod import config
 from quupod import app
-from quupod import db
 from quupod import socketio
+from quupod.models import db
 from docopt import docopt
 
 
-def run(app: Flask, tornado: bool=False) -> None:
+def main(app: Flask, tornado: bool=False) -> None:
     """Run the Flask application."""
-    db.create_all()
-    print('[OK] Database creation complete.')
+
+    with app.app_context():
+        db.create_all()
+        print('[OK] Database creation complete.')
 
     if tornado:
         from tornado.wsgi import WSGIContainer
@@ -26,15 +27,12 @@ def run(app: Flask, tornado: bool=False) -> None:
         from tornado.ioloop import IOLoop
 
         http_server = HTTPServer(WSGIContainer(app))
-        http_server.listen(int(config['app_port']))
+        http_server.listen(int(app.config['INIT_PORT']))
         IOLoop.instance().start()
     else:
-        socketio.run(
-            app,
-            host='0.0.0.0',
-            port=int(config['app_port']),
-            debug=config['debug'])
+        socketio.run(app, **app.config['INIT'])
+
 
 if __name__ == "__main__":
     arguments = docopt(__doc__)
-    run(app, tornado=arguments['--tornado'])
+    main(app, tornado=arguments['--tornado'])

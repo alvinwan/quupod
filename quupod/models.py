@@ -2,13 +2,16 @@
 Important: Changes here need to be followed by `make refresh`.
 """
 
-from quupod import db, config
 from sqlalchemy import types, asc
+from flask_debugtoolbar import DebugToolbarExtension
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_utils import EncryptedType, PasswordType, ArrowType
 from sqlalchemy_utils.types.choice import ChoiceType
 from passlib.context import CryptContext
 from quupod.defaults import default_queue_settings
 import flask_login, arrow
+from flask_script import Manager
+from flask_migrate import Migrate
 from flask import g, request
 from quupod.views import url_for
 from quupod.utils import strfdelta
@@ -16,6 +19,11 @@ from quupod.utils import strfdelta
 #################
 # PARENT MODELS #
 #################
+
+db = SQLAlchemy()
+migrate = Migrate()
+migration_manager = Manager()
+toolbar = DebugToolbarExtension()
 
 _blank = lambda x:x
 
@@ -65,7 +73,7 @@ class Base(db.Model):
 
     def to_local(self, *fields):
         """Convert all to local times"""
-        return self.modify_time(*fields, act=lambda t: t.to(config['tz'] or 'local'))
+        return self.modify_time(*fields, act=lambda t: t.to(current_app.config['TZ'] or 'local'))
 
     def to_utc(self, *fields):
         """Convert all to UTC times"""
@@ -74,13 +82,13 @@ class Base(db.Model):
     def set_tz(self, *fields, tz):
         """Set timezones of current times to be a specific tz"""
         return self.modify_time(*fields,
-            act=lambda t: t.replace(tzinfo=config['tz']))
+            act=lambda t: t.replace(tzinfo=tz))
 
     def set_local(self, *fields):
         """Set timezones of current times to be local time"""
         from dateutil import tz as t
         return self.set_tz(*fields,
-            tz=t.gettz(config['tz']) if config['tz'] else t.tzlocal())
+            tz=t.gettz(current_app.config['TZ']) if current_app.config['TZ'] else t.tzlocal())
 
     def update(self, **kwargs):
         """Update object with kwargs"""
