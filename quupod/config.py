@@ -3,12 +3,23 @@
 TODO: Replace with a configuration file that Flask can digest.
 """
 
+from urllib.parse import urlparse
 import os
 
 try:
     from configvars import ConfigVars
 except ImportError:
     from sampleconfigvars import ConfigVars
+
+    # TODO: Clean up this mess
+    database_url = os.environ.get(
+        'DATABASE_URL',
+        'mysql://root:root@localhost/queue')
+    url = urlparse(database_url)
+    ConfigVars.username = url.username
+    ConfigVars.password = url.password
+    ConfigVars.host = url.hostname
+    ConfigVars.port = url.port
     print(
         'Configuration file not found. Rerun `make install` and update the new'
         'configvars.py accordingly OR make sure your environment variables are'
