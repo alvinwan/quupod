@@ -31,4 +31,4 @@ for attr in (
         'app_port',
         'domain',
         'timezone'):
-    config[attr] = os.environ.get(attr.uppercase(), getattr(ConfigVars, attr))
+    config[attr] = os.environ.get(attr.upper(), getattr(ConfigVars, attr))
