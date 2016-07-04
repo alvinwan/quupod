@@ -1,15 +1,18 @@
-"""
+"""All models for the queue.
+
 Important: Changes here need to be followed by `make refresh`.
 """
 
-from sqlalchemy import types, asc
+from sqlalchemy import asc
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy_utils import EncryptedType, PasswordType, ArrowType
+from sqlalchemy_utils import PasswordType
+from sqlalchemy_utils import ArrowType
 from sqlalchemy_utils.types.choice import ChoiceType
 from passlib.context import CryptContext
 from quupod.defaults import default_queue_settings
-import flask_login, arrow
+import flask_login
+import arrow
 from flask_script import Manager
 from flask_migrate import Migrate
 from flask import g, request

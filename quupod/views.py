@@ -1,37 +1,43 @@
+"""View utilities."""
+
 from functools import wraps
 from flask_socketio import SocketIO
 from flask_login import AnonymousUserMixin
-from flask import url_for as flask_url_for, redirect, render_template, request, g
+from flask import url_for as flask_url_for
+from flask import render_template
+from flask import request
+from flask import g
 from flask import current_app
 import flask_login
-from quupod.defaults import default_queue_settings
-from quupod.notifications import *
-from quupod import config
-from flask_login import login_required
 
 login_manager = flask_login.LoginManager()
 socketio = SocketIO(async_mode='eventlet')
 
+
 # Anonymous User definition
 class Anonymous(AnonymousUserMixin):
+    """The anonymous user object class."""
 
     def can(self, *permission):
+        """The anonymous user cannot do anything."""
         return False
 
 login_manager.anonymous_user = Anonymous
 
+
 def current_user():
-    """Returns currently-logged-in user"""
+    """Returns currently-logged-in user."""
     return flask_login.current_user
 
 
 def render(template, **kwargs):
-    """Render with settings"""
-    for k, v in config.items():
+    """Render with settings."""
+    for k, v in current_app.config.items():
         kwargs.setdefault('cfg_%s' % k, v)
-    if not current_app.config['DEBUG']: # if on production
+    if not current_app.config['DEBUG']:  # if on production
         kwargs.setdefault('domain', current_app.config['DOMAIN'])
-    return render_template(template,
+    return render_template(
+        template,
         googleclientID=current_app.config['GOOGLECLIENTID'],
         banner_message=notifications.get(
             int(request.args.get('notification', None) or -1), None),
@@ -43,7 +49,7 @@ def render(template, **kwargs):
 
 
 def anonymous_required(f):
-    """Decorator for views that require anonymous users (e.g., sign in)"""
+    """Decorator for views that require anonymous users (e.g., sign in)."""
     @wraps(f)
     def decorator(*args, **kwargs):
         user = flask_login.current_user
@@ -54,8 +60,9 @@ def anonymous_required(f):
 
 
 def requires(*permissions):
-    """Decorator for views, restricting access to the roles listed"""
+    """Decorator for views, restricting access to the roles listed."""
     from quupod.queue.views import render_queue
+
     def wrap(f):
         @wraps(f)
         def decorator(*args, **kwargs):
