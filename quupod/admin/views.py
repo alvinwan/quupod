@@ -22,6 +22,7 @@ from quupod.defaults import default_queue_settings
 from quupod.utils import strfdelta
 from quupod.utils import emitQueuePositions
 from quupod.utils import emitQueueInfo
+from quupod.utils import str2lst
 from sqlalchemy import desc
 import flask_login
 
@@ -70,33 +71,18 @@ def render_admin(template: str, *args, **kwargs) -> str:
 @requires('help')
 def home() -> str:
     """The queue administration home page."""
+    context = {
+        'num_inquiries': Inquiry.count_unresolved(),
+        'latest_inquiry': Inquiry.current_or_latest(),
+        'current_inquiry': Inquiry.current(),
+        'ttr': g.queue.ttr(),
+        'earliest_request': Inquiry.earliest()
+    }
     if not g.queue.setting('location_selection').enabled:
-        return render_admin(
-            'home.html',
-            num_inquiries=Inquiry.query.filter_by(
-                status='unresolved',
-                queue_id=g.queue.id).count(),
-            latest_inquiry=Inquiry.latest(),
-            current_inquiry=Inquiry.current(),
-            ttr=g.queue.ttr())
-    locations = [(
-        l,
-        Inquiry.query.filter_by(
-            location=l,
-            status='unresolved',
-            queue_id=g.queue.id).count())
-        for l in g.queue.setting('locations').value.split(',')]
-    return render_admin(
-        'home.html',
-        num_inquiries=Inquiry.query.filter_by(
-            status='unresolved',
-            queue_id=g.queue.id).count(),
-        locations=[t for t in locations if t[1]],
-        current_inquiry=Inquiry.current(),
-        ttr=g.queue.ttr(),
-        earliest_request=Inquiry.query.filter_by(
-            status='unresolved',
-            queue_id=g.queue.id).order_by(Inquiry.created_at).first())
+        return render_admin('home.html', **context)
+    context['locations'] = Inquiry.get_unresolved(
+        str2lst(g.queue.setting('locations').value))
+    return render_admin('home.html', **context)
 
 ##########
 # QUEUES #
@@ -109,12 +95,7 @@ def unresolved() -> str:
     """List all 'unresolved' inquiries."""
     return render_admin(
         'unresolved.html',
-        inquiries=Inquiry.query.join(Resolution).filter(
-            Inquiry.status == 'unresolved',
-            Inquiry.queue_id == g.queue.id)
-        .order_by(desc(Resolution.created_at))
-        .limit(20)
-        .all())
+        inquiries=Inquiry.get_inquiries(status='unresolved', limit=20))
 
 
 @admin.route('/resolved')
@@ -123,12 +104,7 @@ def resolved() -> str:
     """List all 'resolved' inquiries."""
     return render_admin(
         'resolved.html',
-        inquiries=Inquiry.query.join(Resolution).filter(
-            Inquiry.status == 'resolved',
-            Inquiry.queue_id == g.queue.id)
-        .order_by(desc(Resolution.resolved_at))
-        .limit(20)
-        .all())
+        inquiries=Inquiry.get_inquiries(status='resolved', limit=20))
 
 
 @admin.route('/requeue/<int:inquiry_id>', methods=['POST', 'GET'])
@@ -142,39 +118,26 @@ def requeue(inquiry_id: str) -> str:
     return redirect(url_for('admin.resolved'))
 
 
-@admin.route('/clear/<string:location>', methods=['POST', 'GET'])
 @admin.route('/clear', methods=['POST', 'GET'])
 @flask_login.login_required
 @requires('help')
-def clear(location: str=None) -> str:
-    """Clear all inquiries, period. Or, clear all inquiries for a location."""
-    if location:
-        return 'Not yet implemented.'
+def clear() -> str:
+    """Clear all inquiries, period."""
+    context = {'action': 'Admin Home', 'url': url_for('admin.home')}
     if request.method == 'POST':
-        Inquiry.query.filter_by(
-            status='unresolved',
-            queue_id=g.queue.id).update({'status': 'closed'})
-        Inquiry.query.filter_by(
-            status='resolving',
-            queue_id=g.queue.id).update({'status': 'closed'})
-        db.session.commit()
-        return render_admin(
-            'admin_confirm.html',
-            message='All Cleared',
-            action='Admin Home',
-            url=url_for('admin.home'))
-    return render_admin(
-        'admin_confirm.html',
-        message='Are you sure? This will clear all resolving and unresolved.'
-        '<form method="POST"><input type="submit" value="clear"></form>',
-        action='admin home',
-        url=url_for('admin.home'))
+        Inquiry.clear_all_inquiries()
+        context['message'] = 'All Cleared'
+        return render_admin('admin_confirm.html', **context)
+    context['message'] = 'Are you sure? This will clear all resolving and'
+    'unresolved.<form method="POST"><input type="submit" value="clear"></form>'
+    return render_admin('admin_confirm.html', **context)
 
 ########
 # HELP #
 ########
 
 
+# TODO: cleanup
 @admin.route(
     '/help/<string:location>/<string:category>/latest',
     methods=['POST', 'GET'])
@@ -184,40 +147,37 @@ def clear(location: str=None) -> str:
 @requires('help')
 def help_latest(location: str=None, category: str=None) -> str:
     """Automatically select next inquiry."""
-    if not category or category == 'all':
-        inquiry = Inquiry.latest(location=location)
-    else:
-        inquiry = Inquiry.latest(location=location, category=category)
-    delayed_id, delayed = request.args.get('delayed_id', None), None
-    if not inquiry:
-        return redirect(url_for('admin.home', notification=NOTIF_HELP_DONE))
-    if g.queue.setting('inquiry_types').enabled \
-            and not category \
-            and g.queue.setting('inquiry_type_selection').enabled:
-        categories = [(cat, Inquiry.query.filter_by(
-            category=cat,
-            status='unresolved',
-            location=location,
-            queue_id=g.queue.id).count())
-            for cat in g.queue.setting('inquiry_types').value.split(',')]
-        categories = [c for c in categories if c[1]]
+    if g.queue.show_inquiry_types() and not category:
+        categories = Inquiry.get_unresolved(
+            str2lst(g.queue.setting('inquiry_types').value),
+            location=location)
         if len(categories) > 1:
             return render_admin(
                 'categories.html',
                 title='Request Type',
                 location=location,
                 categories=categories)
+
+    filters = {'location': location}
+    if category and category != 'all':
+        filters['category'] = category
+    inquiry = Inquiry.current_or_latest(**filters)
+
+    if not inquiry:
+        return redirect(url_for('admin.home', notification=NOTIF_HELP_DONE))
+
+    delayed_id = request.args.get('delayed_id', None)
     if delayed_id:
-        delayed = Inquiry.query.get(delayed_id)
-        delayed.unlock()
-    inquiry.lock()
-    inquiry.link(current_user())
+        Inquiry.query.get(delayed_id).unlock()
+
+    inquiry.lock().link(current_user())
     return redirect(url_for(
         'admin.help_inquiry',
         id=inquiry.id,
         location=location))
 
 
+# TODO: cleanup
 @admin.route(
     '/help/inquiry/<string:location>/<string:id>',
     methods=['POST', 'GET'])
@@ -274,6 +234,7 @@ def help_inquiry(id: str, location: str=None) -> str:
 # SETTINGS #
 ############
 
+# TODO: cleanup
 @admin.route('/settings', methods=['POST', 'GET'])
 @flask_login.login_required
 @requires('edit_settings')

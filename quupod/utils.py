@@ -74,3 +74,8 @@ def emitQueueInfo(queue):
         },
         broadcast=True,
         namespace=QUEUE_SOCKET_FORMAT % queue.id)
+
+
+def str2lst(string):
+    """Convert a comma-separated list of values into a list."""
+    return [substr.strip() for substr in string.split(',')]

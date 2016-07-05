@@ -4,6 +4,7 @@ Important: Changes here need to be followed by `make refresh`.
 """
 
 from sqlalchemy import asc
+from sqlalchemy import desc
 from flask import current_app
 from werkzeug.local import LocalProxy
 from flask_debugtoolbar import DebugToolbarExtension
@@ -21,6 +22,7 @@ from flask import g, request
 from quupod.views import url_for
 from quupod.utils import strfdelta
 from quupod.utils import Nil
+from quupod.utils import str2lst
 from wtforms import Form
 
 #################
@@ -257,6 +259,11 @@ class Queue(Base):
     category = db.Column(db.String(50))
     settings = db.relationship("QueueSetting", backref="queue")
 
+    def show_inquiry_types(self) -> bool:
+        """Whether or not to show inquiry types."""
+        return self.setting('inquiry_types').enabled and \
+            self.setting('inquiry_type_selection').enabled
+
     def present_staff(self) -> {db.Model}:
         """Fetch all present staff members."""
         resolutions = Resolution.query.join(Inquiry).filter(
@@ -318,15 +325,14 @@ class Queue(Base):
         category = request.form.get('category', None)
         if ':' in lst:
             datum = dict(l.split(':') for l in lst.splitlines())
-            if datum.get(category, '*') == '*':
+            lst = datum.get(category, '*')
+            if lst == '*':
                 return True
-        if assignment not in [s.strip() for s in lst.split(',')]:
+        if assignment not in str2lst(lst):
             prefix = 'Assignment'
             if category:
                 prefix = 'For "%s" inquiries, assignment' % category
-            form \
-                .errors \
-                .setdefault('assignment', []) \
+            form.errors.setdefault('assignment', []) \
                 .append(
                     '%s "%s" is not allowed. Only the following '
                     'assignments are: %s' % (prefix, assignment, lst))
@@ -359,16 +365,16 @@ class Resolution(Base):
     comment = db.Column(db.Text)
 
     @property
-    def inquiry(self):
+    def inquiry(self) -> db.Model:
         """Fetch the related inquiry for this resolution."""
         return Inquiry.query.get(self.inquiry_id)
 
     @property
-    def staff(self):
+    def staff(self) -> db.Model:
         """Fetch the related staff member for this resolution."""
         return User.query.get(self.user_id)
 
-    def close(self):
+    def close(self) -> db.Model:
         """Close resolution."""
         self.resolved_at = arrow.utcnow()
         return self.save()
@@ -389,7 +395,7 @@ class User(Base, flask_login.UserMixin):
     google_id = db.Column(db.String(30), unique=True)
 
     @property
-    def role(self):
+    def role(self) -> Role:
         """Get user role for given queue."""
         return QueueRole.query.join(Participant).filter_by(
             queue_id=g.queue.id,
@@ -412,15 +418,15 @@ class User(Base, flask_login.UserMixin):
             user_id=self.id,
             is_active=True).one_or_none()
         role_id = QueueRole.query.filter_by(
-            queue_id=g.queue.id, name=role).one().id
+            queue_id=g.queue.id,
+            name=role).one().id
         if part:
             part.role_id = role_id
             return part.save()
         return Participant(
             queue_id=g.queue.id,
             user_id=self.id,
-            role_id=role_id
-        ).save()
+            role_id=role_id).save()
 
     def join(
             self,
@@ -432,14 +438,13 @@ class User(Base, flask_login.UserMixin):
         assert isinstance(queue, Queue), 'Can only join group.'
         role_id = role_id or QueueRole.query.filter_by(
             name=role,
-            queue_id=queue.id
-        ).one().id
+            queue_id=queue.id).one().id
         return Participant(
             user_id=self.id,
             queue_id=queue.id,
             role_id=role_id).save()
 
-    def queues(self):
+    def queues(self) -> [Queue]:
         """Return all queues for this user."""
         return Queue \
             .query \
@@ -447,7 +452,7 @@ class User(Base, flask_login.UserMixin):
             .filter_by(user_id=self.id) \
             .all()
 
-    def can(self, *permission):
+    def can(self, *permission) -> bool:
         """Check permissions for this user."""
         role = self.role
         if role and \
@@ -482,7 +487,44 @@ class Inquiry(Base):
     queue_id = db.Column(db.Integer, db.ForeignKey('queue.id'), index=True)
 
     @staticmethod
-    def current() -> Resolution:
+    def clear_all_inquiries():
+        """Clear all inquiries for the current queue."""
+        Inquiry.query.filter_by(
+            status='unresolved',
+            queue_id=g.queue.id).update({'status': 'closed'})
+        Inquiry.query.filter_by(
+            status='resolving',
+            queue_id=g.queue.id).update({'status': 'closed'})
+        db.session.commit()
+
+    @staticmethod
+    def count_unresolved(**kwargs) -> int:
+        """Return number of unresolved inquiries for a specific queue."""
+        filters = {'status': 'unresolved', 'queue_id': g.queue.id}
+        filters.update(kwargs)
+        return Inquiry.query.filter_by(**filters).count()
+
+    @staticmethod
+    def get_unresolved(categories: [str], **filters) -> [(str, int)]:
+        """Return list of (category, number unresolved)."""
+        return list(filter([(category, Inquiry.count_unresolved(
+            category=category,
+            **filters))
+            for category in categories],
+            lambda pair: pair[1] > 0))
+
+    @staticmethod
+    def get_inquiries(status: str, limit: int) -> [db.Model]:
+        """Get all inquiries, along with resolutions, for the current queue."""
+        return Inquiry.query.join(Resolution).filter(
+                status=status,
+                queue_id=g.queue.id) \
+            .order_by(desc(Resolution.created_at)) \
+            .limit(limit) \
+            .all()
+
+    @staticmethod
+    def current() -> db.Model:
         """Return current resolution for the logged-in user."""
         resolution = Resolution.query.filter_by(
             user_id=flask_login.current_user.id,
@@ -491,16 +533,35 @@ class Inquiry(Base):
             return resolution.inquiry
 
     @staticmethod
-    def latest(**kwargs) -> db.Model:
-        """Return latest inquiry."""
+    def current_or_latest(**kwargs):
+        """Return the current inquiry if one exists. Otherwise, return latest.
+
+        This method is used when fetching the latest inquiry on the help
+        screen. In this case, we would like to have the staff member resume
+        unresolved inquiries before resolving new ones.
+        """
         current_inquiry = Inquiry.current()
         if current_inquiry:
             return current_inquiry
+        return Inquiry.latest(**kwargs)
+
+    @staticmethod
+    def latest(**kwargs) -> db.Model:
+        """Return latest unresolved inquiry for the current queue."""
         kwargs = {k: v for k, v in kwargs.items() if v}
         return Inquiry.query.filter_by(
             status='unresolved',
             queue_id=g.queue.id,
             **kwargs).order_by(asc(Inquiry.created_at)).first()
+
+    @staticmethod
+    def earliest(**kwargs) -> db.Model:
+        """Return earliest unresolved inquiry for the current queue."""
+        kwargs = {k: v for k, v in kwargs.items() if v}
+        return Inquiry.query.filter_by(
+            status='unresolved',
+            queue_id=g.queue.id,
+            **kwargs).order_by(desc(Inquiry.created_at)).first()
 
     @property
     def queue(self) -> Queue:
@@ -518,18 +579,18 @@ class Inquiry(Base):
             return Resolution.query.filter_by(inquiry_id=self.id).first()
 
     @property
-    def owner(self):
+    def owner(self) -> User:
         """The user that filed the inquiry."""
         return User.query.get(self.owner_id)
 
-    def unlock(self):
+    def unlock(self) -> db.Model:
         """Unlock Inquiry and re-enqueue request."""
         self.status = 'unresolved'
         if self.resolution:
             self.resolution.close()
         return self.save()
 
-    def lock(self):
+    def lock(self) -> db.Model:
         """Lock an inquiry.
 
         This is so no other staff members can attempt to resolve.
@@ -537,12 +598,12 @@ class Inquiry(Base):
         self.status = 'resolving'
         return self.save()
 
-    def close(self):
+    def close(self) -> db.Model:
         """Close an inquiry."""
         self.status = 'resolved'
         return self.save()
 
-    def link(self, user):
+    def link(self, user: User) -> Resolution:
         """Link inquiry to a user."""
         if not Resolution.query.filter_by(
                 user_id=user.id,
@@ -567,6 +628,6 @@ class Participant(Base):
     role_id = db.Column(db.Integer, db.ForeignKey('queue_role.id'))
 
     @property
-    def role(self):
+    def role(self) -> Role:
         """Return the role associated with this participant."""
         return QueueRole.query.get(self.role_id)
