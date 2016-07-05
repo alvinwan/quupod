@@ -9,6 +9,14 @@ import json
 QUEUE_SOCKET_FORMAT = '/q%s'
 
 
+class Nil(object):
+    """A Nil object, representing None."""
+
+    ...
+
+Nil = Nil()
+
+
 def strfdelta(tdelta, fmt='%h:%m:%s'):
     """Format timedeltas (http://stackoverflow.com/a/8907269/4855984).
 
