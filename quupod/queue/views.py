@@ -1,35 +1,53 @@
-from flask import Blueprint, request, g, redirect,\
-    abort, session
-from .forms import *
-from quupod.models import User, Inquiry, QueueRole, Participant, Resolution
-from quupod.views import anonymous_required, render, current_user, url_for, current_user, requires
-from quupod.views import login_manager
-from quupod.forms import choicify
+"""All queue-related views."""
+
+from .forms import InquiryForm
+from .forms import PromotionForm
+
+from flask import abort
+from flask import Blueprint
+from flask import g
+from flask import redirect
+from flask import request
 from quupod.defaults import default_queue_settings
-from quupod.notifications import *
-from quupod.utils import emitQueuePositions, emitQueueInfo
-from sqlalchemy import desc
+from quupod.forms import choicify
+from quupod.models import Inquiry
+from quupod.models import Participant
+from quupod.models import User
+from quupod.models import Queue
+from quupod.models import QueueRole
+from quupod.utils import emitQueueInfo
+from quupod.utils import emitQueuePositions
+from quupod.views import current_user
+from quupod.views import render
+from quupod.views import url_for
+
 import flask_login
 
-queue = Blueprint('queue', __name__, url_prefix='/<string:queue_url>',
+queue = Blueprint(
+    'queue',
+    __name__,
+    url_prefix='/<string:queue_url>',
     template_folder='templates')
 
 
 @queue.url_defaults
-def add_queue_url(endpoint, values):
+def add_queue_url(endpoint: str, values: dict) -> None:
+    """Add information to every URL build."""
     values.setdefault('queue_url', getattr(g, 'queue_url', None))
 
 
 @queue.url_value_preprocessor
-def pull_queue_url(endpoint, values):
+def pull_queue_url(endpoint: str, values: dict) -> None:
+    """Extract information from the queue URL."""
     g.queue_url = values.pop('queue_url')
     g.queue = Queue.query.filter_by(url=g.queue_url).one_or_none()
     if not g.queue:
         abort(404)
 
 
-def render_queue(template, *args, **kwargs):
-    """Special rendering for queue"""
+# TODO cleanup
+def render_queue(template: str, *args, **kwargs) -> str:
+    """Special rendering for queue."""
     whitelist = g.queue.setting('whitelist').value
     if whitelist:
         entries = {}
@@ -53,20 +71,22 @@ def render_queue(template, *args, **kwargs):
 # QUEUE #
 #########
 
+
 @queue.route('/')
-def home():
-    """list all unresolved inquiries for the homepage"""
+def home() -> str:
+    """List all unresolved inquiries for the homepage."""
     if current_user().can('help'):
         return redirect(url_for('admin.home'))
-    return render_queue('landing.html',
-        num_inquiries=Inquiry.query.filter_by(
-            status='unresolved',
-            queue_id=g.queue.id).count(),
+    return render_queue(
+        'landing.html',
+        num_inquiries=Inquiry.get_num_unresolved(),
         ttr=g.queue.ttr())
 
+
+# TODO cleanup
 @queue.route('/promote/<string:role_name>', methods=['POST', 'GET'])
 @queue.route('/promote')
-def promote(role_name=None):
+def promote(role_name: str=None) -> str:
     """Promote the user accessing this page."""
     if not current_user().is_authenticated:
         return render_queue('error.html',
@@ -142,11 +162,14 @@ def promote(role_name=None):
 # FLOW #
 ########
 
+
+# TODO cleanup
 @queue.route('/request', methods=['POST', 'GET'])
-def inquiry():
-    """
-    Place a new request, which may be authored by either a system user or an
-    anonymous user.
+def inquiry() -> str:
+    """Place a new request.
+
+    This request which may be authored by either a system user or an anonymous
+    user.
     """
     user, form = flask_login.current_user, InquiryForm(request.form)
     if user.is_authenticated:
@@ -187,9 +210,11 @@ def inquiry():
     return render_queue('form.html', form=form, title='Request Help',
         submit='Request Help')
 
+
+# TODO cleanup
 @queue.route('/cancel/<int:inquiry_id>')
 @queue.route('/cancel')
-def cancel(inquiry_id=None):
+def cancel(inquiry_id: int=None) -> str:
     """Cancel placed request"""
     inquiry = Inquiry.query.get(inquiry_id) if inquiry_id else Inquiry.query.filter_by(
         owner_id=current_user().id,
@@ -209,9 +234,11 @@ def cancel(inquiry_id=None):
     emitQueueInfo(inquiry.queue)
     return redirect(url_for('queue.home'))
 
+
+# TODO (maybe) cleanup
 @queue.route('/waiting/<int:inquiry_id>')
 @queue.route('/waiting')
-def waiting(inquiry_id=None):
+def waiting(inquiry_id: int=None) -> str:
     """Screen shown after user has placed request and is waiting"""
     if inquiry_id:
         current_inquiry = Inquiry.query.get(inquiry_id)
@@ -241,16 +268,18 @@ def waiting(inquiry_id=None):
 # LOGIN/LOGOUT #
 ################
 
+
 @queue.route('/login', methods=['POST', 'GET'])
-def login():
-    """Login using globally defined login procedure"""
+def login() -> str:
+    """Login using globally defined login procedure."""
     from quupod.public.views import login
     return login(
         home=url_for('queue.home', _external=True),
         login=url_for('queue.login', _external=True))
 
+
 @queue.route('/logout')
-def logout():
-    """Logout using globally defined logout procedure"""
+def logout() -> str:
+    """Logout using globally defined logout procedure."""
     from quupod.public.views import logout
     return logout(home=url_for('queue.home', _external=True))
