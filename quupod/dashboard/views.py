@@ -14,12 +14,6 @@ dashboard = Blueprint(
     url_prefix='/dashboard', template_folder='templates')
 
 
-@dashboard.url_value_preprocessor
-def load_current_user(_, __):
-    """Load the current user (TODO: figure out what this does.)"""
-    pass
-
-
 def render_dashboard(f, *args, **kwargs):
     """Custom render for dashboard."""
     from quupod.views import render
