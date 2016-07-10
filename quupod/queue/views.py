@@ -2,13 +2,14 @@
 
 from .forms import InquiryForm
 from .forms import PromotionForm
+from .logic import maybe_promote_current_user
+from .logic import update_context_with_queue_config
 
 from flask import abort
 from flask import Blueprint
 from flask import g
 from flask import redirect
 from flask import request
-from quupod.defaults import default_queue_settings
 from quupod.forms import choicify
 from quupod.models import Inquiry
 from quupod.models import Participant
@@ -45,28 +46,12 @@ def pull_queue_url(endpoint: str, values: dict) -> None:
         abort(404)
 
 
-# TODO cleanup
-def render_queue(template: str, *args, **kwargs) -> str:
+def render_queue(template: str, *args, **context) -> str:
     """Special rendering for queue."""
-    whitelist = g.queue.setting('whitelist').value
-    if whitelist:
-        entries = {}
-        for entry in whitelist.split(','):
-            entry = tuple(s.strip() for s in entry.split('('))
-            if len(entry) == 2:
-                entries[entry[0]] = entry[1][:-1]
-            else:
-                entries[entry[0]] = 'Staff'
-        if current_user().is_authenticated and \
-                current_user().email in entries:
-            current_user().set_role(entries[current_user().email])
-    for k in default_queue_settings:
-        setting = g.queue.setting(k)
-        kwargs.update({
-            'queue_setting_%s' % k: (setting.value or setting.enabled)
-            if setting.enabled else False})
-    kwargs.setdefault('queue', g.queue)
-    return render(template, *args, **kwargs)
+    maybe_promote_current_user()
+    update_context_with_queue_config(context)
+    context.setdefault('queue', g.queue)
+    return render(template, *args, **context)
 
 
 #########
@@ -119,22 +104,23 @@ def promote(role_name: str=None) -> str:
     if role_name and role_name.lower() not in roles:
         abort(404)
     if not role_name:
-        return render_queue('roles.html',
+        return render_queue(
+            'roles.html',
             title='Promotion Form',
             message='Welcome. Please select a role below.',
             roles=[name for name in role_names if name.lower() in codes])
-    try:
-        if n_owners == 0:
-            code = '*'
-        else:
-            code = codes[role_name.lower()]
-    except KeyError:
+    if n_owners == 0:
+        code = '*'
+    elif role_name.lower() not in codes:
         abort(404)
+    else:
+        code = codes[role_name.lower()]
     form = PromotionForm(request.form)
     if request.method == 'POST' or code == '*':
         if not (code == '*' or request.form['code'] == code):
             form.errors.setdefault('code', []).append('Incorrect code.')
-            return render_queue('form.html',
+            return render_queue(
+                'form.html',
                 form=form,
                 submit='Promote',
                 back=url_for('queue.promote'))
@@ -144,19 +130,21 @@ def promote(role_name: str=None) -> str:
             user_id=current_user().id,
             queue_id=g.queue.id).one_or_none()
         if part:
-            part.update(role_id = role.id).save()
+            part.update(role_id=role.id).save()
         else:
             Participant(
                 user_id=current_user().id,
                 queue_id=g.queue.id,
                 role_id=role.id
             ).save()
-        return render_queue('confirm.html',
+        return render_queue(
+            'confirm.html',
             title='Promotion Success',
             message='You have been promoted to %s' % role_name,
             action='Onward',
             url=url_for('admin.home'))
-    return render_queue('form.html',
+    return render_queue(
+        'form.html',
         form=form,
         submit='Promote',
         back=url_for('queue.promote'))

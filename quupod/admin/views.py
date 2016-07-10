@@ -7,7 +7,6 @@ from flask import g
 from flask import abort
 from quupod import socketio
 from quupod.views import requires
-from quupod.views import render
 from quupod.views import url_for
 from quupod.views import current_user
 from quupod.models import Inquiry
@@ -16,7 +15,7 @@ from quupod.models import Participant
 from quupod.notifications import NOTIF_HELP_DONE
 from quupod.notifications import NOTIF_SETTING_UPDATED
 from quupod.notifications import NOTIF_SETTING_ONE_TYPE
-from quupod.defaults import default_queue_settings
+from quupod.queue.views import render_queue
 from quupod.utils import emitQueuePositions
 from quupod.utils import emitQueueInfo
 from quupod.utils import str2lst
@@ -49,14 +48,9 @@ def pull_queue_url(endpoint: str, values: dict) -> None:
             queue_id=g.queue.id).one_or_none()
 
 
-def render_admin(template: str, *args, **kwargs) -> str:
+def render_admin(template: str, *args, **context) -> str:
     """Special rendering for queue admin."""
-    for k in default_queue_settings:
-        setting = g.queue.setting(k)
-        kwargs.update({
-            'queue_setting_%s' % k: setting.value or setting.enabled})
-    kwargs.setdefault('queue', g.queue)
-    return render(template, *args, **kwargs)
+    return render_queue(template, *args, **context)
 
 
 #########
