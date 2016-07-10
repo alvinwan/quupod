@@ -166,23 +166,31 @@ def inquiry() -> str:
     if user.is_authenticated:
         form = InquiryForm(request.form, obj=user)
     elif g.queue.setting(name='require_login').enabled:
-        return render_queue('confirm.html',
+        return render_queue(
+            'confirm.html',
             title='Login Required',
             message='Login to add an inquiry, and start using this queue.')
     n = int(g.queue.setting(name='max_requests').value)
-    filter_id = User.email == current_user().email if \
-        current_user().is_authenticated else User.name == request.form.get('name', None)
+    filter_id = User.email == current_user().email \
+        if current_user().is_authenticated \
+        else User.name == request.form.get('name', None)
     not_logged_in_max = ''
     if Inquiry.query.join(User).filter(
-        filter_id,
-        Inquiry.status=='unresolved',
-        Inquiry.queue_id==g.queue.id
-        ).count() >= n:
+            filter_id,
+            Inquiry.status == 'unresolved',
+            Inquiry.queue_id == g.queue.id).count() >= n:
         if not current_user().is_authenticated:
-            not_logged_in_max = 'If you haven\'t submitted a request, try logging in and re-requesting.'
-        return render_queue('confirm.html',
+            not_logged_in_max = 'If you haven\'t submitted a request, try'
+            ' logging in and re-requesting.'
+        return render_queue(
+            'confirm.html',
             title='Oops',
-            message='Looks like you\'ve reached the maximum number of times you can add yourself to the queue at once (<code>%d</code>). %s' % (n, not_logged_in_max or 'Would you like to cancel your oldest request?'),
+            message='Looks like you\'ve reached the maximum number of times '
+            'you can add yourself to the queue at once (<code>%d</code>). '
+            '%s' % (
+                n,
+                not_logged_in_max or
+                'Would you like to cancel your oldest request?'),
             action='Cancel Oldest Request',
             url=url_for('queue.cancel'))
     form.location.choices = choicify(
@@ -190,7 +198,7 @@ def inquiry() -> str:
     form.category.choices = choicify(
         g.queue.setting('inquiry_types').value.split(','))
     if request.method == 'POST' and form.validate() and \
-        g.queue.is_valid_assignment(request, form):
+            g.queue.is_valid_assignment(request, form):
         inquiry = Inquiry(**request.form)
         inquiry.queue_id = g.queue.id
         if current_user().is_authenticated:
@@ -198,7 +206,10 @@ def inquiry() -> str:
         inquiry.save()
         emitQueueInfo(g.queue)
         return redirect(url_for('queue.waiting', inquiry_id=inquiry.id))
-    return render_queue('form.html', form=form, title='Request Help',
+    return render_queue(
+        'form.html',
+        form=form,
+        title='Request Help',
         submit='Request Help')
 
 
@@ -206,19 +217,23 @@ def inquiry() -> str:
 @queue.route('/cancel/<int:inquiry_id>')
 @queue.route('/cancel')
 def cancel(inquiry_id: int=None) -> str:
-    """Cancel placed request"""
-    inquiry = Inquiry.query.get(inquiry_id) if inquiry_id else Inquiry.query.filter_by(
-        owner_id=current_user().id,
-        status='unresolved',
-        queue_id=g.queue.id).first()
+    """Cancel placed request."""
+    inquiry = Inquiry.query.get(inquiry_id) if inquiry_id else \
+        Inquiry.query.filter_by(
+            owner_id=current_user().id,
+            status='unresolved',
+            queue_id=g.queue.id).first()
     anon = not current_user().is_authenticated and not inquiry.owner_id
-    non_anon = current_user().is_authenticated and inquiry.owner_id == current_user().id
+    non_anon = current_user().is_authenticated \
+        and inquiry.owner_id == current_user().id
     if anon or non_anon:
         inquiry.update(status='closed').save()
     else:
-        return render_queue('error.html',
+        return render_queue(
+            'error.html',
             code='404',
-            message='You cannot cancel another user\'s request. This incident has been logged.',
+            message='You cannot cancel another user\'s request. This incident'
+            ' has been logged.',
             url=url_for('queue.home'),
             action='Back Home')
     emitQueuePositions(inquiry)
@@ -230,7 +245,7 @@ def cancel(inquiry_id: int=None) -> str:
 @queue.route('/waiting/<int:inquiry_id>')
 @queue.route('/waiting')
 def waiting(inquiry_id: int=None) -> str:
-    """Screen shown after user has placed request and is waiting"""
+    """Screen shown after user has placed request and is waiting."""
     if inquiry_id:
         current_inquiry = Inquiry.query.get(inquiry_id)
     else:
@@ -238,20 +253,23 @@ def waiting(inquiry_id: int=None) -> str:
             owner_id=current_user().id,
             status='unresolved',
             queue_id=g.queue.id).first()
-    return render_queue('waiting.html',
+    return render_queue(
+        'waiting.html',
         position=Inquiry.query.filter(
             Inquiry.status == 'unresolved',
             Inquiry.queue_id == g.queue.id,
-            Inquiry.created_at <= current_inquiry.created_at
-        ).count(),
-        details='Location: %s, Assignment: %s, Problem: %s, Request: %s' % (current_inquiry.location, current_inquiry.assignment, current_inquiry.problem, current_inquiry.created_at.humanize()),
+            Inquiry.created_at <= current_inquiry.created_at).count(),
+        details='Location: %s, Assignment: %s, Problem: %s, Request: %s' % (
+            current_inquiry.location,
+            current_inquiry.assignment,
+            current_inquiry.problem,
+            current_inquiry.created_at.humanize()),
         group=Inquiry.query.filter(
             Inquiry.status == 'unresolved',
             Inquiry.queue_id == g.queue.id,
             Inquiry.assignment == current_inquiry.assignment,
             Inquiry.problem == current_inquiry.problem,
-            Inquiry.id != current_inquiry.id
-        ).all(),
+            Inquiry.id != current_inquiry.id).all(),
         inquiry=current_inquiry)
 
 
