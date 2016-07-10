@@ -102,6 +102,16 @@ def url_for(*args, **kwargs):
 # ERROR HANDLERS #
 ##################
 
+def error_with_message(error):
+    """Show error page."""
+    return render(
+        'error.html',
+        back=current_app.config['DOMAIN'],
+        title='Error!',
+        message=error.message,
+        url=current_app.config['DOMAIN'],
+        action='Return to homepage?')
+
 def error_not_found(error):
     """Show custom 404 page if page not found."""
     return render(

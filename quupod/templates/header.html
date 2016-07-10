@@ -1,7 +1,7 @@
 <header>
   {% include "banner.html" %}
   <div class="header-cont">
-    {% if queue %}
+    {% if g.queue %}
     <a href="{% if current_user.can('help') %}{{ the_url('admin.home') }}{% else %}{{ the_url('queue.home') }}{% endif %}"><h1 class="hidden-xs col-sm-4 col-md-3 header-title">{{ g.queue.name }} <span>{% if current_user.can('admin') %}Admin{% else %}Queue{% endif %}</span></h1></a>
     <nav class="col-md-9 col-sm-8 col-xs-12">
       <ul>
@@ -27,6 +27,7 @@
     {% else %}
     <a href="{% if not app_config_debug %}{{ app_config_domain }}{% endif %}"><h1 class="hidden-xs col-sm-4 col-md-3 header-title">Quu<span>Pod</span></h1></a>
     {% endif %}
+    {% if g.queue %}
     <aside class="drawer">
       <div class="dclose">
         <span class="closex">
@@ -56,5 +57,6 @@
         </ul>
       </nav>
     </aside>
+    {% endif %}
   </div>
 </header>

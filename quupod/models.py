@@ -518,6 +518,8 @@ class User(Base, flask_login.UserMixin):
 
     def can(self, *permission) -> bool:
         """Check permissions for this user."""
+        if not g.queue:
+            return False
         role = self.role
         if role and \
             (role.permissions == '*' or
