@@ -7,7 +7,7 @@
   <p class="sp-byline"><span id="nor">{{ num_inquiries }}</span> requests enqueued // {% if earliest_request %}Earliest enqueued request: <span id="eer">{{ earliest_request.created_at.format('hh:mm a') }} ({{ earliest_request.created_at.humanize() }})</span>{% else %}No requests enqueued{% endif %}</p>
   {% if current_inquiry %}
   <a class="button" href="{{ the_url('admin.help_inquiry', id=current_inquiry.id) }}">Resume</a>
-  {% elif not q_location_selection %}
+  {% elif not queue_setting_location_selection %}
     {% if not latest_inquiry %}
     <p class="button faded">No pending requests</p>
     {% else %}

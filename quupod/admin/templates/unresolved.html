@@ -3,7 +3,7 @@
 <section class="sp-module-banner module">
   <table>
     <tbody>
-    <tr><th>#</th><th>Name</th><th class="hidden-xs hidden-sm">Requested At</th>{% if q_inquiry_types %}<th class="hidden-xs">Category</th>{% endif %}<th class="hidden-xs">Staff</th><th class="hidden-xs">Assignment</th><th class="hidden-sm hidden-md hidden-lg">Assign.</td><th class="hidden-xs hidden-sm">Problem</td><th></th></tr>
+    <tr><th>#</th><th>Name</th><th class="hidden-xs hidden-sm">Requested At</th>{% if queue_setting_inquiry_types %}<th class="hidden-xs">Category</th>{% endif %}<th class="hidden-xs">Staff</th><th class="hidden-xs">Assignment</th><th class="hidden-sm hidden-md hidden-lg">Assign.</td><th class="hidden-xs hidden-sm">Problem</td><th></th></tr>
   {% set i = 0 %}
   {% if inquiries | length > 0 %}
     {% for inquiry in inquiries %}
@@ -12,7 +12,7 @@
       <td>{{ i }}</td>
       <td>{{ inquiry.to_local('created_at').name.split(' ')[0] }}</td>
       <td class="hidden-xs hidden-sm">{{ inquiry.created_at.humanize() }}</td>
-      {% if q_inquiry_types %}
+      {% if queue_setting_inquiry_types %}
       <td class="hidden-xs">{{ inquiry.category }}</td>
       {% endif %}
       <td class="hidden-xs">{% if inquiry.resolution %}{{ inquiry.resolution.staff.name }}{% else %}n/a{% endif %}</td>

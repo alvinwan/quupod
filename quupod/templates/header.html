@@ -17,13 +17,13 @@
       {% else %}
       <li><a href="{{ the_url('queue.login') }}" class="small-button hidden-xs">Login</a></li>
       {% endif %}
-      {% if (current_user.is_authenticated or not q_require_login) and not current_user.can('help') %}
+      {% if (current_user.is_authenticated or not queue_setting_require_login) and not current_user.can('help') %}
       <li><a href="{{ the_url('queue.inquiry') }}">Request</a></li>
       {% endif %}
     </ul>
   </nav>
   {% else %}
-  <a href="{{ domain }}"><h1 class="hidden-xs col-sm-4 col-md-3 header-title">Quu<span>Pod</span></h1></a>
+  <a href="{% if not app_config_debug %}{{ app_config_domain }}{% endif %}"><h1 class="hidden-xs col-sm-4 col-md-3 header-title">Quu<span>Pod</span></h1></a>
   {% endif %}
   <aside class="drawer">
     <div class="dclose">

@@ -3,10 +3,10 @@
     <section class="sp-module-banner module">
       <p class="sp-subtitle">Estimated Wait Time</p>
       <h1 class="sp-title" id="ttr">{{ ttr }}</h1>
-      <p class="sp-byline"><span id="nor">{{ num_inquiries }}</span> requests enqueued {% if q_welcome %}// {{ q_welcome }}{% endif %}</p>
-      {% if q_require_login and not current_user.is_authenticated %}
+      <p class="sp-byline"><span id="nor">{{ num_inquiries }}</span> requests enqueued {% if queue_setting_welcome %}// {{ queue_setting_welcome }}{% endif %}</p>
+      {% if queue_setting_require_login and not current_user.is_authenticated %}
       <a href="{{ the_url('queue.login') }}" class="button">Login</a>
-      {% elif (current_user.is_authenticated or not q_require_login) and not current_user.can('admin') %}
+      {% elif (current_user.is_authenticated or not queue_setting_require_login) and not current_user.can('admin') %}
       <a href="{{ the_url('queue.inquiry') }}" class="button">Request Help</a>
       {% endif %}
     </section>

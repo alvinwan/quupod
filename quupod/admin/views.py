@@ -52,7 +52,7 @@ def render_admin(template: str, *args, **kwargs) -> str:
     """Special rendering for queue admin."""
     for k in default_queue_settings:
         setting = g.queue.setting(k)
-        kwargs.update({'q_%s' % k: setting.value or setting.enabled})
+        kwargs.update({'queue_setting_%s' % k: setting.value or setting.enabled})
     kwargs.setdefault('queue', g.queue)
     return render(template, *args, **kwargs)
 

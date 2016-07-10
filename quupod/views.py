@@ -34,12 +34,9 @@ def current_user():
 def render(template: str, **kwargs) -> str:
     """Render with settings."""
     for k, v in current_app.config.items():
-        kwargs.setdefault('cfg_%s' % k, v)
-    if not current_app.config['DEBUG']:  # if on production
-        kwargs.setdefault('domain', current_app.config['DOMAIN'])
+        kwargs.setdefault('app_config_%s' % k, v)
     return render_template(
         template,
-        googleclientID=current_app.config['GOOGLECLIENTID'],
         banner_message=notifications.get(
             int(request.args.get('notification', None) or -1), None),
         request=request,

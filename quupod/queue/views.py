@@ -58,11 +58,13 @@ def render_queue(template: str, *args, **kwargs) -> str:
             else:
                 entries[entry[0]] = 'Staff'
         if current_user().is_authenticated and \
-            current_user().email in entries:
+                current_user().email in entries:
             current_user().set_role(entries[current_user().email])
     for k in default_queue_settings:
         setting = g.queue.setting(k)
-        kwargs.update({'q_%s' % k: (setting.value or setting.enabled) if setting.enabled else False })
+        kwargs.update({
+            'queue_setting_%s' % k: (setting.value or setting.enabled)
+            if setting.enabled else False})
     kwargs.setdefault('queue', g.queue)
     return render(template, *args, **kwargs)
 
@@ -89,21 +91,22 @@ def home() -> str:
 def promote(role_name: str=None) -> str:
     """Promote the user accessing this page."""
     if not current_user().is_authenticated:
-        return render_queue('error.html',
+        return render_queue(
+            'error.html',
             code='Oops',
             message='You need to be logged in to promote an account!')
     part = Participant.query.filter_by(
         queue_id=g.queue.id,
-        user_id=current_user().id
-    ).one_or_none()
+        user_id=current_user().id).one_or_none()
     n_owners = Participant.query.join(QueueRole).filter(
         QueueRole.name == 'Owner',
-        Participant.queue_id == g.queue.id
-    ).count()
+        Participant.queue_id == g.queue.id).count()
     if part and part.role.name == 'Owner' and n_owners <= 1:
-        return render_queue('error.html',
+        return render_queue(
+            'error.html',
             code='Oops',
-            message='You cannot demote yourself from owner until another owner has been added.')
+            message='You cannot demote yourself from owner until another owner'
+            ' has been added.')
     promotion_setting = g.queue.setting(name='self_promotion', default=None)
     if not promotion_setting or not promotion_setting.enabled:
         abort(404)
