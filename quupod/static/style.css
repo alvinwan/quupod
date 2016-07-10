@@ -148,7 +148,6 @@ a:hover {
     width:auto;
   }
 header {
-  padding:2em 3em 1em 3em;
   position:fixed;
   top:0;
   left:0;
@@ -156,6 +155,9 @@ header {
   text-align:center;
   z-index:100;
 }
+  .header-cont {
+    padding:2em 3em 1em 3em;
+  }
   .drawer-push header {
     left:-20em;
   }
@@ -275,6 +277,13 @@ header {
       height:100%;
       display:inline-block;
     }
+  .banner {
+    width:100%;
+    background-color:#eee;
+    color:#333;
+    text-align:center;
+    padding:1em 1em 0.5em 1em;
+  }
   .drawer {
     width:20.1em;
     position:fixed;

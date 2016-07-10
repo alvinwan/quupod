@@ -15,6 +15,7 @@ from quupod.models import Queue
 from quupod.models import Participant
 from quupod.notifications import NOTIF_HELP_DONE
 from quupod.notifications import NOTIF_SETTING_UPDATED
+from quupod.notifications import NOTIF_SETTING_ONE_TYPE
 from quupod.defaults import default_queue_settings
 from quupod.utils import emitQueuePositions
 from quupod.utils import emitQueueInfo
@@ -199,6 +200,7 @@ def help_inquiry(id: str, location: str=None) -> str:
 def settings() -> str:
     """Show settings for the current queue."""
     if request.method == 'POST':
+        notification = NOTIF_SETTING_UPDATED
         setting = (
             g.queue
             .setting(request.form['name'])
@@ -207,10 +209,14 @@ def settings() -> str:
         # post processing
         if setting.name == 'locations':
             setting.value = setting.value.replace(' ', '')
+        if setting.name == 'inquiry_types' and \
+                len(str2lst(setting.value)) == 1 and \
+                bool(int(setting.enabled)) is True:
+            notification = NOTIF_SETTING_ONE_TYPE
         setting.save()
         return redirect(url_for(
             'admin.settings',
-            notification=NOTIF_SETTING_UPDATED))
+            notification=notification))
     return render_admin('settings.html', settings=g.queue.cleaned_settings)
 
 
