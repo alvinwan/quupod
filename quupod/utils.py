@@ -43,11 +43,11 @@ def strfdelta(tdelta, fmt='%h:%m:%s'):
 def emitQueuePositions(inquiry):
     """Emit new queue positions."""
     from quupod.models import Inquiry
-    unresolved = Inquiry.query.filter_by(
+    unresolved = (Inquiry.query.filter_by(
         queue_id=inquiry.queue_id,
-        status='unresolved') \
-        .order_by(asc(Inquiry.created_at)) \
-        .all()
+        status='unresolved')
+        .order_by(asc(Inquiry.created_at))
+        .all())
     indices = list(enumerate([i.id for i in unresolved], start=1))
     emit(
         'update position',

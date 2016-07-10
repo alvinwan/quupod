@@ -8,6 +8,7 @@ from flask import render_template
 from flask import request
 from flask import g
 from flask import current_app
+from .notifications import notifications
 import flask_login
 
 login_manager = flask_login.LoginManager()
@@ -26,11 +27,11 @@ login_manager.anonymous_user = Anonymous
 
 
 def current_user():
-    """Returns currently-logged-in user."""
+    """Return currently-logged-in user."""
     return flask_login.current_user
 
 
-def render(template, **kwargs):
+def render(template: str, **kwargs) -> str:
     """Render with settings."""
     for k, v in current_app.config.items():
         kwargs.setdefault('cfg_%s' % k, v)
@@ -50,6 +51,8 @@ def render(template, **kwargs):
 
 def anonymous_required(f):
     """Decorator for views that require anonymous users (e.g., sign in)."""
+    from .models import User
+
     @wraps(f)
     def decorator(*args, **kwargs):
         user = flask_login.current_user
@@ -59,7 +62,7 @@ def anonymous_required(f):
     return decorator
 
 
-def requires(*permissions):
+def requires(*permissions) -> str:
     """Decorator for views, restricting access to the roles listed."""
     from quupod.queue.views import render_queue
 
@@ -68,7 +71,8 @@ def requires(*permissions):
         def decorator(*args, **kwargs):
             user = flask_login.current_user
             if not all(user.can(perm) for perm in permissions):
-                return render_queue('error.html',
+                return render_queue(
+                    'error.html',
                     message='Permission Denied.',
                     action='Home',
                     url=url_for('queue.home'))
@@ -78,7 +82,7 @@ def requires(*permissions):
 
 
 def strip_subdomain(string):
-    """Strip subdomain prefix if applicable"""
+    """Strip subdomain prefix if applicable."""
     if '/subdomain' not in request.path or not getattr(g, 'queue', None):
         return string
     string = string.replace('/subdomain', '')
@@ -88,12 +92,12 @@ def strip_subdomain(string):
 
 
 def current_url():
-    """Return current URL"""
+    """Return current URL."""
     return strip_subdomain(request.path)
 
 
 def url_for(*args, **kwargs):
-    """Special url function for subdomain websites"""
+    """Special url function for subdomain websites."""
     return strip_subdomain(flask_url_for(*args, **kwargs))
 
 
@@ -115,7 +119,8 @@ def error_not_found(error):
 
 def error_server(error):
     """Show custom 500 page if uncaught server exception occurs."""
-    from quupod import db
+    from .models import db
+
     db.session.rollback()
     return render_template(
         '500.html',

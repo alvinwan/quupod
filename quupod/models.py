@@ -259,10 +259,60 @@ class Queue(Base):
     category = db.Column(db.String(50))
     settings = db.relationship("QueueSetting", backref="queue")
 
-    def show_inquiry_types(self) -> bool:
-        """Whether or not to show inquiry types."""
-        return self.setting('inquiry_types').enabled and \
-            self.setting('inquiry_type_selection').enabled
+    @property
+    def cleaned_settings(self) -> [Setting]:
+        """Retrieve list of all settings.
+
+        This will check that each setting is valid and then assign each setting
+        attributes from the default settings file.
+        """
+        for setting in g.queue.settings:
+            if setting.name in default_queue_settings:
+                setting.description = \
+                    default_queue_settings[setting.name]['description']
+        if g.participant.role.name.lower() != 'owner':
+            return [
+                s for s in g.queue._sorted_settings if s.name != 'whitelist']
+        return g.queue._sorted_settings
+
+    @property
+    def _sorted_settings(self) -> [Setting]:
+        """Return settings sorted by name."""
+        return sorted(g.queue.settings, key=lambda s: s.name)
+
+    def allowed_assignment(self, request: LocalProxy, form: Form) -> bool:
+        """Return if assignment is allowed, per settings.
+
+        :param request: The request context object.
+        :param form: form to check
+        """
+        lst = self.setting('assignments').value
+        assignment = request.form['assignment']
+        category = request.form.get('category', None)
+        if ':' in lst:
+            datum = dict(l.split(':') for l in lst.splitlines())
+            lst = datum.get(category, '*')
+            if lst == '*':
+                return True
+        if assignment not in str2lst(lst):
+            prefix = 'Assignment'
+            if category:
+                prefix = 'For "%s" inquiries, assignment' % category
+            form.errors.setdefault('assignment', []) \
+                .append(
+                    '%s "%s" is not allowed. Only the following '
+                    'assignments are: %s' % (prefix, assignment, lst))
+            return False
+        return True
+
+    def is_valid_assignment(self, request: LocalProxy, form: Form) -> bool:
+        """Check if the assignment is valid, based on settings.
+
+        :param request: The request context object.
+        :param form: form to check
+        """
+        return not self.setting('assignments').enabled or \
+            self.allowed_assignment(request, form)
 
     def present_staff(self) -> {db.Model}:
         """Fetch all present staff members."""
@@ -292,6 +342,11 @@ class Queue(Base):
             staff.add(user)
         return staff
 
+    def show_inquiry_types(self) -> bool:
+        """Whether or not to show inquiry types."""
+        return self.setting('inquiry_types').enabled and \
+            self.setting('inquiry_type_selection').enabled
+
     def ttr(self) -> str:
         """Compute average time until resolution."""
         resolutions = Resolution.query.join(Inquiry).filter(
@@ -304,40 +359,6 @@ class Queue(Base):
                 total = n + total
             return strfdelta(total/len(ns))
         return '00:00:00'
-
-    def is_valid_assignment(self, request: LocalProxy, form: Form) -> bool:
-        """Check if the assignment is valid, based on settings.
-
-        :param request: The request context object.
-        :param form: form to check
-        """
-        return not self.setting('assignments').enabled or \
-            self.allowed_assignment(request, form)
-
-    def allowed_assignment(self, request: LocalProxy, form: Form) -> bool:
-        """Return if assignment is allowed, per settings.
-
-        :param request: The request context object.
-        :param form: form to check
-        """
-        lst = self.setting('assignments').value
-        assignment = request.form['assignment']
-        category = request.form.get('category', None)
-        if ':' in lst:
-            datum = dict(l.split(':') for l in lst.splitlines())
-            lst = datum.get(category, '*')
-            if lst == '*':
-                return True
-        if assignment not in str2lst(lst):
-            prefix = 'Assignment'
-            if category:
-                prefix = 'For "%s" inquiries, assignment' % category
-            form.errors.setdefault('assignment', []) \
-                .append(
-                    '%s "%s" is not allowed. Only the following '
-                    'assignments are: %s' % (prefix, assignment, lst))
-            return False
-        return True
 
     @property
     def roles(self) -> [Role]:
@@ -446,11 +467,12 @@ class User(Base, flask_login.UserMixin):
 
     def queues(self) -> [Queue]:
         """Return all queues for this user."""
-        return Queue \
-            .query \
-            .join(Participant) \
-            .filter_by(user_id=self.id) \
-            .all()
+        return (
+            Queue
+            .query
+            .join(Participant)
+            .filter_by(user_id=self.id)
+            .all())
 
     def can(self, *permission) -> bool:
         """Check permissions for this user."""
@@ -486,82 +508,10 @@ class Inquiry(Base):
     category = db.Column(db.String(25), default='question')
     queue_id = db.Column(db.Integer, db.ForeignKey('queue.id'), index=True)
 
-    @staticmethod
-    def clear_all_inquiries():
-        """Clear all inquiries for the current queue."""
-        Inquiry.query.filter_by(
-            status='unresolved',
-            queue_id=g.queue.id).update({'status': 'closed'})
-        Inquiry.query.filter_by(
-            status='resolving',
-            queue_id=g.queue.id).update({'status': 'closed'})
-        db.session.commit()
-
-    @staticmethod
-    def count_unresolved(**kwargs) -> int:
-        """Return number of unresolved inquiries for a specific queue."""
-        filters = {'status': 'unresolved', 'queue_id': g.queue.id}
-        filters.update(kwargs)
-        return Inquiry.query.filter_by(**filters).count()
-
-    @staticmethod
-    def get_unresolved(categories: [str], **filters) -> [(str, int)]:
-        """Return list of (category, number unresolved)."""
-        return list(filter([(category, Inquiry.count_unresolved(
-            category=category,
-            **filters))
-            for category in categories],
-            lambda pair: pair[1] > 0))
-
-    @staticmethod
-    def get_inquiries(status: str, limit: int) -> [db.Model]:
-        """Get all inquiries, along with resolutions, for the current queue."""
-        return Inquiry.query.join(Resolution).filter(
-                status=status,
-                queue_id=g.queue.id) \
-            .order_by(desc(Resolution.created_at)) \
-            .limit(limit) \
-            .all()
-
-    @staticmethod
-    def current() -> db.Model:
-        """Return current resolution for the logged-in user."""
-        resolution = Resolution.query.filter_by(
-            user_id=flask_login.current_user.id,
-            resolved_at=None).first()
-        if resolution:
-            return resolution.inquiry
-
-    @staticmethod
-    def current_or_latest(**kwargs):
-        """Return the current inquiry if one exists. Otherwise, return latest.
-
-        This method is used when fetching the latest inquiry on the help
-        screen. In this case, we would like to have the staff member resume
-        unresolved inquiries before resolving new ones.
-        """
-        current_inquiry = Inquiry.current()
-        if current_inquiry:
-            return current_inquiry
-        return Inquiry.latest(**kwargs)
-
-    @staticmethod
-    def latest(**kwargs) -> db.Model:
-        """Return latest unresolved inquiry for the current queue."""
-        kwargs = {k: v for k, v in kwargs.items() if v}
-        return Inquiry.query.filter_by(
-            status='unresolved',
-            queue_id=g.queue.id,
-            **kwargs).order_by(asc(Inquiry.created_at)).first()
-
-    @staticmethod
-    def earliest(**kwargs) -> db.Model:
-        """Return earliest unresolved inquiry for the current queue."""
-        kwargs = {k: v for k, v in kwargs.items() if v}
-        return Inquiry.query.filter_by(
-            status='unresolved',
-            queue_id=g.queue.id,
-            **kwargs).order_by(desc(Inquiry.created_at)).first()
+    @property
+    def owner(self) -> User:
+        """The user that filed the inquiry."""
+        return User.query.get(self.owner_id)
 
     @property
     def queue(self) -> Queue:
@@ -578,17 +528,149 @@ class Inquiry(Base):
         else:
             return Resolution.query.filter_by(inquiry_id=self.id).first()
 
-    @property
-    def owner(self) -> User:
-        """The user that filed the inquiry."""
-        return User.query.get(self.owner_id)
+    @staticmethod
+    def clear_all_inquiries():
+        """Clear all inquiries for the current queue."""
+        Inquiry.query.filter_by(
+            status='unresolved',
+            queue_id=g.queue.id).update({'status': 'closed'})
+        Inquiry.query.filter_by(
+            status='resolving',
+            queue_id=g.queue.id).update({'status': 'closed'})
+        db.session.commit()
 
-    def unlock(self) -> db.Model:
-        """Unlock Inquiry and re-enqueue request."""
-        self.status = 'unresolved'
-        if self.resolution:
-            self.resolution.close()
+    @staticmethod
+    def get_current_or_latest(**kwargs):
+        """Return the current inquiry if one exists. Otherwise, return latest.
+
+        This method is used when fetching the latest inquiry on the help
+        screen. In this case, we would like to have the staff member resume
+        unresolved inquiries before resolving new ones.
+        """
+        current_inquiry = Inquiry.get_current()
+        if current_inquiry:
+            return current_inquiry
+        return Inquiry.get_latest(**kwargs)
+
+    @staticmethod
+    def get_current() -> db.Model:
+        """Return current resolution for the logged-in user."""
+        resolution = Resolution.query.filter_by(
+            user_id=flask_login.current_user.id,
+            resolved_at=None).first()
+        if resolution:
+            return resolution.inquiry
+
+    @staticmethod
+    def get_current_user_inquiries(self, limit: int=10) -> [db.Model]:
+        """Return list of all inquiries associated with the current user."""
+        user = flask_login.current_user
+        if user.is_authenticated:
+            return Inquiry.query.filter_by(id=user.id).limit(limit).all()
+        return Inquiry.query.filter_by(name=user.name).limit(limit).all()
+
+    @staticmethod
+    def get_earliest(**kwargs) -> db.Model:
+        """Return earliest unresolved inquiry for the current queue."""
+        kwargs = {k: v for k, v in kwargs.items() if v}
+        return Inquiry.query.filter_by(
+            status='unresolved',
+            queue_id=g.queue.id,
+            **kwargs).order_by(desc(Inquiry.created_at)).first()
+
+    @staticmethod
+    def get_inquiries(status: str, limit: int) -> [db.Model]:
+        """Get all inquiries, along with resolutions, for the current queue."""
+        return (
+            Inquiry
+            .query
+            .join(Resolution)
+            .filter(
+                status=status,
+                queue_id=g.queue.id)
+            .order_by(desc(Resolution.created_at))
+            .limit(limit)
+            .all())
+
+    @staticmethod
+    def get_latest(**kwargs) -> db.Model:
+        """Return latest unresolved inquiry for the current queue.
+
+        This will filter the keyword arguments provided. Specifically, it will:
+        - Remove all filters will falsey values.
+        - This will remove the 'category' field if the category is 'all'.
+        """
+        kwargs = {k: v for k, v in kwargs.items() if v}
+
+        if kwargs.get('category', None) == 'all':
+            kwargs.pop('category')
+
+        return Inquiry.query.filter_by(
+            status='unresolved',
+            queue_id=g.queue.id,
+            **kwargs).order_by(asc(Inquiry.created_at)).first()
+
+    @staticmethod
+    def get_categories_unresolved(**kwargs) -> int:
+        """Return categories that have unresolved inquiries."""
+        return Inquiry.get_unresolved(
+            str2lst(g.queue.setting('inquiry_types').value),
+            **kwargs)
+
+    @staticmethod
+    def get_unresolved(categories: [str], **filters) -> [(str, int)]:
+        """Return list of (category, number unresolved).
+
+        This only returns categories that have a non-zero number of unresolved
+        inquiries.
+        """
+        lst = []
+        for category in categories:
+            num = Inquiry.get_num_unresolved(category=category, **filters)
+            if num > 0:
+                lst.append((category, num))
+        return lst
+
+    @staticmethod
+    def get_num_unresolved(**kwargs) -> int:
+        """Return number of unresolved inquiries for a specific queue."""
+        filters = {'status': 'unresolved', 'queue_id': g.queue.id}
+        filters.update(kwargs)
+        return Inquiry.query.filter_by(**filters).count()
+
+    @staticmethod
+    def maybe_unlock_delayed() -> None:
+        """Unlock delayed inquiry if a delayed inquiry is found.
+
+        Note that an inquiry is delayed by passing the id of the inquiry in the
+        query parameters of a URL.
+        """
+        delayed_id = request.args.get('delayed_id', None)
+        if delayed_id:
+            Inquiry.query.get(delayed_id).unlock()
+
+    def close(self) -> db.Model:
+        """Close an inquiry."""
+        self.status = 'resolved'
         return self.save()
+
+    def get_similar_inquiries(self):
+        """Fetch all similar inquiries.
+
+        For now, "similar" inquiries are those that share identical assignment
+        names and problem numbers.
+        """
+        return Inquiry.query.filter(
+            Inquiry.status == 'unresolved',
+            Inquiry.queue_id == g.queue.id,
+            Inquiry.assignment == self.assignment,
+            Inquiry.problem == self.problem,
+            Inquiry.owner_id != self.owner_id
+        ).all()
+
+    def get_wait_time(self, fmt: str='%h:%m:%s') -> str:
+        """Return the wait time delta object as a string."""
+        return strfdelta(self.resolution.created_at-self.created_at, fmt)
 
     def lock(self) -> db.Model:
         """Lock an inquiry.
@@ -598,10 +680,10 @@ class Inquiry(Base):
         self.status = 'resolving'
         return self.save()
 
-    def close(self) -> db.Model:
-        """Close an inquiry."""
-        self.status = 'resolved'
-        return self.save()
+    def maybe_lock(self) -> None:
+        """Lock an inquiry if the inquiry has not already been locked."""
+        if not self.resolution:
+            self.lock().link(flask_login.current_user)
 
     def link(self, user: User) -> Resolution:
         """Link inquiry to a user."""
@@ -610,6 +692,13 @@ class Inquiry(Base):
                 inquiry_id=self.id,
                 resolved_at=None).one_or_none():
             return Resolution(user_id=user.id, inquiry_id=self.id).save()
+
+    def unlock(self) -> db.Model:
+        """Unlock Inquiry and re-enqueue request."""
+        self.status = 'unresolved'
+        if self.resolution:
+            self.resolution.close()
+        return self.save()
 
 
 ##############################

@@ -12,18 +12,13 @@ from quupod.views import url_for
 from quupod.views import current_user
 from quupod.models import Inquiry
 from quupod.models import Queue
-from quupod.models import QueueSetting
 from quupod.models import Participant
-from quupod.models import Resolution
-from quupod.models import db
 from quupod.notifications import NOTIF_HELP_DONE
 from quupod.notifications import NOTIF_SETTING_UPDATED
 from quupod.defaults import default_queue_settings
-from quupod.utils import strfdelta
 from quupod.utils import emitQueuePositions
 from quupod.utils import emitQueueInfo
 from quupod.utils import str2lst
-from sqlalchemy import desc
 import flask_login
 
 
@@ -72,11 +67,11 @@ def render_admin(template: str, *args, **kwargs) -> str:
 def home() -> str:
     """The queue administration home page."""
     context = {
-        'num_inquiries': Inquiry.count_unresolved(),
-        'latest_inquiry': Inquiry.current_or_latest(),
-        'current_inquiry': Inquiry.current(),
+        'num_inquiries': Inquiry.get_num_unresolved(),
+        'latest_inquiry': Inquiry.get_current_or_latest(),
+        'current_inquiry': Inquiry.get_current(),
         'ttr': g.queue.ttr(),
-        'earliest_request': Inquiry.earliest()
+        'earliest_request': Inquiry.get_earliest()
     }
     if not g.queue.setting('location_selection').enabled:
         return render_admin('home.html', **context)
@@ -137,7 +132,6 @@ def clear() -> str:
 ########
 
 
-# TODO: cleanup
 @admin.route(
     '/help/<string:location>/<string:category>/latest',
     methods=['POST', 'GET'])
@@ -148,28 +142,19 @@ def clear() -> str:
 def help_latest(location: str=None, category: str=None) -> str:
     """Automatically select next inquiry."""
     if g.queue.show_inquiry_types() and not category:
-        categories = Inquiry.get_unresolved(
-            str2lst(g.queue.setting('inquiry_types').value),
-            location=location)
+        categories = Inquiry.get_categories_unresolved(location=location)
         if len(categories) > 1:
             return render_admin(
                 'categories.html',
                 title='Request Type',
                 location=location,
                 categories=categories)
-
-    filters = {'location': location}
-    if category and category != 'all':
-        filters['category'] = category
-    inquiry = Inquiry.current_or_latest(**filters)
-
+    inquiry = Inquiry.get_current_or_latest(
+        location=location,
+        category=category)
+    Inquiry.maybe_unlock_delayed()
     if not inquiry:
         return redirect(url_for('admin.home', notification=NOTIF_HELP_DONE))
-
-    delayed_id = request.args.get('delayed_id', None)
-    if delayed_id:
-        Inquiry.query.get(delayed_id).unlock()
-
     inquiry.lock().link(current_user())
     return redirect(url_for(
         'admin.help_inquiry',
@@ -177,7 +162,6 @@ def help_latest(location: str=None, category: str=None) -> str:
         location=location))
 
 
-# TODO: cleanup
 @admin.route(
     '/help/inquiry/<string:location>/<string:id>',
     methods=['POST', 'GET'])
@@ -186,85 +170,51 @@ def help_latest(location: str=None, category: str=None) -> str:
 @requires('help')
 def help_inquiry(id: str, location: str=None) -> str:
     """automatically selects next inquiry or reloads inquiry."""
-    inquiry = Inquiry.query.get(id)
-    if not inquiry.resolution:
-        inquiry.lock()
-        inquiry.link(current_user())
+    inquiry = Inquiry.query.get(id).maybe_lock()
     if request.method == 'POST':
-        delayed_id = None
         inquiry.resolution.close()
-
-        # emit new queue positions
         emitQueuePositions(inquiry)
         emitQueueInfo(inquiry.queue)
-
-        if request.form['status'] == 'unresolved':
-            delayed_id = inquiry.id
-        else:
+        if request.form['status'] == 'resolved':
             inquiry.close()
         if request.form['load_next'] != 'y':
-            if delayed_id:
-                delayed = Inquiry.query.get(delayed_id)
-                delayed.unlock()
+            if request.form['status'] == 'unresolved':
+                inquiry.unlock()
             return redirect(url_for('admin.home'))
-        if not location:
-            return redirect(
-                url_for('admin.help_latest', delayed_id=delayed_id))
-        return redirect(url_for(
-            'admin.help_latest',
-            location=location,
-            delayed_id=delayed_id))
+        return redirect(
+            url_for('admin.help_latest', location=location, delayed_id=id))
     return render_admin(
         'help_inquiry.html',
         inquiry=inquiry,
-        inquiries=Inquiry.query.filter_by(name=inquiry.name).limit(10).all(),
+        inquiries=Inquiry.get_current_user_inquiries(),
         hide_event_nav=True,
-        group=Inquiry.query.filter(
-            Inquiry.status == 'unresolved',
-            Inquiry.queue_id == g.queue.id,
-            Inquiry.assignment == inquiry.assignment,
-            Inquiry.problem == inquiry.problem,
-            Inquiry.owner_id != inquiry.owner_id
-        ).all(),
-        wait_time=strfdelta(
-            inquiry.resolution.created_at-inquiry.created_at, '%h:%m:%s'))
+        group=inquiry.get_similar_inquiries(),
+        wait_time=inquiry.get_wait_time('%h:%m:%s'))
 
 
 ############
 # SETTINGS #
 ############
 
-# TODO: cleanup
 @admin.route('/settings', methods=['POST', 'GET'])
 @flask_login.login_required
 @requires('edit_settings')
 def settings() -> str:
     """Show settings for the current queue."""
-    settings = sorted(QueueSetting.query.join(Queue).filter_by(
-        id=g.queue.id).all(), key=lambda s: s.name)
-    if g.participant.role.name.lower() != 'owner':
-        settings = [s for s in settings if s.name != 'whitelist']
-    for setting in settings:
-        if setting.name in default_queue_settings:
-            # NOTE: this will filter out settings not in the default settings
-            default_description = \
-                default_queue_settings[setting.name]['description']
-            if default_description != setting.description:
-                setting.description = default_description
     if request.method == 'POST':
-        notification = NOTIF_SETTING_UPDATED
-        setting = QueueSetting.query.filter_by(
-            queue_id=g.queue.id,
-            name=request.form['name']).first()
-        for k, v in request.form.items():
-            setattr(setting, k, v)
+        setting = (
+            g.queue
+            .get_setting(request.form['name'])
+            .update(**request.form.items()))
+        # TODO convert all settings into objects, with permissions check and
+        # post processing
         if setting.name == 'locations':
             setting.value = setting.value.replace(' ', '')
         setting.save()
         return redirect(url_for(
             'admin.settings',
-            notification=notification))
-    return render_admin('settings.html', settings=settings)
+            notification=NOTIF_SETTING_UPDATED))
+    return render_admin('settings.html', settings=g.queue.cleaned_settings)
 
 
 ###########
