@@ -1,8 +1,17 @@
 """Logic for all non-admin queue views."""
 
 from flask import g
-from quupod.views import current_user
 from quupod.defaults import default_queue_settings
+from quupod.models import Inquiry
+from quupod.views import current_user
+
+
+def get_inquiry_for_asker(inquiry_id: int) -> Inquiry:
+    """Fetch the current inquiry for the asker."""
+    if inquiry_id:
+        return Inquiry.query.get(inquiry_id)
+    else:
+        return Inquiry.get_current_asking()
 
 
 def maybe_promote_current_user():

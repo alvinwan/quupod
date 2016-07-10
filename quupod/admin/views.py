@@ -170,7 +170,7 @@ def help_inquiry(id: str, location: str=None) -> str:
         emitQueuePositions(inquiry)
         emitQueueInfo(inquiry.queue)
         if request.form['status'] == 'resolved':
-            inquiry.close()
+            inquiry.resolved()
         elif request.form['status'] == 'unresolved':
             delayed_id = id
         if request.form['load_next'] != 'y':

@@ -554,7 +554,11 @@ class Inquiry(Base):
 
     @staticmethod
     def get_current() -> db.Model:
-        """Return current resolution for the logged-in user."""
+        """Return current resolution for the logged-in, staff user.
+
+        This is an inquiry that the logged-in staff user is currently working
+        on. This is not for the inquirer.
+        """
         resolution = Resolution.query.join(Inquiry).filter(
             Inquiry.queue_id == g.queue.id,
             Inquiry.status == 'resolving',
@@ -562,6 +566,14 @@ class Inquiry(Base):
             Resolution.resolved_at == None).first()
         if resolution:
             return resolution.inquiry
+
+    @staticmethod
+    def get_current_asking() -> db.Model:
+        """Return current resolution for the logged-in, non-staff user."""
+        return Inquiry.query.filter_by(
+            owner_id=flask_login.current_user.id,
+            status='unresolved',
+            queue_id=g.queue.id).first()
 
     @staticmethod
     def get_current_user_inquiries(limit: int=10) -> [db.Model]:
@@ -655,10 +667,16 @@ class Inquiry(Base):
         if delayed_id:
             Inquiry.query.get(delayed_id).unlock()
 
+    def current_position(self, current_inquiry: db.Model) -> int:
+        """Fetch current position of this inquiry in the current queue."""
+        return Inquiry.query.filter(
+            Inquiry.status == 'unresolved',
+            Inquiry.queue_id == g.queue.id,
+            Inquiry.created_at <= current_inquiry.created_at).count()
+
     def close(self) -> db.Model:
-        """Close an inquiry."""
-        self.status = 'resolved'
-        return self.save()
+        """Close an inquiry, marking as unresolved."""
+        return self.update(status='close').save()
 
     def get_similar_inquiries(self):
         """Fetch all similar inquiries.
@@ -671,12 +689,18 @@ class Inquiry(Base):
             Inquiry.queue_id == g.queue.id,
             Inquiry.assignment == self.assignment,
             Inquiry.problem == self.problem,
-            Inquiry.owner_id != self.owner_id
-        ).all()
+            Inquiry.owner_id != self.owner_id).all()
 
     def get_wait_time(self, fmt: str='%h:%m:%s') -> str:
         """Return the wait time delta object as a string."""
         return strfdelta(self.resolution.created_at-self.created_at, fmt)
+
+    def is_owned_by_current_user(self) -> bool:
+        """Check if current inquiry is owned by the current user."""
+        user = flask_login.current_user
+        if user.is_authenticated:
+            return not self.owner_id
+        return self.owner_id == user.id
 
     def lock(self) -> db.Model:
         """Lock an inquiry.
@@ -701,6 +725,10 @@ class Inquiry(Base):
         }
         if not Resolution.query.filter_by(**filters).one_or_none():
             return Resolution(**filters).save()
+
+    def resolved(self) -> db.Model:
+        """Close an inquiry, marking as resolved."""
+        return self.update(status='resolved').save()
 
     def unlock(self) -> db.Model:
         """Unlock Inquiry and re-enqueue request."""

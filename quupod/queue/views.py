@@ -2,6 +2,7 @@
 
 from .forms import InquiryForm
 from .forms import PromotionForm
+from .logic import get_inquiry_for_asker
 from .logic import maybe_promote_current_user
 from .logic import update_context_with_queue_config
 
@@ -213,21 +214,13 @@ def inquiry() -> str:
         submit='Request Help')
 
 
-# TODO cleanup
 @queue.route('/cancel/<int:inquiry_id>')
 @queue.route('/cancel')
 def cancel(inquiry_id: int=None) -> str:
     """Cancel placed request."""
-    inquiry = Inquiry.query.get(inquiry_id) if inquiry_id else \
-        Inquiry.query.filter_by(
-            owner_id=current_user().id,
-            status='unresolved',
-            queue_id=g.queue.id).first()
-    anon = not current_user().is_authenticated and not inquiry.owner_id
-    non_anon = current_user().is_authenticated \
-        and inquiry.owner_id == current_user().id
-    if anon or non_anon:
-        inquiry.update(status='closed').save()
+    inquiry = get_inquiry_for_asker()
+    if inquiry.is_owned_by_current_user():
+        inquiry.close()
     else:
         return render_queue(
             'error.html',
@@ -241,36 +234,21 @@ def cancel(inquiry_id: int=None) -> str:
     return redirect(url_for('queue.home'))
 
 
-# TODO (maybe) cleanup
 @queue.route('/waiting/<int:inquiry_id>')
 @queue.route('/waiting')
 def waiting(inquiry_id: int=None) -> str:
     """Screen shown after user has placed request and is waiting."""
-    if inquiry_id:
-        current_inquiry = Inquiry.query.get(inquiry_id)
-    else:
-        current_inquiry = Inquiry.query.filter_by(
-            owner_id=current_user().id,
-            status='unresolved',
-            queue_id=g.queue.id).first()
+    inquiry = get_inquiry_for_asker()
     return render_queue(
         'waiting.html',
-        position=Inquiry.query.filter(
-            Inquiry.status == 'unresolved',
-            Inquiry.queue_id == g.queue.id,
-            Inquiry.created_at <= current_inquiry.created_at).count(),
+        position=inquiry.current_position(),
+        group=inquiry.get_similar_inquiries(),
+        inquiry=inquiry,
         details='Location: %s, Assignment: %s, Problem: %s, Request: %s' % (
-            current_inquiry.location,
-            current_inquiry.assignment,
-            current_inquiry.problem,
-            current_inquiry.created_at.humanize()),
-        group=Inquiry.query.filter(
-            Inquiry.status == 'unresolved',
-            Inquiry.queue_id == g.queue.id,
-            Inquiry.assignment == current_inquiry.assignment,
-            Inquiry.problem == current_inquiry.problem,
-            Inquiry.id != current_inquiry.id).all(),
-        inquiry=current_inquiry)
+            inquiry.location,
+            inquiry.assignment,
+            inquiry.problem,
+            inquiry.created_at.humanize()))
 
 
 ################
