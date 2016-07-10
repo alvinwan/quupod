@@ -66,18 +66,15 @@ def render_admin(template: str, *args, **kwargs) -> str:
 @requires('help')
 def home() -> str:
     """The queue administration home page."""
-    context = {
-        'num_inquiries': Inquiry.get_num_unresolved(),
-        'latest_inquiry': Inquiry.get_current_or_latest(),
-        'current_inquiry': Inquiry.get_current(),
-        'ttr': g.queue.ttr(),
-        'earliest_request': Inquiry.get_earliest()
-    }
-    if not g.queue.setting('location_selection').enabled:
-        return render_admin('home.html', **context)
-    context['locations'] = Inquiry.get_unresolved(
-        str2lst(g.queue.setting('locations').value))
-    return render_admin('home.html', **context)
+    return render_admin(
+        'home.html',
+        num_inquiries=Inquiry.get_num_unresolved(),
+        latest_inquiry=Inquiry.get_current_or_latest(),
+        current_inquiry=Inquiry.get_current(),
+        ttr=g.queue.ttr(),
+        earliest_request=Inquiry.get_earliest(),
+        locations=Inquiry.get_unresolved(
+            str2lst(g.queue.setting('locations').value), 'location'))
 
 ##########
 # QUEUES #
@@ -204,8 +201,8 @@ def settings() -> str:
     if request.method == 'POST':
         setting = (
             g.queue
-            .get_setting(request.form['name'])
-            .update(**request.form.items()))
+            .setting(request.form['name'])
+            .update(**dict(request.form.items())))
         # TODO convert all settings into objects, with permissions check and
         # post processing
         if setting.name == 'locations':

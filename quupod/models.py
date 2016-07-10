@@ -555,14 +555,16 @@ class Inquiry(Base):
     @staticmethod
     def get_current() -> db.Model:
         """Return current resolution for the logged-in user."""
-        resolution = Resolution.query.filter_by(
-            user_id=flask_login.current_user.id,
-            resolved_at=None).first()
+        resolution = Resolution.query.join(Inquiry).filter(
+            Inquiry.queue_id == g.queue.id,
+            Inquiry.status == 'resolving',
+            Resolution.user_id == flask_login.current_user.id,
+            Resolution.resolved_at == None).first()
         if resolution:
             return resolution.inquiry
 
     @staticmethod
-    def get_current_user_inquiries(self, limit: int=10) -> [db.Model]:
+    def get_current_user_inquiries(limit: int=10) -> [db.Model]:
         """Return list of all inquiries associated with the current user."""
         user = flask_login.current_user
         if user.is_authenticated:
@@ -586,8 +588,8 @@ class Inquiry(Base):
             .query
             .join(Resolution)
             .filter(
-                status=status,
-                queue_id=g.queue.id)
+                Inquiry.status == status,
+                Inquiry.queue_id == g.queue.id)
             .order_by(desc(Resolution.created_at))
             .limit(limit)
             .all())
@@ -618,7 +620,10 @@ class Inquiry(Base):
             **kwargs)
 
     @staticmethod
-    def get_unresolved(categories: [str], **filters) -> [(str, int)]:
+    def get_unresolved(
+            categories: [str],
+            key: str='category',
+            **filters) -> [(str, int)]:
         """Return list of (category, number unresolved).
 
         This only returns categories that have a non-zero number of unresolved
@@ -626,7 +631,8 @@ class Inquiry(Base):
         """
         lst = []
         for category in categories:
-            num = Inquiry.get_num_unresolved(category=category, **filters)
+            filters[key] = category
+            num = Inquiry.get_num_unresolved(**filters)
             if num > 0:
                 lst.append((category, num))
         return lst
@@ -680,18 +686,21 @@ class Inquiry(Base):
         self.status = 'resolving'
         return self.save()
 
-    def maybe_lock(self) -> None:
+    def maybe_lock(self) -> db.Model:
         """Lock an inquiry if the inquiry has not already been locked."""
         if not self.resolution:
             self.lock().link(flask_login.current_user)
+        return self
 
     def link(self, user: User) -> Resolution:
         """Link inquiry to a user."""
-        if not Resolution.query.filter_by(
-                user_id=user.id,
-                inquiry_id=self.id,
-                resolved_at=None).one_or_none():
-            return Resolution(user_id=user.id, inquiry_id=self.id).save()
+        filters = {
+            'user_id': user.id,
+            'inquiry_id': self.id,
+            'resolved_at': None
+        }
+        if not Resolution.query.filter_by(**filters).one_or_none():
+            return Resolution(**filters).save()
 
     def unlock(self) -> db.Model:
         """Unlock Inquiry and re-enqueue request."""
