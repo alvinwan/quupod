@@ -71,7 +71,6 @@ def home() -> str:
         ttr=g.queue.ttr())
 
 
-# TODO cleanup
 @queue.route('/promote/<string:role_name>', methods=['POST', 'GET'])
 @queue.route('/promote')
 def promote(role_name: str=None) -> str:
@@ -81,63 +80,30 @@ def promote(role_name: str=None) -> str:
             'error.html',
             code='Oops',
             message='You need to be logged in to promote an account!')
-    part = Participant.query.filter_by(
-        queue_id=g.queue.id,
-        user_id=current_user().id).one_or_none()
-    n_owners = Participant.query.join(QueueRole).filter(
-        QueueRole.name == 'Owner',
-        Participant.queue_id == g.queue.id).count()
-    if part and part.role.name == 'Owner' and n_owners <= 1:
+    part = Participant.get_from_user(current_user())
+    if part and part.role.name == 'Owner' \
+            and Participant.get_num_owners() <= 1:
         return render_queue(
             'error.html',
             code='Oops',
             message='You cannot demote yourself from owner until another owner'
             ' has been added.')
-    promotion_setting = g.queue.setting(name='self_promotion', default=None)
-    if not promotion_setting or not promotion_setting.enabled:
-        abort(404)
-    tuples = [s.split(':') for s in promotion_setting.value.splitlines()]
-    codes = dict((k.strip().lower(), v.strip()) for k, v in tuples)
-    role_names = [role.name for role in g.queue.roles]
-    if n_owners == 0:
-        role_name = 'Owner'
-    roles = [s.lower() for s in role_names + list(codes.keys())]
-    if role_name and role_name.lower() not in roles:
-        abort(404)
     if not role_name:
         return render_queue(
             'roles.html',
             title='Promotion Form',
             message='Welcome. Please select a role below.',
-            roles=[name for name in role_names if name.lower() in codes])
-    if n_owners == 0:
-        code = '*'
-    elif role_name.lower() not in codes:
-        abort(404)
-    else:
-        code = codes[role_name.lower()]
+            roles=g.queue.get_roles_for_promotion())
     form = PromotionForm(request.form)
-    if request.method == 'POST' or code == '*':
-        if not (code == '*' or request.form['code'] == code):
+    if request.method == 'POST' or g.queue.get_code_for_role(role_name) == '*':
+        if not g.queue.is_promotion_valid(role_name, request.form['code']):
             form.errors.setdefault('code', []).append('Incorrect code.')
             return render_queue(
                 'form.html',
                 form=form,
                 submit='Promote',
                 back=url_for('queue.promote'))
-        role = QueueRole.query.filter_by(
-            name=role_name, queue_id=g.queue.id).one()
-        part = Participant.query.filter_by(
-            user_id=current_user().id,
-            queue_id=g.queue.id).one_or_none()
-        if part:
-            part.update(role_id=role.id).save()
-        else:
-            Participant(
-                user_id=current_user().id,
-                queue_id=g.queue.id,
-                role_id=role.id
-            ).save()
+        Participant.update_or_create(current_user(), role_name)
         return render_queue(
             'confirm.html',
             title='Promotion Success',
@@ -218,7 +184,7 @@ def inquiry() -> str:
 @queue.route('/cancel')
 def cancel(inquiry_id: int=None) -> str:
     """Cancel placed request."""
-    inquiry = get_inquiry_for_asker()
+    inquiry = get_inquiry_for_asker(inquiry_id)
     if inquiry.is_owned_by_current_user():
         inquiry.close()
     else:
@@ -238,7 +204,7 @@ def cancel(inquiry_id: int=None) -> str:
 @queue.route('/waiting')
 def waiting(inquiry_id: int=None) -> str:
     """Screen shown after user has placed request and is waiting."""
-    inquiry = get_inquiry_for_asker()
+    inquiry = get_inquiry_for_asker(inquiry_id)
     return render_queue(
         'waiting.html',
         position=inquiry.current_position(),
@@ -248,7 +214,7 @@ def waiting(inquiry_id: int=None) -> str:
             inquiry.location,
             inquiry.assignment,
             inquiry.problem,
-            inquiry.created_at.humanize()))
+            inquiry.to_local('created_at').created_at.humanize()))
 
 
 ################

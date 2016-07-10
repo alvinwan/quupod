@@ -237,6 +237,13 @@ class QueueRole(Role):
 
     queue_id = db.Column(db.Integer, db.ForeignKey('queue.id'))
 
+    @staticmethod
+    def get_by_name(role_name: str) -> db.Model:
+        """Get a role by name for the global current queue."""
+        return QueueRole.query.filter_by(
+            name=role_name,
+            queue_id=g.queue.id).one()
+
 
 class QueueSetting(Setting):
     """Settings for the queue application."""
@@ -304,6 +311,41 @@ class Queue(Base):
                     'assignments are: %s' % (prefix, assignment, lst))
             return False
         return True
+
+    def get_num_owners(self) -> int:
+        """Get number of owners for the global, current queue."""
+        return Participant.query.join(QueueRole).filter(
+            QueueRole.name == 'Owner',
+            Participant.queue_id == g.queue.id).count()
+
+    def get_code_for_role(self, role_name: str) -> str:
+        """Get promotion code for the provided role."""
+        return self.get_roles_to_codes()[role_name]
+
+    def get_roles_for_promotion(self) -> [str]:
+        """Return a list of all role names available for promotion."""
+        return list(self.get_roles_to_codes().keys())
+
+    def get_roles_to_codes(self) -> dict:
+        """Return a dictionary mapping roles to promotion codes."""
+        promotion_setting = g.queue.setting(
+            name='self_promotion',
+            default=None)
+        if not promotion_setting:
+            return {}
+
+        mapping = {}
+        valid_role_names = set(role.name.lower() for role in g.queue.roles)
+        for line in promotion_setting.value.splitlines():
+            role_name, code = map(line.split(':'), lambda s: s.strip())
+            if role_name.lower() in valid_role_names:
+                mapping[role_name] = code
+        return mapping
+
+    def is_promotion_valid(self, role_name: str, code: str) -> bool:
+        """Check if the provided promotion credentials are valid."""
+        correct_code = self.get_roles_to_codes()[role_name]
+        return correct_code == '*' or correct_code == code
 
     def is_valid_assignment(self, request: LocalProxy, form: Form) -> bool:
         """Check if the assignment is valid, based on settings.
@@ -667,12 +709,12 @@ class Inquiry(Base):
         if delayed_id:
             Inquiry.query.get(delayed_id).unlock()
 
-    def current_position(self, current_inquiry: db.Model) -> int:
+    def current_position(self) -> int:
         """Fetch current position of this inquiry in the current queue."""
         return Inquiry.query.filter(
             Inquiry.status == 'unresolved',
             Inquiry.queue_id == g.queue.id,
-            Inquiry.created_at <= current_inquiry.created_at).count()
+            Inquiry.created_at <= self.created_at).count()
 
     def close(self) -> db.Model:
         """Close an inquiry, marking as unresolved."""
@@ -757,3 +799,29 @@ class Participant(Base):
     def role(self) -> Role:
         """Return the role associated with this participant."""
         return QueueRole.query.get(self.role_id)
+
+    @staticmethod
+    def update_or_create(user: User, role_name: str) -> db.Model:
+        """Update an existing participant or create a new participant."""
+        role = QueueRole.get_by_name(role_name)
+        part = Participant.get_from_user(user)
+        if part:
+            return part.update(role_id=role.id).save()
+        else:
+            return Participant.create_from_user_and_role(user, role)
+
+    @staticmethod
+    def get_from_user(user: User):
+        """Fetch participant using provided user."""
+        return Participant.query.filter_by(
+            user_id=user.id,
+            queue_id=g.queue.id).one_or_none()
+
+    @staticmethod
+    def create_from_user_and_role(user: User, role: Role) -> db.Model:
+        """Create a new participant from the provided user and role."""
+        return Participant(
+            user_id=user.id,
+            queue_id=g.queue.id,
+            role_id=role.id
+        ).save()
