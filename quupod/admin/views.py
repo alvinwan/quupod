@@ -53,7 +53,8 @@ def render_admin(template: str, *args, **kwargs) -> str:
     """Special rendering for queue admin."""
     for k in default_queue_settings:
         setting = g.queue.setting(k)
-        kwargs.update({'queue_setting_%s' % k: setting.value or setting.enabled})
+        kwargs.update({
+            'queue_setting_%s' % k: setting.value or setting.enabled})
     kwargs.setdefault('queue', g.queue)
     return render(template, *args, **kwargs)
 
@@ -170,17 +171,23 @@ def help_inquiry(id: str, location: str=None) -> str:
     """automatically selects next inquiry or reloads inquiry."""
     inquiry = Inquiry.query.get(id).maybe_lock()
     if request.method == 'POST':
+        delayed_id = None
         inquiry.resolution.close()
         emitQueuePositions(inquiry)
         emitQueueInfo(inquiry.queue)
         if request.form['status'] == 'resolved':
             inquiry.close()
+        elif request.form['status'] == 'unresolved':
+            delayed_id = id
         if request.form['load_next'] != 'y':
             if request.form['status'] == 'unresolved':
                 inquiry.unlock()
             return redirect(url_for('admin.home'))
         return redirect(
-            url_for('admin.help_latest', location=location, delayed_id=id))
+            url_for(
+                'admin.help_latest',
+                location=location,
+                delayed_id=delayed_id))
     return render_admin(
         'help_inquiry.html',
         inquiry=inquiry,
