@@ -16,7 +16,6 @@ from quupod.models import Inquiry
 from quupod.models import Participant
 from quupod.models import User
 from quupod.models import Queue
-from quupod.models import QueueRole
 from quupod.utils import emitQueueInfo
 from quupod.utils import emitQueuePositions
 from quupod.views import current_user
@@ -76,18 +75,12 @@ def home() -> str:
 def promote(role_name: str=None) -> str:
     """Promote the user accessing this page."""
     if not current_user().is_authenticated:
-        return render_queue(
-            'error.html',
-            code='Oops',
-            message='You need to be logged in to promote an account!')
+        abort(401, 'You need to be logged in to promote an account!')
     part = Participant.get_from_user(current_user())
     if part and part.role.name == 'Owner' \
-            and Participant.get_num_owners() <= 1:
-        return render_queue(
-            'error.html',
-            code='Oops',
-            message='You cannot demote yourself from owner until another owner'
-            ' has been added.')
+            and g.queue.get_num_owners() <= 1:
+        abort(401, 'You cannot demote yourself from owner until another owner'
+                   ' has been added.')
     if not role_name:
         return render_queue(
             'roles.html',
@@ -188,13 +181,8 @@ def cancel(inquiry_id: int=None) -> str:
     if inquiry.is_owned_by_current_user():
         inquiry.close()
     else:
-        return render_queue(
-            'error.html',
-            code='404',
-            message='You cannot cancel another user\'s request. This incident'
-            ' has been logged.',
-            url=url_for('queue.home'),
-            action='Back Home')
+        abort(401, 'You cannot cancel another user\'s request. This incident'
+        ' has been logged.')
     emitQueuePositions(inquiry)
     emitQueueInfo(inquiry.queue)
     return redirect(url_for('queue.home'))

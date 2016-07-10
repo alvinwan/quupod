@@ -1,6 +1,5 @@
 """Quupod application factory."""
 
-from flask import Flask
 from .models import db
 from .models import migrate
 from .models import migration_manager
@@ -9,6 +8,10 @@ from .views import login_manager
 from .views import socketio
 from .views import error_not_found
 from .views import error_server
+from .views import standard_error
+
+from flask import Flask
+
 import eventlet
 
 CONFIG_PATH_FORMAT = '%s.config.%s'
@@ -77,6 +80,7 @@ def create_app(root: str, config: str) -> Flask:
     app.register_blueprint(queue, url_prefix='/subdomain/<string:queue_url>')
 
     # register error handlers
+    app.register_error_handler(401, standard_error)
     app.register_error_handler(404, error_not_found)
     app.register_error_handler(500, error_server)
 

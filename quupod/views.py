@@ -1,5 +1,7 @@
 """View utilities."""
 
+from .notifications import notifications
+
 from functools import wraps
 from flask_socketio import SocketIO
 from flask_login import AnonymousUserMixin
@@ -8,7 +10,7 @@ from flask import render_template
 from flask import request
 from flask import g
 from flask import current_app
-from .notifications import notifications
+
 import flask_login
 
 login_manager = flask_login.LoginManager()
@@ -102,26 +104,22 @@ def url_for(*args, **kwargs):
 # ERROR HANDLERS #
 ##################
 
-def error_with_message(error):
+def standard_error(error):
     """Show error page."""
     return render(
         'error.html',
         back=current_app.config['DOMAIN'],
-        title='Error!',
-        message=error.message,
+        code=error.code,
+        title='Oops.',
+        message=error.description,
         url=current_app.config['DOMAIN'],
-        action='Return to homepage?')
+        action='Return to homepage?'), error.code
+
 
 def error_not_found(error):
     """Show custom 404 page if page not found."""
-    return render(
-        'error.html',
-        back=current_app.config['DOMAIN'],
-        title='404. Oops.',
-        code=404,
-        message='Oops. This page doesn\'t exist!',
-        url=current_app.config['DOMAIN'],
-        action='Return to homepage?'), 404
+    return standard_error(
+        ApplicationException('Oops.', 'This page doesn\'t exist!', 404))
 
 
 def error_server(error):

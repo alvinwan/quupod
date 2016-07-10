@@ -3,7 +3,7 @@
 <main class="sp-main">
   <section class="sp-module-list module">
     <p class="sf-back"><a href="{{ back or the_url('queue.home') }}"><span class="sf-back-arr">&larr;</span> back</a></p>
-    <h1 class="sp-title">{{ code }}</h1>
+    <h1 class="sp-title">{{ title }}</h1>
     <p class="sp-byline">{{ message | safe }}</p>
     {% if url and action %}
     <a href="{{ url }}" class="button">{{ action }}</a>
