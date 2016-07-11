@@ -111,7 +111,6 @@ def promote(role_name: str=None) -> str:
 ########
 
 
-# TODO cleanup
 @queue.route('/request', methods=['POST', 'GET'])
 def inquiry() -> str:
     """Place a new request.

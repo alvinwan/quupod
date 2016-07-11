@@ -80,6 +80,21 @@ def requires(*permissions) -> str:
     return wrap
 
 
+def login_required_else(message: str):
+    """If user is not logged in, prompt for login with the provided message."""
+    def wrap(f):
+        @wraps(f)
+        def decorator(*args, **kwargs):
+            if not current_user().is_authenticated:
+                return render(
+                    'confirm.html',
+                    title='Login Required',
+                    message=message)
+            return f(*args, **kwargs)
+        return decorator
+    return wrap
+
+
 def strip_subdomain(string):
     """Strip subdomain prefix if applicable."""
     if '/subdomain' not in request.path or not getattr(g, 'queue', None):
