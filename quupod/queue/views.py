@@ -22,8 +22,6 @@ from quupod.views import current_user
 from quupod.views import render
 from quupod.views import url_for
 
-import flask_login
-
 queue = Blueprint(
     'queue',
     __name__,
@@ -77,8 +75,7 @@ def promote(role_name: str=None) -> str:
     if not current_user().is_authenticated:
         abort(401, 'You need to be logged in to promote an account!')
     part = Participant.get_from_user(current_user())
-    if part and part.role.name == 'Owner' \
-            and g.queue.get_num_owners() <= 1:
+    if part and part.role.name == 'Owner' and g.queue.get_num_owners() <= 1:
         abort(401, 'You cannot demote yourself from owner until another owner'
                    ' has been added.')
     if not role_name:
@@ -122,45 +119,34 @@ def inquiry() -> str:
     This request which may be authored by either a system user or an anonymous
     user.
     """
-    user, form = flask_login.current_user, InquiryForm(request.form)
-    if user.is_authenticated:
-        form = InquiryForm(request.form, obj=user)
-    elif g.queue.setting(name='require_login').enabled:
+    user = current_user()
+    if not user.is_authenticated and \
+            g.queue.setting(name='require_login').enabled:
         return render_queue(
             'confirm.html',
             title='Login Required',
             message='Login to add an inquiry, and start using this queue.')
+    form = InquiryForm(request.form, obj=user)
     n = int(g.queue.setting(name='max_requests').value)
-    filter_id = User.email == current_user().email \
-        if current_user().is_authenticated \
-        else User.name == request.form.get('name', None)
-    not_logged_in_max = ''
-    if Inquiry.query.join(User).filter(
-            filter_id,
-            Inquiry.status == 'unresolved',
-            Inquiry.queue_id == g.queue.id).count() >= n:
+    if User.get_num_current_requests(request.form.get('name', None)) >= n:
         if not current_user().is_authenticated:
-            not_logged_in_max = 'If you haven\'t submitted a request, try'
+            message = 'If you haven\'t submitted a request, try'
             ' logging in and re-requesting.'
+        else:
+            message = 'Would you like to cancel your oldest request?'
         return render_queue(
             'confirm.html',
             title='Oops',
             message='Looks like you\'ve reached the maximum number of times '
             'you can add yourself to the queue at once (<code>%d</code>). '
-            '%s' % (
-                n,
-                not_logged_in_max or
-                'Would you like to cancel your oldest request?'),
+            '%s' % (n, message),
             action='Cancel Oldest Request',
             url=url_for('queue.cancel'))
-    form.location.choices = choicify(
-        g.queue.setting('locations').value.split(','))
-    form.category.choices = choicify(
-        g.queue.setting('inquiry_types').value.split(','))
+    form.location.choices = choicify(g.queue.setting('locations').value)
+    form.category.choices = choicify(g.queue.setting('inquiry_types').value)
     if request.method == 'POST' and form.validate() and \
             g.queue.is_valid_assignment(request, form):
-        inquiry = Inquiry(**request.form)
-        inquiry.queue_id = g.queue.id
+        inquiry = Inquiry(**request.form).update(queue_id=g.queue.id)
         if current_user().is_authenticated:
             inquiry.owner_id = current_user().id
         inquiry.save()

@@ -474,6 +474,18 @@ class User(Base, flask_login.UserMixin):
             return url_for('queue.home', **kwargs)
         return url_for('dashboard.home')
 
+    @staticmethod
+    def get_num_current_requests(name: str):
+        """Get user's number of queued requests for the current queue."""
+        if flask_login.current_user.is_authenticated:
+            filter_id = User.email == flask_login.current_user.email
+        else:
+            filter_id = User.name == name
+        return Inquiry.query.join(User).filter(
+                filter_id,
+                Inquiry.status == 'unresolved',
+                Inquiry.queue_id == g.queue.id).count()
+
     def set_role(self, role: str) -> db.Model:
         """set role for user."""
         part = Participant.query.filter_by(
