@@ -59,6 +59,15 @@ def login(home: str=None, login: str=None) -> str:
         return redirect(login or url_for('public.login'))
 
 
+###########
+# SOCKETS #
+###########
+
+@public.route('/subdomain/<string:queue_url>/socket.io/')
+def socketio(queue_url):
+    """Fixes socketio requests for subdomains"""
+    return redirect(request.url.replace('subdomain/%s/' % queue_url, ''))
+
 ######################
 # SESSION UTILIITIES #
 ######################
