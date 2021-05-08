@@ -17,5 +17,5 @@ Flask-Migrate==1.7.0
 flask_script==2.0.5
 flask-debugtoolbar==0.10.0
 flask-socketio==2.5
-eventlet==0.19.0
+eventlet==0.31.0
 docopt==0.6.2
